@@ -9,15 +9,19 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import './App.css'
 
-// Initialize GA (Replace with actual ID later)
-try {
-  if (ReactGA && typeof ReactGA.initialize === 'function') {
-    ReactGA.initialize("G-XXXXXXXXXX");
-  } else {
-    console.warn("ReactGA not initialized correctly.");
+// Initialize GA
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
+
+if (GA_MEASUREMENT_ID) {
+  try {
+    if (ReactGA && typeof ReactGA.initialize === 'function') {
+      ReactGA.initialize(GA_MEASUREMENT_ID);
+    }
+  } catch (e) {
+    console.warn("GA Initialization failed", e);
   }
-} catch (e) {
-  console.warn("GA Initialization failed", e);
+} else {
+  console.warn("GA Measurement ID not found in environment variables");
 }
 
 function App() {
@@ -25,6 +29,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showMobileAd, setShowMobileAd] = useState(true);
+
+  // Feature flag for ads
+  const showAds = import.meta.env.VITE_SHOW_ADS === 'true';
 
 
   useEffect(() => {
@@ -61,11 +68,14 @@ function App() {
   return (
     <div className="app-container">
       {/* Left Sidebar (Desktop) */}
-      <AdSidebar side="left" />
+      {showAds && <AdSidebar side="left" />}
 
       <div className="main-wrapper">
         <header className="app-header">
-          <h1 className="app-title text-gradient">Clash AI Deck Generator</h1>
+          <div className="logo-container">
+            <img src="/favicon.png" alt="Clash AI Logo" className="app-logo" />
+            <h1 className="app-title text-gradient">Clash AI Deck Generator</h1>
+          </div>
           <p className="app-subtitle">Enter your player tag to discover your perfect deck.</p>
         </header>
 
@@ -79,22 +89,22 @@ function App() {
           )}
 
           {/* Loading Interstitial */}
-          {loading && <AdBanner type="interstitial" isLoading={loading} />}
+          {showAds && loading && <AdBanner type="interstitial" isLoading={loading} />}
 
           {deckData && !loading && <DeckDisplay deckData={deckData} />}
 
           {/* Static Banner (In-Flow) */}
-          <AdBanner type="banner" />
+          {showAds && <AdBanner type="banner" />}
         </main>
 
         <Footer />
       </div>
 
       {/* Right Sidebar (Desktop) */}
-      <AdSidebar side="right" />
+      {showAds && <AdSidebar side="right" />}
 
       {/* Sticky Mobile Banner */}
-      {showMobileAd && (
+      {showAds && showMobileAd && (
         <div className="mobile-sticky-ad">
           <button
             className="close-sticky-ad"
