@@ -30,7 +30,7 @@ const LegalModals = ({ type, onClose }) => {
             <>
                 <h2>Contact</h2>
                 <p>For any questions, please contact us at:</p>
-                <p><a href="mailto:support@clashai-deck.com">support@clashai-deck.com</a></p>
+                <p><a href="mailto:support@clashdeckster.com">support@clashdeckster.com</a></p>
             </>
         )
     };

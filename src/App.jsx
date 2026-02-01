@@ -78,10 +78,10 @@ function App() {
       <div className="main-wrapper">
         <header className="app-header">
           <div className="logo-container">
-            <img src="/favicon.png" alt="Clash AI Logo" className="app-logo" />
-            <h1 className="app-title text-gradient">Clash AI Deck Generator</h1>
+            <img src="/favicon.png" alt="Clash Deckster Logo" className="app-logo" />
+            <h1 className="app-title text-gradient">Clash Deckster</h1>
           </div>
-          <p className="app-subtitle">Enter your player tag to discover your perfect deck.</p>
+          <p className="app-subtitle">Enter your player tag to let AI build the perfect deck based on your cards.</p>
         </header>
 
         <main className="main-content">

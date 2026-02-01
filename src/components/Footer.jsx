@@ -23,7 +23,7 @@ const Footer = () => {
                     </p>
                 </div>
 
-                <p className="copyright">© 2026 Clash AI Deck Generator. All rights reserved.</p>
+                <p className="copyright">© 2026 Clash Deckster. All rights reserved.</p>
             </div>
 
             {activeModal && (
