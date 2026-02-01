@@ -7,26 +7,26 @@ export default defineConfig({
   server: {
     proxy: {
       '/freeDeck': {
-        target: 'http://46.225.62.213',
+        target: 'https://api.clashdeckster.com/',
         //target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/player': {
-        target: 'http://46.225.62.213',
+        target: 'https://api.clashdeckster.com/',
         //target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/cards': {
-          target: 'http://46.225.62.213',
-          //target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com/',
+        //target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/decks': {
-          target: 'http://46.225.62.213',
-          //target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com/',
+        //target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       }
