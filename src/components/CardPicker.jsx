@@ -36,7 +36,7 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds }) => {
         }
 
         if (selectedRarity !== 'All') {
-            result = result.filter(c => c.rarity === selectedRarity); // API uses "Rare", "Epic" etc capitalization? Usually yes.
+            result = result.filter(c => c.rarity && c.rarity.toLowerCase() === selectedRarity.toLowerCase());
         }
 
         setFilteredCards(result);
