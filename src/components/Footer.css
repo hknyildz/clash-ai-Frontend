@@ -1,0 +1,64 @@
+.app-footer {
+    width: 100%;
+    margin-top: auto;
+    padding: 3rem 1rem 2rem;
+    background: linear-gradient(to top, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0));
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.legal-links {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.legal-link {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-decoration: none;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.legal-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.separator {
+    color: var(--color-border);
+}
+
+.supercell-disclaimer {
+    font-style: italic;
+    opacity: 0.7;
+    line-height: 1.5;
+    font-size: 0.75rem;
+}
+
+.supercell-disclaimer a {
+    color: var(--color-text-muted);
+    text-decoration: underline;
+}
+
+.copyright {
+    opacity: 0.5;
+    font-size: 0.7rem;
+}

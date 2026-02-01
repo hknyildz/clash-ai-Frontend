@@ -1,0 +1,315 @@
+.deck-display-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.stats-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem;
+    background: var(--color-bg-secondary);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.elixir-color {
+    color: #d946ef;
+    /* Magenta-ish for Elixir average usually, or sticking to theme */
+    color: var(--color-accent);
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--color-border);
+}
+
+/* Cards Grid - 4x2 layout */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+        /* Keep 4 cols logic but scale down, or maybe 2x4? CR uses 4x2 */
+        /* On very small screens 4 cols might be too tight. Let's try to keep it but scale down. */
+        gap: 0.5rem;
+    }
+}
+
+.card-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 302/363;
+    /* Approximate CR card ratio */
+    transition: transform 0.2s;
+}
+
+.card-image-container:hover {
+    transform: scale(1.05) translateY(-5px);
+    z-index: 10;
+}
+
+.clash-card {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+}
+
+.elixir-badge {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    background: var(--color-accent);
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 900;
+    font-size: 0.875rem;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.card-name {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    display: none;
+    /* Hide name for cleaner look, like the game */
+}
+
+/* Copy Button */
+.action-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.copy-btn {
+    background: var(--color-primary);
+    color: white;
+    padding: 1rem 3rem;
+    border-radius: 2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 10px 20px -5px var(--color-primary-glow);
+    transition: all 0.3s;
+}
+
+.copy-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 15px 25px -5px var(--color-primary-glow);
+    background: #2563eb;
+}
+
+.glow-effect {
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+/* Tactic Section */
+.tactic-container {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+    border: 1px solid var(--color-primary-glow);
+}
+
+.tactic-label {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+.tactic-text {
+    font-size: 1rem;
+    color: var(--color-text);
+    font-weight: 400; /* Lighter font weight as requested */
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+/* Archetype Header */
+.archetype-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.archetype-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-accent);
+}
+
+.archetype-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Archetype Header */
+.archetype-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.archetype-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-accent);
+}
+
+.archetype-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Deck Meta (Elixir) */
+.deck-meta {
+    display: flex;
+    justify-content: center;
+    margin-top: -1rem; /* Pull it slightly closer to the grid */
+    margin-bottom: 0.5rem;
+}
+
+.elixir-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    border: 1px solid var(--color-border);
+}
+
+.elixir-value {
+    color: #f0abfc; /* Lighter purple/pink */
+}
+
+/* Elixir Cost on Card (Purple Drop) */
+.elixir-cost-icon {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+}
+
+.elixir-cost-icon svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.cost-number {
+    position: relative;
+    z-index: 2;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    margin-top: 4px; /* Center number optically in the drop */
+}
+
+/* Level Badge */
+.level-badge {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    background: #1e293b;
+    color: #e2e8f0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 5;
+    text-transform: uppercase;
+}
+
+/* Ensure container allows overflow for badges */
+.card-image-container {
+    overflow: visible; 
+}

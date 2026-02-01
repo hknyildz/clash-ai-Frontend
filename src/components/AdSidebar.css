@@ -1,0 +1,20 @@
+.ad-sidebar {
+    width: 200px;
+    min-width: 200px;
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+    z-index: 10;
+}
+
+.sidebar-sticky-content {
+    position: sticky;
+    top: 2rem;
+}
+
+/* Hide sidebars on screens smaller than 1200px (or wherever the layout breaks) */
+@media (max-width: 1200px) {
+    .ad-sidebar {
+        display: none;
+    }
+}

@@ -1,0 +1,102 @@
+/* Main 3-Column Layout */
+.app-container {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.main-wrapper {
+  flex: 1;
+  max-width: 800px;
+  min-width: 0;
+  /* Prevents flex item from overflowing */
+  display: flex;
+  flex-direction: column;
+
+  padding: 2rem 1rem {
+    /* Padding bottom to account for sticky ad on mobile */
+    padding-bottom: 80px;
+  }
+
+  ;
+}
+
+.app-header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.app-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.05em;
+}
+
+.app-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+}
+
+.main-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+  /* Pushes footer down */
+}
+
+/* Mobile Sticky Ad */
+.mobile-sticky-ad {
+  display: none;
+  /* Hidden by default (Desktop) */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  background: rgba(15, 23, 42, 0.95);
+  border-top: 1px solid var(--color-border);
+  padding: 0.5rem;
+  justify-content: center;
+}
+
+@media (max-width: 1200px) {
+  .main-wrapper {
+    padding-bottom: 100px;
+    /* More space for sticky ad */
+  }
+
+  .mobile-sticky-ad {
+    display: flex;
+    /* Show on mobile/tablet */
+  }
+}
+
+@media (max-width: 600px) {
+  .app-title {
+    font-size: 2rem;
+  }
+}
+/* Close button for sticky ad */
+.close-sticky-ad {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
