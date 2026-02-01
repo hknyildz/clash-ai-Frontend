@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import './InputSection.css';
 
-const InputSection = ({ onGenerate, isLoading }) => {
-    const [tag, setTag] = useState('');
+const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton = true }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (tag.trim()) {
+        if (tag.trim() && showButton) {
             onGenerate(tag.trim());
         }
     };
@@ -32,17 +31,19 @@ const InputSection = ({ onGenerate, isLoading }) => {
                         disabled={isLoading}
                     />
                 </div>
-                <button
-                    type="submit"
-                    className="generate-btn"
-                    disabled={!tag || isLoading}
-                >
-                    {isLoading ? (
-                        <span className="loader"></span>
-                    ) : (
-                        'Generate Deck'
-                    )}
-                </button>
+                {showButton && (
+                    <button
+                        type="submit"
+                        className="generate-btn"
+                        disabled={!tag || isLoading}
+                    >
+                        {isLoading ? (
+                            <span className="loader"></span>
+                        ) : (
+                            'Generate Deck'
+                        )}
+                    </button>
+                )}
             </form>
         </motion.div>
     );

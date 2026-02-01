@@ -1,0 +1,191 @@
+.deck-builder-container {
+    width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.builder-header {
+    text-align: center;
+}
+
+.builder-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.builder-header p {
+    color: var(--color-text-muted);
+}
+
+.playstyle-selector {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.playstyle-chip {
+    padding: 0.5rem 1.25rem;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--color-border);
+    border-radius: 2rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.playstyle-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.playstyle-chip.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.builder-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+    /* Constrain width to keep card aspect reasonable */
+    margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    .builder-grid {
+        gap: 0.5rem;
+    }
+}
+
+.builder-slot {
+    aspect-ratio: 302/363;
+    background: rgba(15, 23, 42, 0.6);
+    border: 2px dashed var(--color-border);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.builder-slot:hover {
+    border-color: var(--color-primary);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+.builder-slot.empty {
+    /* Styles for empty slot specifically if needed */
+}
+
+.empty-slot-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+}
+
+.plus-icon {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.slot-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.slot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* or contain, but cover fills slot nicely */
+}
+
+.remove-card-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    line-height: 1;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.builder-slot:hover .remove-card-btn {
+    opacity: 1;
+}
+
+.slot-elixir {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #d946ef;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.builder-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reset-btn {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.builder-result {
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 2rem;
+}
+
+.builder-result h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--color-accent);
+}

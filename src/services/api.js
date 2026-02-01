@@ -20,3 +20,29 @@ export const fetchFreeDeck = async (tag) => {
         throw error;
     }
 };
+
+export const fetchAllCards = async () => {
+    try {
+        const response = await api.get('/cards');
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching all cards:", error);
+        throw error;
+    }
+};
+
+export const completeDeck = async (tag, partialDeckIds, strategy) => {
+    // tag is optional (used for collection filtering), partialDeckIds is list of IDs
+    // No URL encoding needed for JSON body
+    try {
+        const response = await api.post('/decks/complete', {
+            playerTag: tag,
+            partialDeck: partialDeckIds,
+            playStyle: strategy
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error completing deck:", error);
+        throw error;
+    }
+};

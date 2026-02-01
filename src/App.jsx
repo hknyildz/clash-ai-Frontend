@@ -3,6 +3,7 @@ import ReactGA from 'react-ga4';
 import { fetchFreeDeck } from './services/api';
 import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
+import DeckBuilder from './components/DeckBuilder';
 import AdBanner from './components/AdBanner';
 import AdSidebar from './components/AdSidebar';
 import Footer from './components/Footer';
@@ -25,6 +26,9 @@ if (GA_MEASUREMENT_ID) {
 }
 
 function App() {
+  const [tag, setTag] = useState('');
+  const [activeTab, setActiveTab] = useState('quick'); // 'quick' or 'builder'
+
   const [deckData, setDeckData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -40,7 +44,8 @@ function App() {
     }
   }, []);
 
-  const handleGenerateDeck = async (tag) => {
+  const handleGenerateDeck = async (playerTag) => {
+    // Standard "Free Deck" generation
     setLoading(true);
     setError(null);
     setDeckData(null);
@@ -50,12 +55,12 @@ function App() {
       ReactGA.event({
         category: "Deck",
         action: "Generate Clicked",
-        label: tag
+        label: playerTag
       });
     }
 
     try {
-      const data = await fetchFreeDeck(tag);
+      const data = await fetchFreeDeck(playerTag);
       setDeckData(data);
     } catch (err) {
       console.error(err);
@@ -80,18 +85,47 @@ function App() {
         </header>
 
         <main className="main-content">
-          <InputSection onGenerate={handleGenerateDeck} isLoading={loading} />
+          <InputSection
+            tag={tag}
+            setTag={setTag}
+            onGenerate={handleGenerateDeck}
+            isLoading={loading}
+            showButton={activeTab === 'quick'}
+          />
 
-          {error && (
-            <div className="error-message glass-panel" style={{ color: '#ef4444', padding: '1rem' }}>
-              {error}
-            </div>
+          <div className="tabs-container">
+            <button
+              className={`tab-btn ${activeTab === 'quick' ? 'active' : ''}`}
+              onClick={() => setActiveTab('quick')}
+            >
+              Quick Generate
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'builder' ? 'active' : ''}`}
+              onClick={() => setActiveTab('builder')}
+            >
+              Advanced Builder
+            </button>
+          </div>
+
+          {activeTab === 'quick' && (
+            <>
+              {error && (
+                <div className="error-message glass-panel" style={{ color: '#ef4444', padding: '1rem' }}>
+                  {error}
+                </div>
+              )}
+
+              {/* Loading Interstitial */}
+              {showAds && loading && <AdBanner type="interstitial" isLoading={loading} />}
+
+              {deckData && !loading && <DeckDisplay deckData={deckData} />}
+            </>
           )}
 
-          {/* Loading Interstitial */}
-          {showAds && loading && <AdBanner type="interstitial" isLoading={loading} />}
-
-          {deckData && !loading && <DeckDisplay deckData={deckData} />}
+          {activeTab === 'builder' && (
+            <DeckBuilder playerTag={tag} />
+          )}
 
           {/* Static Banner (In-Flow) */}
           {showAds && <AdBanner type="banner" />}
