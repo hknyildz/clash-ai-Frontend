@@ -1,3 +1,6 @@
+import baitIcon from '../assets/bait.png';
+import siegeIcon from '../assets/siege.png';
+
 export const StrategyIcons = {
     'Beatdown': (
         <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -15,15 +18,29 @@ export const StrategyIcons = {
         </svg>
     ), // Recycle
     'Bait': (
-        <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-            <path d="M12 2C9 2 7 4 7 7c0 2 2 3 4 3s4-1 4-3c0-3-2-5-5-5zm0 18c-3 0-5-2-5-5h10c0 3-2 5-5 5z" />
-        </svg>
-    ), // Hook / Lure
+        <div style={{
+            width: 24,
+            height: 24,
+            backgroundColor: 'currentColor',
+            mask: `url(${baitIcon}) no-repeat center / contain`,
+            WebkitMask: `url(${baitIcon}) no-repeat center / contain`
+        }} />
+    ),
     'Siege': (
+        <div style={{
+            width: 24,
+            height: 24,
+            backgroundColor: 'currentColor',
+            mask: `url(${siegeIcon}) no-repeat center / contain`,
+            WebkitMask: `url(${siegeIcon}) no-repeat center / contain`
+        }} />
+    ),
+    'Recall': (
+        // Rewind / Return
         <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-            <path d="M15 4h-2V3h2v1zM7 4H5v1h2V4zm12 8V6h-2v6H7V6H5v6c0 1.6 1.1 2.9 2.5 3.4L6 18h2l1-4h6l1 4h2l-1.5-2.6c1.4-.5 2.5-1.8 2.5-3.4z" />
+            <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
         </svg>
-    ), // Catapult / Wall
+    ),
     'Bridge Spam': (
         <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
             <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
