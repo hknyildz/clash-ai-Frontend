@@ -22,11 +22,8 @@ const LegalModals = ({ type, onClose }) => {
         terms: (
             <>
                 <h2>Terms of Service</h2>
-                <p>By using this website, you agree to these terms.</p>
-                <h3>1. Disclaimer</h3>
-                <p>This is a fan-made tool. We are not responsible for the decks generated or your in-game results.</p>
-                <h3>2. Usage</h3>
-                <p>The service is provided "as is". We reserve the right to modify or discontinue the service at any time.</p>
+                <p>By using <strong>ClashDeckster</strong>, you agree to comply with Supercell's Fan Content Policy.</p>
+                <p>This service is an unofficial fan-made project and is not affiliated with Supercell. We provide AI-generated deck suggestions "as is" and are not responsible for in-game outcomes.</p>
             </>
         ),
         contact: (
