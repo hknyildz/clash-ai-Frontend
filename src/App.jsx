@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import ReactGA from 'react-ga4';
 import { fetchFreeDeck } from './services/api';
 import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
@@ -12,20 +11,8 @@ import HowItWorks from './components/HowItWorks';
 import Features from './components/Features';
 import './App.css'
 
-// Initialize GA
+// Google Analytics ID from env
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
-
-if (GA_MEASUREMENT_ID) {
-  try {
-    if (ReactGA && typeof ReactGA.initialize === 'function') {
-      ReactGA.initialize(GA_MEASUREMENT_ID);
-    }
-  } catch (e) {
-    console.warn("GA Initialization failed", e);
-  }
-} else {
-  console.warn("GA Measurement ID not found in environment variables");
-}
 
 function App() {
   const [tag, setTag] = useState('');
@@ -41,8 +28,11 @@ function App() {
 
 
   useEffect(() => {
-    if (ReactGA && ReactGA.isInitialized) {
-      ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+    // Send pageview on mount (using native gtag if available)
+    if (window.gtag && GA_MEASUREMENT_ID) {
+      window.gtag('config', GA_MEASUREMENT_ID, {
+        page_path: window.location.pathname,
+      });
     }
   }, []);
 
@@ -53,11 +43,10 @@ function App() {
     setDeckData(null);
 
     // Track event
-    if (ReactGA && ReactGA.isInitialized) {
-      ReactGA.event({
-        category: "Deck",
-        action: "Generate Clicked",
-        label: playerTag
+    if (window.gtag) {
+      window.gtag('event', 'generate_clicked', {
+        'event_category': 'Deck',
+        'event_label': playerTag
       });
     }
 
