@@ -8,6 +8,8 @@ import AdBanner from './components/AdBanner';
 import AdSidebar from './components/AdSidebar';
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
+import HowItWorks from './components/HowItWorks';
+import Features from './components/Features';
 import './App.css'
 
 // Initialize GA
@@ -125,6 +127,14 @@ function App() {
 
           {activeTab === 'builder' && (
             <DeckBuilder playerTag={tag} />
+          )}
+
+          {/* New Content Sections for SEO/AdSense - Only show when no deck is generated yet to keep UI clean */}
+          {!deckData && activeTab === 'quick' && (
+            <>
+              <HowItWorks />
+              <Features />
+            </>
           )}
 
           {/* Static Banner (In-Flow) */}

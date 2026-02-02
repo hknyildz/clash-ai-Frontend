@@ -1,0 +1,31 @@
+.features-section {
+    margin: 4rem 0;
+    text-align: center;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.feature-card {
+    padding: 2rem;
+    text-align: left;
+    background: rgba(15, 23, 42, 0.4);
+    /* Slightly darker/different than default glass */
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.feature-title {
+    font-size: 1.2rem;
+    color: var(--color-primary-light);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.feature-desc {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
