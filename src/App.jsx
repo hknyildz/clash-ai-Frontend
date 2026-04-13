@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import HowItWorks from './components/HowItWorks';
 import Features from './components/Features';
+import FaqSection from './components/FaqSection';
 import './App.css'
 
 // Google Analytics ID from env
@@ -132,6 +133,7 @@ function App() {
             <>
               <HowItWorks />
               <Features />
+              <FaqSection />
             </>
           )}
 

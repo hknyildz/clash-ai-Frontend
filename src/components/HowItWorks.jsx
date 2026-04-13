@@ -42,6 +42,13 @@ const HowItWorks = () => {
                     </motion.div>
                 ))}
             </div>
+
+            <div className="seo-content glass-panel" style={{ marginTop: '4rem', padding: '2rem', textAlign: 'left', lineHeight: '1.6' }}>
+                <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.5rem' }}>Why Traditional Deck Builders Fail Underleveled Players</h3>
+                <p style={{ color: '#cbd5e1' }}>
+                    Most generic deck builder websites just copy-paste top ladder decks. If you try to play a 2.6 Hog Cycle deck but your Musketeer gets instantly killed by an overleveled Fireball, you will lose. ClashDeckster fundamentally changes this by <strong>heavily prioritizing your highest-level cards</strong>. Our AI balances perfect deck synergy with your actual level advantages, saving you from crippling ladder matchups.
+                </p>
+            </div>
         </section>
     );
 };
