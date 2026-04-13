@@ -7,6 +7,12 @@ const Footer = () => {
 
     return (
         <footer className="app-footer">
+            <div className="about-project" style={{ padding: '0 2rem 2rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '2rem', textAlign: 'center' }}>
+                <h4 style={{ color: '#fff', marginBottom: '0.5rem' }}>About the Project</h4>
+                <p style={{ color: '#94a3b8', fontSize: '0.9rem', maxWidth: '800px', margin: '0 auto', lineHeight: '1.5' }}>
+                    Developed by a Senior Backend Engineer and a long-time Clash Royale veteran. This project combines LLM technology with real-time game data to help the community.
+                </p>
+            </div>
             <div className="footer-content">
                 <div className="legal-links">
                     <button onClick={() => setActiveModal('privacy')} className="legal-link">Privacy Policy</button>
