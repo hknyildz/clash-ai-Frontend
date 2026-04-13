@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import CardPicker from './CardPicker';
 import { completeDeck } from '../services/api';
@@ -18,6 +18,7 @@ const DeckBuilder = ({ playerTag }) => {
     const [activeSlotIndex, setActiveSlotIndex] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedResult, setGeneratedResult] = useState(null);
+    const builderResultRef = useRef(null);
 
     const handleSlotClick = (index) => {
         // If slot is empty or occupied, open picker to replace/fill
@@ -59,6 +60,10 @@ const DeckBuilder = ({ playerTag }) => {
             // Call API
             const result = await completeDeck(playerTag, partialIds, selectedPlaystyle);
             setGeneratedResult(result);
+            // Auto-scroll to the completed deck result
+            setTimeout(() => {
+                builderResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
 
             // Optionally fill the slots with the result? 
             // Or just show the result below using DeckDisplay?
@@ -138,6 +143,7 @@ const DeckBuilder = ({ playerTag }) => {
             {/* Result Area */}
             {generatedResult && (
                 <motion.div
+                    ref={builderResultRef}
                     className="builder-result"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { fetchFreeDeck } from './services/api';
 import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
@@ -22,6 +22,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showMobileAd, setShowMobileAd] = useState(true);
+  const deckResultRef = useRef(null);
 
   // Feature flag for ads
   const showAds = import.meta.env.VITE_SHOW_ADS === 'true';
@@ -53,6 +54,10 @@ function App() {
     try {
       const data = await fetchFreeDeck(playerTag);
       setDeckData(data);
+      // Auto-scroll to deck result after a short delay for render
+      setTimeout(() => {
+        deckResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     } catch (err) {
       console.error(err);
       setError("Failed to generate deck. Please check the player tag and try again.");
@@ -110,7 +115,11 @@ function App() {
               {/* Loading Interstitial */}
               {showAds && loading && <AdBanner type="interstitial" isLoading={loading} />}
 
-              {deckData && !loading && <DeckDisplay deckData={deckData} />}
+              {deckData && !loading && (
+                <div ref={deckResultRef}>
+                  <DeckDisplay deckData={deckData} />
+                </div>
+              )}
             </>
           )}
 
