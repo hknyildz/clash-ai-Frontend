@@ -5,7 +5,7 @@ const steps = [
     {
         id: 1,
         title: "Enter Player Tag",
-        description: "Input your unique Clash Royale player tag (e.g., #J08CVRJ).",
+        description: "Input your unique Clash Royale player tag (e.g., #J08CVRJ00).",
         icon: "🔍"
     },
     {

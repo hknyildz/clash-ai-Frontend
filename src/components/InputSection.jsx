@@ -24,7 +24,7 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton = true })
                     <input
                         type="text"
                         id="playerTag"
-                        placeholder="#J08CVRJ"
+                        placeholder="#J08CVRJ00"
                         value={tag}
                         onChange={(e) => setTag(e.target.value)}
                         className="player-input"
