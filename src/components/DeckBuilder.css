@@ -75,8 +75,6 @@
 
 .builder-slot {
     aspect-ratio: 302/363;
-    background: rgba(15, 23, 42, 0.6);
-    border: 2px dashed var(--color-border);
     border-radius: 8px;
     cursor: pointer;
     display: flex;

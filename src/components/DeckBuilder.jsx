@@ -104,40 +104,65 @@ const DeckBuilder = ({ playerTag }) => {
 
             {/* Builder Grid */}
             <div className="builder-grid">
-                {deckSlots.map((card, index) => (
-                    <motion.div
-                        key={index}
-                        className={`builder-slot ${!card ? 'empty' : ''}`}
-                        onClick={() => handleSlotClick(index)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        {card ? (
-                            <>
-                                <img src={card.imageUri} alt={card.name} className="slot-img" />
-                                <button className="remove-card-btn" onClick={(e) => handleRemoveCard(e, index)}>&times;</button>
-                                <div className="slot-elixir">{card.elixirCost}</div>
-                            </>
-                        ) : (
-                            <div className="empty-slot-content">
-                                <span className="plus-icon">+</span>
-                                <span className="slot-label">Add Card</span>
-                            </div>
-                        )}
-                    </motion.div>
-                ))}
+                {deckSlots.map((card, index) => {
+                    // Determine empty slot styling
+                    let slotStyle = "border-outline-variant/30 bg-surface-container-high text-on-surface-variant";
+                    if (!card) {
+                        if (index === 0) slotStyle = "border-primary/40 bg-primary/10 text-primary";
+                        else if (index === 1) slotStyle = "border-secondary/40 bg-secondary/10 text-secondary";
+                        else if (index === 2) slotStyle = "border-secondary/40 bg-gradient-to-r from-primary/10 to-secondary/30 text-white";
+                        else slotStyle = "border-tertiary/40 bg-tertiary/10 text-tertiary";
+                    }
+
+                    return (
+                        <motion.div
+                            key={index}
+                            className={`builder-slot border-2 border-dashed rounded-xl cursor-pointer flex justify-center items-center relative overflow-hidden transition-all duration-300 hover:scale-105 ${!card ? slotStyle + ' hover:border-white/50' : 'border-transparent bg-surface-container'}`}
+                            onClick={() => handleSlotClick(index)}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            {card ? (
+                                <>
+                                    <img src={card.selectedForm === 'evolved' ? (card.imageUriEvolved || card.imageUri) : (card.isHero ? card.imageUriHero : card.imageUri)} alt={card.name} className="slot-img" />
+                                    {card.selectedForm === 'evolved' && <div className="absolute top-1 left-1 bg-primary text-[8px] font-black uppercase text-on-primary px-1 rounded">Evo</div>}
+                                    <button className="remove-card-btn" onClick={(e) => handleRemoveCard(e, index)}>&times;</button>
+                                    <div className="slot-elixir">{card.elixirCost}</div>
+                                </>
+                            ) : (
+                                <div className="empty-slot-content">
+                                    <span className="plus-icon">+</span>
+                                    <span className="slot-label">Add Card</span>
+                                </div>
+                            )}
+                        </motion.div>
+                    );
+                })}
             </div>
 
             {/* Actions */}
-            <div className="builder-actions">
+            <div className="builder-actions flex flex-col md:flex-row items-center justify-center gap-6 mt-10 mb-6">
                 <button
-                    className="generate-btn glow-effect"
+                    className="flex items-center justify-center gap-3 bg-primary text-on-primary px-10 py-5 rounded-full font-headline font-black text-xl uppercase tracking-widest shadow-[0_0_30px_rgba(251,171,255,0.3)] hover:shadow-[0_0_50px_rgba(251,171,255,0.6)] hover:scale-105 transition-all active:scale-95 w-full md:w-auto overflow-hidden relative group disabled:opacity-75 disabled:hover:scale-100 disabled:pointer-events-none"
                     onClick={handleGenerate}
                     disabled={isGenerating}
                 >
-                    {isGenerating ? 'Completing Deck...' : 'Complete My Deck'}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    {isGenerating ? (
+                        <>
+                            <span className="material-symbols-outlined animate-spin text-2xl">autorenew</span>
+                            <span>Forging Destiny...</span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
+                            <span>Complete My Deck</span>
+                        </>
+                    )}
                 </button>
-                <button className="text-btn reset-btn" onClick={handleReset}>Reset Builder</button>
+                <button className="text-on-surface-variant font-bold hover:text-primary transition-colors hover:underline tracking-widest uppercase text-sm" onClick={handleReset}>
+                    Reset Builder
+                </button>
             </div>
 
             {/* Result Area */}
@@ -148,7 +173,6 @@ const DeckBuilder = ({ playerTag }) => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <h3>AI Completed Deck</h3>
                     <DeckDisplay deckData={generatedResult} />
                 </motion.div>
             )}
@@ -159,6 +183,7 @@ const DeckBuilder = ({ playerTag }) => {
                 onClose={() => setIsPickerOpen(false)}
                 onSelectCard={handleSelectCard}
                 existingDeckIds={deckSlots.filter(c => c).map(c => c.id)}
+                activeSlotIndex={activeSlotIndex}
             />
         </div>
     );

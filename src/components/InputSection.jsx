@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import './InputSection.css';
 
-const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton = true }) => {
-
+const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTab, setActiveTab }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (tag.trim() && showButton) {
@@ -12,40 +9,81 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton = true })
     };
 
     return (
-        <motion.div
-            className="input-section glass-panel"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-        >
-            <form onSubmit={handleSubmit} className="input-form">
-                <label htmlFor="playerTag" className="sr-only">Player Tag</label>
-                <div className="input-wrapper">
-                    <input
-                        type="text"
-                        id="playerTag"
-                        placeholder="#J08CVRJ00"
-                        value={tag}
-                        onChange={(e) => setTag(e.target.value)}
-                        className="player-input"
-                        disabled={isLoading}
-                    />
+        <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden px-6 pt-24 pb-16">
+            {/* Background Atmosphere */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
+                <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary/5 blur-[120px] rounded-full"></div>
+            </div>
+
+            <div className="layout-container flex flex-col items-center text-center relative z-10 gap-8">
+                {/* Hero Title */}
+                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter text-white font-headline">
+                    FORGE YOUR <br />
+                    <span className="text-primary italic">ULTIMATE</span> <br />
+                    DESTINY.
+                </h1>
+
+                <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed px-4">
+                    The Elixir Forge is open. Connect your account to analyze your playstyle and generate a data-backed deck designed for total arena domination.
+                </p>
+
+                {/* Tactical Input Field */}
+                <div className="w-full max-w-lg mx-auto px-4 flex flex-col items-center gap-4">
+                    <form onSubmit={handleSubmit} className="w-full">
+                        <div className="relative flex items-center p-2 h-[64px] rounded-2xl bg-surface-container-lowest border border-outline-variant/30 focus-within:border-primary transition-all duration-300">
+                            <span className="material-symbols-outlined text-outline ml-3">tag</span>
+                            <input
+                                className="bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface w-full font-headline font-bold uppercase tracking-wider placeholder:text-outline/50 px-3 py-3 text-sm"
+                                placeholder="ENTER PLAYER TAG (#J08CVRJ00)"
+                                type="text"
+                                value={tag}
+                                onChange={(e) => {
+                                    let val = e.target.value.toUpperCase().replace(/#/g, '');
+                                    setTag(val);
+                                }}
+                            />
+                            {showButton && (
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="bg-primary text-on-primary px-5 py-3 rounded-xl font-headline font-black uppercase text-xs tracking-tighter hover:bg-primary-container transition-colors flex items-center gap-2 whitespace-nowrap disabled:opacity-50 shrink-0"
+                                >
+                                    {isLoading ? 'Forging...' : 'Generate'}
+                                    <span className="material-symbols-outlined text-sm">bolt</span>
+                                </button>
+                            )}
+                        </div>
+                    </form>
+
+                    {/* Tabs / Mode Selector */}
+                    <div className="flex bg-surface-container-high p-1 rounded-full border border-outline-variant/20 shadow-lg">
+                        <button
+                            className={`font-headline font-bold text-[10px] uppercase tracking-widest px-8 py-2.5 rounded-full transition-all duration-300 ${
+                                activeTab === 'quick'
+                                    ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
+                                    : 'text-on-surface-variant hover:text-primary'
+                            }`}
+                            onClick={() => setActiveTab('quick')}
+                        >
+                            Quick Generate
+                        </button>
+                        <button
+                            className={`font-headline font-bold text-[10px] uppercase tracking-widest px-8 py-2.5 rounded-full transition-all duration-300 ${
+                                activeTab === 'builder'
+                                    ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
+                                    : 'text-on-surface-variant hover:text-primary'
+                            }`}
+                            onClick={() => setActiveTab('builder')}
+                        >
+                            Advanced Builder
+                        </button>
+                    </div>
+
+                    <p className="text-[10px] text-outline tracking-widest uppercase text-center">Privacy focused. No password required.</p>
                 </div>
-                {showButton && (
-                    <button
-                        type="submit"
-                        className="generate-btn"
-                        disabled={!tag || isLoading}
-                    >
-                        {isLoading ? (
-                            <span className="loader"></span>
-                        ) : (
-                            'Generate Deck'
-                        )}
-                    </button>
-                )}
-            </form>
-        </motion.div>
+            </div>
+        </section>
     );
 };
 
