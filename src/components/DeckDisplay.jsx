@@ -97,7 +97,7 @@ const DeckDisplay = ({ deckData }) => {
                 {/* Deck Grid */}
                 <div className="lg:col-span-8">
                     <motion.div
-                        className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+                        className="grid grid-cols-4 sm:grid-cols-4 gap-2 sm:gap-4"
                         variants={container}
                         initial="hidden"
                         animate="show"
@@ -124,20 +124,20 @@ const DeckDisplay = ({ deckData }) => {
                                         onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=Card'; }}
                                     />
                                     {/* Gradient overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
 
                                     {/* Level badge */}
-                                    <div className="absolute top-2 right-2 bg-secondary text-on-secondary px-2 py-0.5 rounded text-[10px] font-black tracking-tighter">
+                                    <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-secondary text-on-secondary px-1.5 py-0.5 rounded text-[8px] sm:text-[10px] font-black tracking-tighter">
                                         LVL {card.level || 11}
                                     </div>
 
                                     {/* Card info */}
-                                    <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                                        <div>
-                                            <p className={`text-[10px] ${roleColor} font-bold uppercase tracking-widest`}>{role}</p>
-                                            <p className="font-bold text-sm text-white">{card.name}</p>
+                                    <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-3 sm:left-3 sm:right-3 flex justify-between items-end">
+                                        <div className="min-w-0 flex-1">
+                                            <p className={`text-[7px] sm:text-[10px] ${roleColor} font-bold uppercase tracking-widest truncate`}>{role}</p>
+                                            <p className="font-bold text-[9px] sm:text-sm text-white truncate leading-tight">{card.name}</p>
                                         </div>
-                                        <div className="w-6 h-6 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container text-[10px] font-black">
+                                        <div className="w-4 h-4 sm:w-6 sm:h-6 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container text-[8px] sm:text-[10px] font-black shrink-0 ml-1">
                                             {card.elixirCost}
                                         </div>
                                     </div>

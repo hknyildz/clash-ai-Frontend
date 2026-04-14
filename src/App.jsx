@@ -61,6 +61,7 @@ function App() {
     try {
       const data = await fetchFreeDeck(playerTag);
       setDeckData(data);
+      setTag('');
       setTimeout(() => {
         deckResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
