@@ -1,53 +1,55 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const faqs = [
-  { question: "Is ClashDeckster free to use?", answer: "Yes, our core AI deck building feature is 100% free to use for the entire Clash Royale community." },
-  { question: "How often is the meta updated?", answer: "Because our AI evaluates the live card stats and synergies dynamically, the deck suggestions automatically adapt to the latest balance changes and meta shifts." },
-  { question: "Can I use this tool for Clan Wars?", answer: "Absolutely! You can choose the 'Advanced Builder' tab to select specific playstyles and fill out your 4 distinct Clan War decks without repeating cards." }
+    { question: "Is ClashDeckster free to use?", answer: "Yes, our core AI deck building feature is 100% free to use for the entire Clash Royale community." },
+    { question: "How often is the meta updated?", answer: "Because our AI evaluates the live card stats and synergies dynamically, the deck suggestions automatically adapt to the latest balance changes and meta shifts." },
+    { question: "Can I use this tool for Clan Wars?", answer: "Absolutely! You can choose the 'Advanced Builder' tab to select specific playstyles and fill out your 4 distinct Clan War decks without repeating cards." },
+    { question: "Do I need to share my password?", answer: "Never. We only use your public player tag to read your card collection via the official Supercell API. No login or password required." },
+    { question: "How does the AI pick my deck?", answer: "Our system uses Large Language Models fine-tuned for Clash Royale. It analyzes your card levels, finds the strongest synergies, and builds a custom deck that maximizes your competitive advantage." }
 ];
 
 const FaqSection = () => {
     const [openIndex, setOpenIndex] = useState(null);
 
-    const toggleOpen = (index) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
-
     return (
-        <section className="faq-section" style={{ marginTop: '2rem', marginBottom: '2rem', width: '100%', maxWidth: '800px', margin: '0 auto' }}>
-            <h2 className="section-title" style={{ marginBottom: '2rem', textAlign: 'center' }}>Frequently Asked Questions</h2>
-            <div className="faq-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left', width: '100%' }}>
-                {faqs.map((faq, index) => (
-                    <div 
-                        key={index} 
-                        className="faq-item glass-panel" 
-                        style={{ padding: '1rem 1.5rem', borderRadius: '12px', cursor: 'pointer', width: '100%', boxSizing: 'border-box' }}
-                        onClick={() => toggleOpen(index)}
-                    >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h4 style={{ color: '#fff', margin: 0, fontSize: '1.1rem' }}>{faq.question}</h4>
-                            <span style={{ color: '#3b82f6', fontSize: '1.5rem', lineHeight: 1 }}>
-                                {openIndex === index ? '−' : '+'}
-                            </span>
+        <section className="py-20">
+            <div className="layout-container-sm">
+                <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter font-headline text-center mb-16">
+                    Frequently Asked <span className="text-primary">Questions</span>
+                </h2>
+                <div className="flex flex-col gap-6">
+                    {faqs.map((faq, index) => (
+                        <div
+                            key={index}
+                            className="glass-panel rounded-3xl cursor-pointer p-8 md:p-10 w-full border border-outline-variant/20 hover:border-primary/30 transition-all"
+                            onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                        >
+                            <div className="flex justify-between items-center gap-4">
+                                <h4 className="text-white font-bold text-lg leading-tight md:text-xl">{faq.question}</h4>
+                                <span className="text-primary text-3xl font-bold shrink-0 w-8 text-center flex items-center justify-center">
+                                    {openIndex === index ? '−' : '+'}
+                                </span>
+                            </div>
+                            <AnimatePresence>
+                                {openIndex === index && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <p className="text-on-surface-variant text-base md:text-lg leading-loose mt-8 pb-2">{faq.answer}</p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
-                        <AnimatePresence>
-                            {openIndex === index && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                                    animate={{ height: 'auto', opacity: 1, marginTop: '1rem' }}
-                                    exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <p style={{ color: '#cbd5e1', margin: 0, fontSize: '0.95rem', lineHeight: '1.6' }}>{faq.answer}</p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </section>
-    )
-}
+    );
+};
 
 export default FaqSection;

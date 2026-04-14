@@ -10,8 +10,9 @@ const api = axios.create({
 });
 
 export const fetchFreeDeck = async (tag) => {
-    // Ensure tag starts with #
-    const formattedTag = tag.startsWith('#') ? tag.replace('#', '%23') : tag;
+    // Ensure tag starts with %23 for URL
+    const cleanTag = tag.replace(/#/g, '');
+    const formattedTag = `%23${cleanTag}`;
     try {
         const response = await api.get(`/freeDeck/${formattedTag}`);
         return response.data;
@@ -34,9 +35,13 @@ export const fetchAllCards = async () => {
 export const completeDeck = async (tag, partialDeckIds, strategy) => {
     // tag is optional (used for collection filtering), partialDeckIds is list of IDs
     // No URL encoding needed for JSON body
+    // Ensure player tag for JSON payload includes #
+    const cleanTag = tag ? tag.replace(/#/g, '') : '';
+    const formattedTag = cleanTag ? `#${cleanTag}` : null;
+    
     try {
         const response = await api.post('/decks/complete', {
-            playerTag: tag,
+            playerTag: formattedTag,
             partialDeck: partialDeckIds,
             playStyle: strategy
         });
