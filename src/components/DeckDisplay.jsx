@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 const DeckDisplay = ({ deckData }) => {
     if (!deckData || !deckData.deck) return null;
 
-    const { deck, averageElixir, tacticMessage, strategy } = deckData;
+    const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
 
     // Sort: Evolved first, then Hero, then by elixir
     const sortedDeck = [...deck].sort((a, b) => {
@@ -16,9 +16,9 @@ const DeckDisplay = ({ deckData }) => {
         return (a.elixirCost || 0) - (b.elixirCost || 0);
     });
 
-    // Build copy-to-game link
-    const getDeckIds = () => deck.map(c => c.id).join(';');
-    const generatedLink = `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${getDeckIds()}&l=Royals`;
+    // Use backend deep link (includes &tt=) or fallback to generating one
+    const getDeckIds = () => sortedDeck.map(c => c.id).join(';');
+    const generatedLink = backendDeepLink || `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${getDeckIds()}&l=Royals`;
 
     // Decide elixir speed label
     const speedLabel = averageElixir <= 3.0 ? 'Very Fast' : averageElixir <= 3.5 ? 'Fast' : averageElixir <= 4.0 ? 'Medium' : 'Heavy';
@@ -183,6 +183,23 @@ const DeckDisplay = ({ deckData }) => {
                             </p>
                         </div>
                     </div>
+
+                    {/* Tower Troop */}
+                    {towerTroopName && (
+                        <div className="flex items-center gap-4 mt-2 pt-4 border-t border-outline-variant/20">
+                            {towerTroopImageUrl && (
+                                <img
+                                    src={towerTroopImageUrl}
+                                    alt={towerTroopName}
+                                    className="w-12 h-12 rounded-lg border border-outline-variant/30 object-cover bg-surface-container-highest"
+                                />
+                            )}
+                            <div>
+                                <p className="text-[10px] uppercase tracking-widest font-bold text-tertiary">Tower Troop</p>
+                                <p className="text-sm font-bold text-on-surface">{towerTroopName}</p>
+                            </div>
+                        </div>
+                    )}
                 </aside>
             </div>
         </div>
