@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
 import DeckBuilder from './components/DeckBuilder';
+import PlayerStats from './components/PlayerStats';
 import HowItWorks from './components/HowItWorks';
 import PromoSection from './components/PromoSection';
 import FaqSection from './components/FaqSection';
@@ -60,14 +61,16 @@ function App() {
 
     try {
       const data = await fetchFreeDeck(playerTag);
+      if (data && data.valid === false) {
+        throw new Error(data.tacticMessage || "Player not found. Please check the tag.");
+      }
       setDeckData(data);
-      setTag('');
       setTimeout(() => {
         deckResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     } catch (err) {
       console.error(err);
-      setError("Failed to generate deck. Please check the player tag and try again.");
+      setError(err.message || "Failed to generate deck. Please check the player tag and try again.");
     } finally {
       setLoading(false);
     }
@@ -124,7 +127,7 @@ function App() {
 
             {deckData && !loading && (
               <div ref={deckResultRef}>
-                <DeckDisplay deckData={deckData} />
+                <DeckDisplay deckData={deckData} onViewStats={() => setActiveTab('stats')} />
               </div>
             )}
           </>
@@ -136,6 +139,11 @@ function App() {
             <DeckBuilder playerTag={tag} />
           </div>
         )}
+
+        {/* Player Stats Tab */}
+        <div style={{ display: activeTab === 'stats' ? 'block' : 'none' }}>
+          <PlayerStats playerTag={tag} />
+        </div>
 
         {/* SEO Content Sections (show when no deck generated) */}
         {!deckData && activeTab === 'quick' && (

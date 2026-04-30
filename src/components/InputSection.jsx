@@ -87,7 +87,7 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                     <div className="flex bg-surface-container-high p-1 rounded-full border border-outline-variant/20 shadow-lg">
                         <button
                             type="button"
-                            className={`font-headline font-bold text-[10px] uppercase tracking-widest px-4 sm:px-8 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'quick'
+                            className={`font-headline font-bold text-[10px] uppercase tracking-widest px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'quick'
                                     ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
                                     : 'text-on-surface-variant hover:text-primary'
                                 }`}
@@ -97,13 +97,23 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                         </button>
                         <button
                             type="button"
-                            className={`font-headline font-bold text-[10px] uppercase tracking-widest px-4 sm:px-8 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'builder'
+                            className={`font-headline font-bold text-[10px] uppercase tracking-widest px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'builder'
                                     ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
                                     : 'text-on-surface-variant hover:text-primary'
                                 }`}
                             onClick={() => setActiveTab('builder')}
                         >
                             <span className="hidden min-[400px]:inline">Advanced&nbsp;</span>Builder
+                        </button>
+                        <button
+                            type="button"
+                            className={`font-headline font-bold text-[10px] uppercase tracking-widest px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'stats'
+                                    ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
+                                    : 'text-on-surface-variant hover:text-primary'
+                                }`}
+                            onClick={() => setActiveTab('stats')}
+                        >
+                            <span className="hidden min-[400px]:inline">Player&nbsp;</span>Stats
                         </button>
                     </div>
                 </div>

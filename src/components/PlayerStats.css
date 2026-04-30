@@ -1,0 +1,312 @@
+/* ========== PLAYER STATS ========== */
+
+.stats-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Player Header */
+.player-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.player-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--color-on-primary);
+    flex-shrink: 0;
+    box-shadow: 0 0 24px rgba(251, 171, 255, 0.3);
+}
+
+.player-info h2 {
+    font-size: 1.75rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+.player-tag-display {
+    font-size: 0.75rem;
+    color: var(--color-outline);
+    font-family: var(--font-headline);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Stat Cards Grid */
+.stat-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .stat-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .stat-cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.stat-card {
+    background: rgba(23, 31, 51, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(82, 66, 81, 0.3);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+}
+
+.stat-card:hover {
+    border-color: rgba(251, 171, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.stat-card .stat-card-glow {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    filter: blur(32px);
+    opacity: 0.15;
+}
+
+.stat-card-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: var(--color-on-surface-variant);
+}
+
+.stat-card-value {
+    font-size: 1.75rem;
+    font-weight: 900;
+    font-family: var(--font-headline);
+    line-height: 1;
+}
+
+.stat-card-sub {
+    font-size: 0.6875rem;
+    color: var(--color-outline);
+}
+
+/* Win Rate Ring */
+.winrate-ring-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.winrate-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.winrate-ring svg {
+    transform: rotate(-90deg);
+}
+
+.winrate-ring-bg {
+    fill: none;
+    stroke: var(--color-surface-container-highest);
+    stroke-width: 10;
+}
+
+.winrate-ring-fill {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-out;
+}
+
+.winrate-ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.winrate-percent {
+    font-size: 2rem;
+    font-weight: 900;
+    font-family: var(--font-headline);
+    line-height: 1;
+}
+
+.winrate-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: var(--color-on-surface-variant);
+    margin-top: 0.25rem;
+}
+
+/* Favourite Card */
+.fav-card-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.fav-card-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 0.75rem;
+    object-fit: cover;
+    border: 2px solid var(--color-secondary);
+    box-shadow: 0 0 16px rgba(255, 198, 64, 0.3);
+}
+
+.fav-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+/* Mastery Cards */
+.mastery-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .mastery-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.5rem;
+    }
+}
+
+.mastery-card {
+    position: relative;
+    aspect-ratio: 285/420;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 2px solid rgba(82, 66, 81, 0.3);
+    transition: transform 0.2s, border-color 0.3s;
+    cursor: default;
+}
+
+.mastery-card:hover {
+    transform: scale(1.08);
+    border-color: var(--color-secondary);
+}
+
+.mastery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.mastery-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(11, 19, 38, 0.85), transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0.40rem;
+}
+
+.mastery-card-name {
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.mastery-card-level {
+    font-size: 0.5rem;
+    font-weight: 900;
+    color: var(--color-secondary);
+}
+
+/* Years Badge */
+.years-badge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.years-badge-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* Clan Card */
+.clan-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.clan-badge {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-surface-container-highest);
+    flex-shrink: 0;
+}
+
+/* Streak indicator */
+.streak-positive {
+    color: #4ade80;
+}
+
+.streak-negative {
+    color: var(--color-error);
+}
+
+.streak-neutral {
+    color: var(--color-outline);
+}
+
+/* Loading state */
+.stats-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}

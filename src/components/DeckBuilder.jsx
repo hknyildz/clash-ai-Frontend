@@ -59,6 +59,9 @@ const DeckBuilder = ({ playerTag }) => {
 
             // Call API
             const result = await completeDeck(playerTag, partialIds, selectedPlaystyle);
+            if (result && result.valid === false) {
+                throw new Error(result.tacticMessage || "Player not found. Please check the tag.");
+            }
             setGeneratedResult(result);
             // Auto-scroll to the completed deck result
             setTimeout(() => {
@@ -70,7 +73,7 @@ const DeckBuilder = ({ playerTag }) => {
             // Let's show DeckDisplay for the "Final Result" look.
         } catch (error) {
             console.error(error);
-            alert("Failed to complete deck. Please try again.");
+            alert(error.message || "Failed to complete deck. Please try again.");
         } finally {
             setIsGenerating(false);
         }

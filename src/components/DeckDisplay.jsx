@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-const DeckDisplay = ({ deckData }) => {
+const DeckDisplay = ({ deckData, onViewStats }) => {
     if (!deckData || !deckData.deck) return null;
 
     const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
@@ -114,7 +114,7 @@ const DeckDisplay = ({ deckData }) => {
                             return (
                                 <motion.div
                                     key={card.id || index}
-                                    className="relative group aspect-[3/4] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer"
+                                    className="relative group aspect-[285/420] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer"
                                     variants={item}
                                 >
                                     <img
@@ -148,6 +148,20 @@ const DeckDisplay = ({ deckData }) => {
                             );
                         })}
                     </motion.div>
+
+                    {/* View Stats CTA — Under the deck, left of the sidebar */}
+                    {onViewStats && (
+                        <div className="mt-8 lg:mt-12">
+                            <button
+                                onClick={onViewStats}
+                                className="w-full flex items-center justify-center gap-3 py-5 px-6 rounded-xl bg-gradient-to-r from-primary/10 via-surface-container-high to-secondary/10 border border-outline-variant/30 hover:border-primary/50 text-on-surface hover:text-primary transition-all group cursor-pointer shadow-lg hover:shadow-[0_0_30px_rgba(251,171,255,0.15)]"
+                            >
+                                <span className="material-symbols-outlined text-2xl text-primary group-hover:scale-110 transition-transform" style={{ fontVariationSettings: "'FILL' 1" }}>query_stats</span>
+                                <span className="text-sm font-headline font-black uppercase tracking-widest">Wanna see your stats?</span>
+                                <span className="material-symbols-outlined text-lg text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Stats Sidebar */}
