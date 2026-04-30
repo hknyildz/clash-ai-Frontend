@@ -51,3 +51,15 @@ export const completeDeck = async (tag, partialDeckIds, strategy) => {
         throw error;
     }
 };
+
+export const fetchPlayerStats = async (tag) => {
+    const cleanTag = tag.replace(/#/g, '');
+    const formattedTag = `%23${cleanTag}`;
+    try {
+        const response = await api.get(`/player/${formattedTag}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching player stats:", error);
+        throw error;
+    }
+};
