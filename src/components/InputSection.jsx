@@ -18,6 +18,11 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
             </div>
 
             <div className="layout-container flex flex-col items-center text-center relative z-10 gap-8">
+                {/* Mobile Branding */}
+                <div className="sm:hidden -mt-12 text-xl font-black text-primary tracking-tighter uppercase font-headline opacity-80">
+                    ClashDeckster
+                </div>
+
                 {/* Hero Title */}
                 <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter text-white font-headline">
                     FORGE YOUR <br />
@@ -89,8 +94,8 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                         <button
                             type="button"
                             className={`font-headline font-bold text-[10px] uppercase tracking-widest px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'quick'
-                                    ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
-                                    : 'text-on-surface-variant hover:text-primary'
+                                ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
+                                : 'text-on-surface-variant hover:text-primary'
                                 }`}
                             onClick={() => setActiveTab('quick')}
                         >
@@ -99,8 +104,8 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                         <button
                             type="button"
                             className={`font-headline font-bold text-[10px] uppercase tracking-widest px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'builder'
-                                    ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
-                                    : 'text-on-surface-variant hover:text-primary'
+                                ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
+                                : 'text-on-surface-variant hover:text-primary'
                                 }`}
                             onClick={() => setActiveTab('builder')}
                         >

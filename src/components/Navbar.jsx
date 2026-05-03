@@ -7,11 +7,11 @@ const Navbar = ({ activeTab, setActiveTab }) => {
                     onClick={() => setActiveTab?.('quick')}
                 >
                     <img src="/favicon.png" alt="ClashDeckster Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-[0_0_8px_rgba(251,171,255,0.5)]" />
-                    <div className="text-2xl font-black text-primary tracking-tighter uppercase font-headline">
+                    <div className="hidden sm:block text-xl md:text-2xl font-black text-primary tracking-tighter uppercase font-headline">
                         ClashDeckster
                     </div>
                 </div>
-                <div className="flex items-center gap-1 sm:gap-2">
+                <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                     <button
                         onClick={() => setActiveTab?.('stats')}
                         className={`font-headline font-bold text-[10px] sm:text-xs uppercase tracking-wider px-3 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all duration-300 ${

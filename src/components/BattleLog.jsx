@@ -90,7 +90,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
         const sortedCards = [...(cards || [])];
 
         return (
-            <div className="flex items-center gap-1 mt-2">
+            <div className="hidden sm:flex items-center gap-1 mt-2">
                 {sortedCards.map((card, i) => {
                     const isEvo = card.evolutionLevel === 1;
                     const isHero = card.evolutionLevel === 2;
@@ -122,7 +122,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                 <div className={`flex flex-col ${isOpponent ? 'items-end' : 'items-start'}`}>
                     <span className={`font-headline font-bold text-sm text-white group-hover:text-primary transition-colors flex items-center gap-1 leading-tight`}>
                         {isOpponent && <span className="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100 transition-opacity text-primary">open_in_new</span>}
-                        {player.name}
+                        <span className="truncate max-w-[70px] sm:max-w-[140px]">{player.name}</span>
                         {!isOpponent && <span className="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100 transition-opacity text-primary">open_in_new</span>}
                     </span>
                     <span className="text-[10px] text-outline font-mono">
@@ -193,21 +193,21 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                     >
                         <div className="battle-detail-grid">
                             {/* Team Deck */}
-                            <div className="battle-detail-side">
+                            <div className="battle-detail-side border-r border-white/10 pr-2 sm:pr-4">
                                 <div className="battle-detail-side-header flex justify-between items-center w-full">
-                                    <div className="flex items-center gap-2">
-                                        <span className="battle-detail-label">{team.name}'s Deck</span>
-                                        <span className="text-[10px] text-tertiary font-bold flex items-center gap-0.5 bg-tertiary/10 px-1.5 py-0.5 rounded border border-tertiary/20">
+                                    <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                                        <span className="battle-detail-label hidden sm:block">Team Deck</span>
+                                        <span className="text-[10px] text-tertiary font-bold flex items-center gap-0.5 bg-tertiary/10 px-1.5 py-0.5 rounded border border-tertiary/20 shrink-0">
                                             <span className="material-symbols-outlined font-variation-fill" style={{ fontSize: '12px' }}>water_drop</span>
                                             {getAvgElixir(team.cards)}
                                         </span>
                                     </div>
                                     <button 
                                         onClick={(e) => handleCopyDeck(team.cards, e)}
-                                        className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary"
+                                        className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
                                     >
                                         <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
-                                        Copy
+                                        <span className="hidden sm:inline">Copy</span>
                                     </button>
                                 </div>
                                 {renderDeck(team.cards)}
@@ -236,21 +236,21 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                             </div>
 
                             {/* Opponent Deck */}
-                            <div className="battle-detail-side">
+                            <div className="battle-detail-side pl-2 sm:pl-4">
                                 <div className="battle-detail-side-header flex justify-between items-center w-full">
-                                    <div className="flex items-center gap-2">
-                                        <span className="battle-detail-label">{opponent.name}'s Deck</span>
-                                        <span className="text-[10px] text-tertiary font-bold flex items-center gap-0.5 bg-tertiary/10 px-1.5 py-0.5 rounded border border-tertiary/20">
+                                    <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                                        <span className="battle-detail-label hidden sm:block">Opponent Deck</span>
+                                        <span className="text-[10px] text-tertiary font-bold flex items-center gap-0.5 bg-tertiary/10 px-1.5 py-0.5 rounded border border-tertiary/20 shrink-0">
                                             <span className="material-symbols-outlined font-variation-fill" style={{ fontSize: '12px' }}>water_drop</span>
                                             {getAvgElixir(opponent.cards)}
                                         </span>
                                     </div>
                                     <button 
                                         onClick={(e) => handleCopyDeck(opponent.cards, e)}
-                                        className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-3 py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary"
+                                        className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
                                     >
                                         <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
-                                        Copy
+                                        <span className="hidden sm:inline">Copy</span>
                                     </button>
                                 </div>
                                 {renderDeck(opponent.cards)}

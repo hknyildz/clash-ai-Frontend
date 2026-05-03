@@ -43,6 +43,22 @@ function App() {
   const showAds = import.meta.env.VITE_SHOW_ADS === 'true';
 
   useEffect(() => {
+    const saved = localStorage.getItem('deckData');
+    if (saved) {
+      try {
+        setDeckData(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved deck data", e);
+      }
+    }
+  }, []);
+
+  // Scroll to top when tab changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
+
+  useEffect(() => {
     if (window.gtag && GA_MEASUREMENT_ID) {
       window.gtag('config', GA_MEASUREMENT_ID, {
         page_path: window.location.pathname,
