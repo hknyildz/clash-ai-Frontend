@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { fetchPlayerStats, fetchAllCards } from '../services/api';
 import BattleLog from './BattleLog';
 import './PlayerStats.css';
@@ -70,7 +71,8 @@ const StatCard = ({ label, value, sub, color = 'var(--color-primary)', glowColor
     </motion.div>
 );
 
-const PlayerStats = ({ playerTag, setPlayerTag, isActive, onNavigateToClan, onNavigateToPlayer }) => {
+const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer }) => {
+    const navigate = useNavigate();
     const [localTag, setLocalTag] = useState(playerTag || '');
     const [statsData, setStatsData] = useState(null);
     const [allCards, setAllCards] = useState([]);
@@ -112,8 +114,9 @@ const PlayerStats = ({ playerTag, setPlayerTag, isActive, onNavigateToClan, onNa
 
     const handleSearch = (e) => {
         e.preventDefault();
-        if (localTag.trim()) {
-            setPlayerTag?.(localTag.trim());
+        const trimmed = localTag.trim().toUpperCase().replace(/#/g, '');
+        if (trimmed) {
+            navigate(`/player/${trimmed}`);
         }
     };
 
@@ -151,8 +154,6 @@ const PlayerStats = ({ playerTag, setPlayerTag, isActive, onNavigateToClan, onNa
             </div>
         );
     }
-
-
 
     if (loading) {
         return (

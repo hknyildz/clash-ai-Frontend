@@ -1,4 +1,8 @@
-const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTab, setActiveTab }) => {
+import { useNavigate } from 'react-router-dom';
+
+const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTab }) => {
+    const navigate = useNavigate();
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (tag.trim() && showButton) {
@@ -97,7 +101,7 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                                 ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
                                 : 'text-on-surface-variant hover:text-primary'
                                 }`}
-                            onClick={() => setActiveTab('quick')}
+                            onClick={() => navigate('/')}
                         >
                             <span className="hidden min-[400px]:inline">Quick&nbsp;</span>Generate
                         </button>
@@ -107,7 +111,7 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                                 ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
                                 : 'text-on-surface-variant hover:text-primary'
                                 }`}
-                            onClick={() => setActiveTab('builder')}
+                            onClick={() => navigate('/builder')}
                         >
                             <span className="hidden min-[400px]:inline">Advanced&nbsp;</span>Builder
                         </button>
@@ -119,3 +123,4 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
 };
 
 export default InputSection;
+
