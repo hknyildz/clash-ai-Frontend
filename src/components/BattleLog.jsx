@@ -128,13 +128,15 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                     <span className="text-[10px] text-outline font-mono">
                         {player.tag}
                     </span>
-                    {player.clan && (
-                        <span className="text-[9px] text-secondary font-bold mt-0.5 flex items-center gap-0.5">
-                            <span className="material-symbols-outlined text-[10px] font-variation-fill">shield</span>
-                            {player.clan.name}
-                        </span>
-                    )}
                 </div>
+            </div>
+            <div className={`h-4 w-full flex ${isOpponent ? 'justify-end pr-1' : 'justify-start pl-1'} -mt-1`}>
+                {player.clan && (
+                    <span className={`text-[9px] text-secondary font-bold flex items-center gap-0.5 max-w-[120px] mt-6 ${isOpponent ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
+                        <span className="material-symbols-outlined text-[10px] font-variation-fill shrink-0">shield</span>
+                        <span className="truncate">{player.clan.name}</span>
+                    </span>
+                )}
             </div>
             {renderMiniDeck(player.cards)}
         </div>
@@ -202,7 +204,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                             {getAvgElixir(team.cards)}
                                         </span>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={(e) => handleCopyDeck(team.cards, e)}
                                         className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
                                     >
@@ -245,7 +247,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                             {getAvgElixir(opponent.cards)}
                                         </span>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={(e) => handleCopyDeck(opponent.cards, e)}
                                         className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
                                     >

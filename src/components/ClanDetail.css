@@ -217,6 +217,9 @@
 .clan-member-info {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
 }
 
 .clan-member-name {
