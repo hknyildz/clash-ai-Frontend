@@ -71,6 +71,11 @@ function App() {
     setError(null);
     setDeckData(null);
 
+    // Scroll to loading indicator
+    setTimeout(() => {
+      deckResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
+
     if (window.gtag) {
       window.gtag('event', 'generate_clicked', {
         'event_category': 'Deck',

@@ -59,7 +59,7 @@ const DeckDisplay = ({ deckData, onViewStats }) => {
         <div className="layout-container-lg py-8 mt-6">
             {/* Header */}
             <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div>
+                <div className="hidden sm:block">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="bg-secondary/20 text-secondary text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full border border-secondary/30">
                             Legendary Blueprint

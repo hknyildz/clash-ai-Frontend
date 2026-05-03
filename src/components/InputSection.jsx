@@ -30,7 +30,7 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                     DESTINY.
                 </h1>
 
-                <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed px-4">
+                <p className="hidden sm:block text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed px-4">
                     The Elixir Forge is open. Connect your account to analyze your playstyle and generate a data-backed deck designed for total arena domination.
                 </p>
 

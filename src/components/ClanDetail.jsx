@@ -195,7 +195,10 @@ const ClanDetail = ({ clanTag, onBack, onNavigateToPlayer }) => {
                                 </span>
                             </span>
                             <span className="clan-member-meta">
-                                Last seen: {formatLastSeen(member.lastSeen)} · Lvl {member.expLevel}
+                                Last seen: {formatLastSeen(member.lastSeen)}
+                            </span>
+                            <span className="clan-member-meta">
+                                Lvl {member.expLevel}
                             </span>
                         </div>
                         <span className="clan-member-arena">{member.arena?.name}</span>

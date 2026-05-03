@@ -22,7 +22,12 @@ const MASTERY_NAME_OVERRIDES = {
     'Pekka': 'P.E.K.K.A',
     'Blowdart Goblin': 'Dart Goblin',
     'Mini Pekka': 'Mini P.E.K.K.A',
-    'Rage Barbarian': 'Lumberjack'
+    'Rage Barbarian': 'Lumberjack',
+    'Fire Spirits': 'Fire Spirit',
+    'Assassin': 'Bandit',
+    'Ghost': 'Royal Ghost',
+    'Skeleton Balloon': 'Skeleton Barrel',
+    'Angry Barbarians': 'Elite Barbarians'
 };
 
 const WinRateRing = ({ winRate }) => {
