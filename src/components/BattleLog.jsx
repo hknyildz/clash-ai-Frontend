@@ -108,22 +108,22 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
     };
 
     const renderPlayerProfile = (player, isOpponent) => (
-        <div className={`flex flex-col gap-1 ${isOpponent ? 'items-end text-right' : 'items-start text-left'}`}>
+        <div className={`flex flex-col gap-1 w-full min-w-0 ${isOpponent ? 'items-end text-right' : 'items-start text-left'}`}>
             <div
-                className={`flex items-center gap-2 group cursor-pointer ${isOpponent ? 'flex-row-reverse' : 'flex-row'}`}
+                className={`flex items-center gap-1.5 sm:gap-2 group cursor-pointer w-full min-w-0 ${isOpponent ? 'flex-row-reverse justify-start' : 'flex-row justify-start'}`}
                 onClick={(e) => {
                     e.stopPropagation();
                     onNavigateToPlayer?.(player.tag);
                 }}
             >
-                <div className={`w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-primary/80 to-secondary/80 flex items-center justify-center text-lg font-black text-white shadow-lg group-hover:scale-110 transition-transform border border-white/10 group-hover:border-primary/50`}>
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-full bg-gradient-to-br from-primary/80 to-secondary/80 flex items-center justify-center text-base sm:text-lg font-black text-white shadow-lg group-hover:scale-110 transition-transform border border-white/10 group-hover:border-primary/50`}>
                     {player.name ? player.name.charAt(0).toUpperCase() : '?'}
                 </div>
-                <div className={`flex flex-col ${isOpponent ? 'items-end' : 'items-start'}`}>
-                    <span className={`font-headline font-bold text-sm text-white group-hover:text-primary transition-colors flex items-center gap-1 leading-tight`}>
-                        {isOpponent && <span className="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100 transition-opacity text-primary">open_in_new</span>}
-                        <span className="truncate max-w-[70px] sm:max-w-[140px]">{player.name}</span>
-                        {!isOpponent && <span className="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100 transition-opacity text-primary">open_in_new</span>}
+                <div className={`flex flex-col min-w-0 ${isOpponent ? 'items-end' : 'items-start'}`}>
+                    <span className={`font-headline font-bold text-sm text-white group-hover:text-primary transition-colors flex items-center gap-1 leading-tight w-full min-w-0 ${isOpponent ? 'justify-end' : 'justify-start'}`}>
+                        {isOpponent && <span className="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100 transition-opacity text-primary shrink-0 hidden sm:block">open_in_new</span>}
+                        <span className="truncate">{player.name}</span>
+                        {!isOpponent && <span className="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100 transition-opacity text-primary shrink-0 hidden sm:block">open_in_new</span>}
                     </span>
                     <span className="text-[10px] text-outline font-mono">
                         {player.tag}
@@ -132,7 +132,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
             </div>
             <div className={`h-4 w-full flex ${isOpponent ? 'justify-end pr-1' : 'justify-start pl-1'} -mt-1`}>
                 {player.clan && (
-                    <span className={`text-[9px] text-secondary font-bold flex items-center gap-0.5 max-w-[120px] mt-6 ${isOpponent ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
+                    <span className={`text-[9px] text-secondary font-bold flex items-center gap-0.5 min-w-0 mt-6 sm:mt-3 ${isOpponent ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
                         <span className="material-symbols-outlined text-[10px] font-variation-fill shrink-0">shield</span>
                         <span className="truncate">{player.clan.name}</span>
                     </span>
