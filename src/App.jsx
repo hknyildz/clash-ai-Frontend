@@ -5,6 +5,8 @@ import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
 import DeckBuilder from './components/DeckBuilder';
 import PlayerStats from './components/PlayerStats';
+import ClanPage from './components/ClanPage';
+import ClanDetail from './components/ClanDetail';
 import HowItWorks from './components/HowItWorks';
 import PromoSection from './components/PromoSection';
 import FaqSection from './components/FaqSection';
@@ -18,7 +20,8 @@ const GA_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
 
 function App() {
   const [tag, setTag] = useState('');
-  const [activeTab, setActiveTab] = useState('quick'); // 'quick' or 'builder'
+  const [clanTag, setClanTag] = useState(''); // Added for clan navigation
+  const [activeTab, setActiveTab] = useState('quick'); // 'quick', 'builder', 'stats', 'clans', 'clan-detail'
   const [deckData, setDeckData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -38,6 +41,22 @@ function App() {
 
   // Feature flag for ads
   const showAds = import.meta.env.VITE_SHOW_ADS === 'true';
+
+  useEffect(() => {
+    const saved = localStorage.getItem('deckData');
+    if (saved) {
+      try {
+        setDeckData(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved deck data", e);
+      }
+    }
+  }, []);
+
+  // Scroll to top when tab changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
 
   useEffect(() => {
     if (window.gtag && GA_MEASUREMENT_ID) {
@@ -76,9 +95,24 @@ function App() {
     }
   };
 
+  // Navigation Handlers
+  const handleNavigateToPlayer = (newTag) => {
+    let clean = newTag.toUpperCase().replace(/#/g, '');
+    setTag(clean);
+    setActiveTab('stats');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavigateToClan = (newClanTag) => {
+    let clean = newClanTag.toUpperCase().replace(/#/g, '');
+    setClanTag(`#${clean}`);
+    setActiveTab('clan-detail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-background text-on-background">
-      <Navbar />
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="pt-20">
         {/* Hero Section with Input and Tabs */}
@@ -142,7 +176,27 @@ function App() {
 
         {/* Player Stats Tab */}
         <div style={{ display: activeTab === 'stats' ? 'block' : 'none' }}>
-          <PlayerStats playerTag={tag} />
+          <PlayerStats 
+            playerTag={tag}
+            setPlayerTag={setTag}
+            isActive={activeTab === 'stats'}
+            onNavigateToClan={handleNavigateToClan}
+            onNavigateToPlayer={handleNavigateToPlayer}
+          />
+        </div>
+
+        {/* Clans Search Tab */}
+        <div style={{ display: activeTab === 'clans' ? 'block' : 'none' }}>
+          <ClanPage onSelectClan={handleNavigateToClan} />
+        </div>
+
+        {/* Clan Detail Tab */}
+        <div style={{ display: activeTab === 'clan-detail' ? 'block' : 'none' }}>
+          <ClanDetail 
+            clanTag={clanTag} 
+            onBack={() => setActiveTab('clans')}
+            onNavigateToPlayer={handleNavigateToPlayer}
+          />
         </div>
 
         {/* SEO Content Sections (show when no deck generated) */}

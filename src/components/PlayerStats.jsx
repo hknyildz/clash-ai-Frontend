@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fetchPlayerStats, fetchAllCards } from '../services/api';
+import BattleLog from './BattleLog';
 import './PlayerStats.css';
 
 // Parse "MasteryBabyDragon" → "Baby Dragon"
@@ -18,7 +19,10 @@ const MASTERY_NAME_OVERRIDES = {
     'Elite Archer': 'Magic Archer',
     'Wallbreakers': 'Wall Breakers',
     'Log': 'The Log',
-    'Pekka': 'P.E.K.K.A'
+    'Pekka': 'P.E.K.K.A',
+    'Blowdart Goblin': 'Dart Goblin',
+    'Mini Pekka': 'Mini P.E.K.K.A',
+    'Rage Barbarian': 'Lumberjack'
 };
 
 const WinRateRing = ({ winRate }) => {
@@ -61,12 +65,12 @@ const StatCard = ({ label, value, sub, color = 'var(--color-primary)', glowColor
     </motion.div>
 );
 
-const PlayerStats = ({ playerTag }) => {
+const PlayerStats = ({ playerTag, setPlayerTag, isActive, onNavigateToClan, onNavigateToPlayer }) => {
+    const [localTag, setLocalTag] = useState(playerTag || '');
     const [statsData, setStatsData] = useState(null);
     const [allCards, setAllCards] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [hasFetched, setHasFetched] = useState(false);
 
     const fetchStats = async () => {
         if (!playerTag || !playerTag.trim()) return;
@@ -82,7 +86,6 @@ const PlayerStats = ({ playerTag }) => {
             }
             setStatsData(stats);
             setAllCards(cards);
-            setHasFetched(true);
         } catch (err) {
             console.error(err);
             setError(err.message || 'Failed to fetch player stats. Check the player tag.');
@@ -91,48 +94,66 @@ const PlayerStats = ({ playerTag }) => {
         }
     };
 
-    // Reset when tag changes
+    // Auto-fetch when tag changes and is active
     useEffect(() => {
-        setHasFetched(false);
+        setLocalTag(playerTag || '');
+        if (!isActive) return;
         setStatsData(null);
         setError(null);
-    }, [playerTag]);
+        if (playerTag && playerTag.trim()) {
+            fetchStats();
+        }
+    }, [playerTag, isActive]);
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (localTag.trim()) {
+            setPlayerTag?.(localTag.trim());
+        }
+    };
+
+    const renderSearchBar = () => (
+        <div className="mb-8 max-w-xl mx-auto">
+            <form onSubmit={handleSearch} className="relative flex items-center p-2 min-h-[64px] rounded-2xl bg-surface-container-lowest border border-outline-variant/30 focus-within:border-primary transition-all duration-300">
+                <span className="material-symbols-outlined text-outline ml-3 shrink-0">search</span>
+                <input
+                    className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface w-full font-headline font-bold uppercase tracking-wider placeholder:text-outline/50 px-3 py-3 text-sm"
+                    placeholder="PLAYER TAG (e.g. J08CVRJ00)"
+                    type="text"
+                    value={localTag}
+                    onChange={(e) => setLocalTag(e.target.value.toUpperCase().replace(/#/g, ''))}
+                />
+                <button
+                    type="submit"
+                    disabled={loading || !localTag.trim()}
+                    className="bg-primary text-on-primary px-5 py-3 rounded-xl font-headline font-black uppercase text-xs tracking-tighter hover:bg-primary-container transition-colors disabled:opacity-50 shrink-0"
+                >
+                    {loading ? 'Searching...' : 'Search'}
+                </button>
+            </form>
+        </div>
+    );
 
     if (!playerTag || !playerTag.trim()) {
         return (
             <div className="stats-container">
-                <div className="stats-loading">
+                {renderSearchBar()}
+                <div className="stats-loading mt-12">
                     <span className="material-symbols-outlined text-5xl text-outline mb-4">person_search</span>
                     <h3 className="text-xl font-headline font-bold text-on-surface-variant mb-2">Enter a Player Tag</h3>
-                    <p className="text-sm text-outline">Type your player tag above to view statistics.</p>
+                    <p className="text-sm text-outline">Search for a player to view their statistics.</p>
                 </div>
             </div>
         );
     }
 
-    if (!hasFetched && !loading) {
-        return (
-            <div className="stats-container">
-                <div className="stats-loading">
-                    <span className="material-symbols-outlined text-5xl text-primary mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>query_stats</span>
-                    <h3 className="text-xl font-headline font-bold text-on-surface mb-2">Ready to Analyze</h3>
-                    <p className="text-sm text-on-surface-variant mb-6 max-w-md">Reveal your battle history, mastery progression, and player profile.</p>
-                    <button
-                        onClick={fetchStats}
-                        className="flex items-center gap-2 bg-primary text-on-primary px-8 py-3 rounded-full font-headline font-black uppercase text-xs tracking-widest shadow-[0_0_20px_rgba(251,171,255,0.3)] hover:shadow-[0_0_30px_rgba(251,171,255,0.6)] transition-all active:scale-95"
-                    >
-                        <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
-                        View Stats
-                    </button>
-                </div>
-            </div>
-        );
-    }
+
 
     if (loading) {
         return (
             <div className="stats-container">
-                <div className="stats-loading">
+                {renderSearchBar()}
+                <div className="stats-loading mt-12">
                     <div className="relative w-20 h-20 mb-6">
                         <div className="absolute inset-0 rounded-full border-4 border-surface-container-highest" />
                         <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
@@ -150,7 +171,8 @@ const PlayerStats = ({ playerTag }) => {
     if (error) {
         return (
             <div className="stats-container">
-                <div className="glass-panel rounded-lg p-4 border border-error/30 text-error">{error}</div>
+                {renderSearchBar()}
+                <div className="glass-panel rounded-lg p-4 border border-error/30 text-error mt-8">{error}</div>
             </div>
         );
     }
@@ -193,6 +215,8 @@ const PlayerStats = ({ playerTag }) => {
 
     return (
         <div className="stats-container">
+            {renderSearchBar()}
+
             {/* Player Header */}
             <motion.div
                 className="player-header"
@@ -265,7 +289,7 @@ const PlayerStats = ({ playerTag }) => {
                         transition={{ delay: 0.2 }}
                     >
                         <div className="px-4 pt-4">
-                            <h3 className="text-xs uppercase tracking-[0.2em] font-black text-tertiary mb-0">Your Current Favourite</h3>
+                            <h3 className="text-xs uppercase tracking-[0.2em] font-black text-tertiary mb-0">Current Favourite</h3>
                         </div>
                         <div className="fav-card-container">
                             {favCard.iconUrls?.medium && (
@@ -299,7 +323,7 @@ const PlayerStats = ({ playerTag }) => {
                                     {yearsPlayed.level}+ Years
                                 </p>
                                 <p className="text-xs text-on-surface-variant">
-                                    You've been clashing for over {yearsPlayed.level} years! 🏆
+                                    Clashing for over {yearsPlayed.level} years! 🏆
                                 </p>
                             </div>
                         </div>
@@ -313,9 +337,14 @@ const PlayerStats = ({ playerTag }) => {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
+                        style={{ cursor: 'pointer', transition: 'border-color 0.2s, transform 0.2s' }}
+                        onClick={() => onNavigateToClan?.(statsData.clan.tag)}
+                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(251, 171, 255, 0.4)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(82, 66, 81, 0.2)'; e.currentTarget.style.transform = 'none'; }}
                     >
-                        <div className="px-4 pt-4">
+                        <div className="px-4 pt-4 flex justify-between items-center">
                             <h3 className="text-xs uppercase tracking-[0.2em] font-black text-tertiary mb-0">Clan</h3>
+                            <span className="material-symbols-outlined text-outline" style={{ fontSize: '1rem' }}>open_in_new</span>
                         </div>
                         <div className="clan-info">
                             <div className="clan-badge">
@@ -375,6 +404,9 @@ const PlayerStats = ({ playerTag }) => {
                     </div>
                 </motion.div>
             )}
+
+            {/* Battle Log */}
+            <BattleLog playerTag={playerTag} onNavigateToPlayer={onNavigateToPlayer} />
         </div>
     );
 };

@@ -63,3 +63,42 @@ export const fetchPlayerStats = async (tag) => {
         throw error;
     }
 };
+
+export const fetchClanInfo = async (clanTag) => {
+    const cleanTag = clanTag.replace(/#/g, '');
+    const formattedTag = `%23${cleanTag}`;
+    try {
+        const response = await api.get(`/clan/${formattedTag}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching clan info:", error);
+        throw error;
+    }
+};
+
+export const searchClans = async ({ name, minMembers, minScore, limit = 10 } = {}) => {
+    try {
+        const params = new URLSearchParams();
+        if (name) params.append('name', name);
+        if (minMembers) params.append('minMembers', minMembers);
+        if (minScore) params.append('minScore', minScore);
+        if (limit) params.append('limit', limit);
+        const response = await api.get(`/clans?${params.toString()}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error searching clans:", error);
+        throw error;
+    }
+};
+
+export const fetchBattleLog = async (tag) => {
+    const cleanTag = tag.replace(/#/g, '');
+    const formattedTag = `%23${cleanTag}`;
+    try {
+        const response = await api.get(`/player/${formattedTag}/battlelog`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching battle log:", error);
+        throw error;
+    }
+};

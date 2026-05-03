@@ -73,6 +73,15 @@ const DeckDisplay = ({ deckData, onViewStats }) => {
                     </p>
                 </div>
                 <div className="flex gap-4">
+                    {onViewStats && (
+                        <button
+                            onClick={onViewStats}
+                            className="hidden md:flex items-center gap-2 bg-surface-container-highest text-on-surface hover:text-primary px-6 py-3 rounded-full transition-all active:scale-95 group border border-outline-variant/30 hover:border-primary/50"
+                        >
+                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>query_stats</span>
+                            <span>Player Stats</span>
+                        </button>
+                    )}
                     <button
                         onClick={() => {
                             navigator.clipboard?.writeText(generatedLink);
@@ -80,14 +89,14 @@ const DeckDisplay = ({ deckData, onViewStats }) => {
                         className="flex items-center gap-2 bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-6 py-3 rounded-full transition-all active:scale-95 group"
                     >
                         <span className="material-symbols-outlined group-hover:text-primary">share</span>
-                        <span>Share Deck</span>
+                        <span>Share</span>
                     </button>
                     <button
                         onClick={() => window.open(generatedLink, '_blank')}
                         className="flex items-center gap-2 bg-primary text-on-primary px-8 py-3 rounded-full font-bold shadow-[0_0_20px_rgba(251,171,255,0.4)] hover:shadow-[0_0_30px_rgba(251,171,255,0.6)] transition-all active:scale-95"
                     >
                         <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-                        <span>Copy to Game</span>
+                        <span>Copy</span>
                     </button>
                 </div>
             </header>

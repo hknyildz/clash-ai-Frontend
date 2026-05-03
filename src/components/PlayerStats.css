@@ -5,6 +5,7 @@
     max-width: 1280px;
     margin: 0 auto;
     padding: 2rem;
+    padding-top: 6rem;
 }
 
 /* Player Header */
@@ -196,8 +197,8 @@
 /* Mastery Cards */
 .mastery-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0.5rem;
 }
 
 @media (max-width: 768px) {
