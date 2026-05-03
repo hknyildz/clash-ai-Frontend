@@ -1,0 +1,280 @@
+/* ========== CLAN PAGE ========== */
+
+.clan-page {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 6rem;
+}
+
+/* Search Section */
+.clan-search-section {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.clan-search-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: white;
+    font-family: var(--font-headline);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.clan-search-subtitle {
+    font-size: 0.875rem;
+    color: var(--color-on-surface-variant);
+    margin-bottom: 1.5rem;
+}
+
+.clan-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.clan-search-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-height: 52px;
+    border-radius: 1rem;
+    background: rgba(6, 14, 32, 0.8);
+    border: 1px solid rgba(82, 66, 81, 0.3);
+    transition: border-color 0.3s;
+    padding: 0 1rem;
+}
+
+.clan-search-input-wrap:focus-within {
+    border-color: var(--color-primary);
+}
+
+.clan-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-on-surface);
+    font-family: var(--font-headline);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.875rem;
+    padding: 0.75rem 0.5rem;
+}
+
+.clan-search-input::placeholder {
+    color: var(--color-outline);
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+.clan-search-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-family: var(--font-headline);
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    padding: 0.875rem 1.5rem;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(251, 171, 255, 0.3);
+    white-space: nowrap;
+}
+
+.clan-search-btn:hover {
+    box-shadow: 0 0 30px rgba(251, 171, 255, 0.5);
+}
+
+.clan-search-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.clan-search-error {
+    font-size: 0.75rem;
+    color: var(--color-error);
+    margin-top: 0.5rem;
+}
+
+/* Section Divider */
+.clan-section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Clan Cards List */
+.clan-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.clan-card-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(23, 31, 51, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(82, 66, 81, 0.3);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.clan-card-item:hover {
+    border-color: rgba(251, 171, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(251, 171, 255, 0.08);
+}
+
+.clan-card-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-surface-container-highest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.clan-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.clan-card-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    font-family: var(--font-headline);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.clan-card-tag {
+    font-size: 0.6875rem;
+    color: var(--color-outline);
+    font-family: var(--font-headline);
+    letter-spacing: 0.05em;
+}
+
+.clan-card-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.clan-card-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.clan-card-stat-value {
+    font-size: 0.875rem;
+    font-weight: 900;
+    font-family: var(--font-headline);
+    color: var(--color-secondary);
+}
+
+.clan-card-stat-label {
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-outline);
+}
+
+.clan-card-members {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--color-on-surface-variant);
+    flex-shrink: 0;
+}
+
+.clan-card-arrow {
+    color: var(--color-outline);
+    flex-shrink: 0;
+}
+
+/* Loading state */
+.clan-page-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+/* Top Clans Separator */
+.clan-top-separator {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 2rem 0 1rem;
+}
+
+.clan-top-separator-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(82, 66, 81, 0.3);
+}
+
+.clan-top-separator-text {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: var(--color-outline);
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .clan-page {
+        padding: 1rem;
+        padding-top: 5rem;
+    }
+
+    .clan-search-title {
+        font-size: 1.75rem;
+    }
+
+    .clan-search-bar {
+        flex-direction: column;
+    }
+
+    .clan-search-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .clan-card-stats {
+        display: none;
+    }
+
+    .clan-card-item {
+        padding: 0.75rem 1rem;
+    }
+}
