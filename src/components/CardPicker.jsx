@@ -11,37 +11,34 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRarity, setSelectedRarity] = useState('All');
     const [loading, setLoading] = useState(false);
+    const [imgErrors, setImgErrors] = useState({});
 
     useEffect(() => {
         if (isOpen && cards.length === 0) {
             setLoading(true);
+            console.log("[CardPicker] Opening picker, fetching cards...");
             fetchAllCards()
                 .then(data => {
+                    console.log("[CardPicker] Data received:", data.length, "cards");
                     let expandedCards = [];
                     data.forEach(c => {
                         if (c.rarity?.toLowerCase() === 'champion') {
-                            // Base Champion has ONLY the Hero form natively
-                            expandedCards.push({ ...c, selectedForm: 'hero', uid: c.id + '_hero', isHero: true });
+                            expandedCards.push({ ...c, selectedForm: 'hero', uid: c.id + '_hero', isHero: true, evolutionLevel: 2 });
                         } else {
-                            // Push normal form
-                            expandedCards.push({ ...c, selectedForm: 'normal', uid: c.id + '_normal', isHero: false, evolved: false });
-                            
-                            // Push evolved form if the card is capable of evolution
+                            expandedCards.push({ ...c, selectedForm: 'normal', uid: c.id + '_normal', isHero: false, evolved: false, evolutionLevel: 0 });
                             if (c.evolved) {
-                                expandedCards.push({ ...c, selectedForm: 'evolved', uid: c.id + '_evolved', rarity: 'Evolved', isHero: false, evolved: true });
+                                expandedCards.push({ ...c, selectedForm: 'evolved', uid: c.id + '_evolved', rarity: 'Evolved', isHero: false, evolved: true, evolutionLevel: 1 });
                             }
-                            
-                            // Push hero form if the card acts as a Hero (e.g. has heroMedium)
                             if (c.isHero) {
-                                expandedCards.push({ ...c, selectedForm: 'hero', uid: c.id + '_hero', rarity: 'Champion', isHero: true, evolved: false });
+                                expandedCards.push({ ...c, selectedForm: 'hero', uid: c.id + '_hero', rarity: 'Champion', isHero: true, evolved: false, evolutionLevel: 2 });
                             }
                         }
                     });
-                    
                     const sorted = expandedCards.sort((a, b) => a.elixirCost - b.elixirCost);
+                    console.log("[CardPicker] Expanded & Sorted cards count:", sorted.length);
                     setCards(sorted);
                 })
-                .catch(err => console.error(err))
+                .catch(err => console.error("[CardPicker] Fetch error:", err))
                 .finally(() => setLoading(false));
         }
     }, [isOpen]);
@@ -62,19 +59,20 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
     }, [activeSlotIndex]);
 
     useEffect(() => {
+        console.log("[CardPicker] Filtering for slot index:", activeSlotIndex);
         let result = cards;
 
         // Slot-based architectural restrictions
         if (activeSlotIndex === 0) {
-            // Slot 0: No Heroes
+            console.log("[CardPicker] Applying Slot 1 (Evo Only) filter");
             result = result.filter(c => c.selectedForm !== 'hero');
         } else if (activeSlotIndex === 1) {
-            // Slot 1: No Evolved
+            console.log("[CardPicker] Applying Slot 2 (Hero Only) filter");
             result = result.filter(c => c.selectedForm !== 'evolved');
         } else if (activeSlotIndex === 2) {
-            // Slot 2: Anything goes (No restriction needed)
+            console.log("[CardPicker] Applying Slot 3 (Both OK) filter");
         } else if (activeSlotIndex > 2) {
-            // Slots 3-7: Strictly Normal cards (No Heroes, No Evolved)
+            console.log("[CardPicker] Applying Slot 4-8 (Normal Only) filter");
             result = result.filter(c => c.selectedForm === 'normal');
         }
 
@@ -83,7 +81,7 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
             result = result.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
         }
 
-        // Rarity Filter
+        // Rarity Filter (applied on top of slot restrictions)
         if (selectedRarity !== 'All') {
             if (selectedRarity === 'Evolved') {
                 result = result.filter(c => c.selectedForm === 'evolved');
@@ -152,12 +150,15 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
                             <div className="picker-grid">
                                 {filteredCards.map(card => {
                                     const isSelected = existingDeckIds.includes(card.id);
-                                    const imgSrc = card.selectedForm === 'evolved' ? (card.imageUriEvolved || card.imageUri) : (card.selectedForm === 'hero' ? card.imageUriHero : card.imageUri);
+                                    const baseImgSrc = card.selectedForm === 'evolved' ? (card.imageUriEvolved || card.imageUri) : (card.selectedForm === 'hero' ? card.imageUriHero : card.imageUri);
                                     
+                                    const hasError = imgErrors[card.uid];
+                                    const imgSrc = hasError ? card.imageUri : baseImgSrc;
+
                                     return (
                                         <div
                                             key={card.uid}
-                                            className={`picker-card-slot ${isSelected ? 'disabled opacity-30 cursor-not-allowed grayscale' : ''} ${card.selectedForm === 'evolved' ? 'border border-primary/40 shadow-[0_0_15px_rgba(251,171,255,0.1)]' : ''}`}
+                                            className={`picker-card-slot ${isSelected ? 'disabled opacity-30 cursor-not-allowed grayscale' : ''} ${card.selectedForm === 'evolved' ? 'border border-primary/40 shadow-[0_0_15px_rgba(251,171,255,0.1)]' : ''} ${card.selectedForm === 'hero' ? 'border border-secondary/40 shadow-[0_0_15px_rgba(255,193,7,0.15)]' : ''}`}
                                             onClick={() => !isSelected && onSelectCard(card)}
                                         >
                                             <div className="picker-card-image-container relative">
@@ -166,8 +167,20 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
                                                     alt={card.name}
                                                     loading="lazy"
                                                     className="picker-card-img"
+                                                    onError={() => {
+                                                        console.log("[CardPicker] Image failed to load:", card.name, "Form:", card.selectedForm, "UID:", card.uid);
+                                                        if (!hasError) setImgErrors(prev => ({ ...prev, [card.uid]: true }));
+                                                    }}
                                                 />
-                                                {card.selectedForm === 'evolved' && <div className="absolute top-1 left-1 bg-primary text-[8px] font-black uppercase text-on-primary px-1 rounded shadow-lg">Evo</div>}
+                                                {/* Form Badges - Top Right */}
+                                                {card.evolutionLevel === 2 && (
+                                                    <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#FFC107] text-black px-2 py-0.5 rounded text-[8px] sm:text-[10px] font-black uppercase shadow-lg z-10">
+                                                        Hero
+                                                    </div>
+                                                )}
+                                                {card.evolutionLevel === 1 && (
+                                                    <div className="absolute top-1 right-1 bg-primary text-[8px] font-black uppercase text-on-primary px-1 rounded shadow-lg z-10">Evo</div>
+                                                )}
                                                 <div className="picker-card-cost">{card.elixirCost}</div>
                                             </div>
                                             <span className={`picker-card-name ${card.selectedForm === 'evolved' ? 'text-primary drop-shadow-[0_0_5px_rgba(251,171,255,0.5)]' : ''}`}>{card.name}</span>
