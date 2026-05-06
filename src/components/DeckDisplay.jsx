@@ -5,6 +5,8 @@ const DeckDisplay = ({ deckData, onViewStats }) => {
 
     const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
 
+    const [imgErrors, setImgErrors] = useState({});
+
     // Sort: Evolved first, then Hero, then by elixir
     const sortedDeck = [...deck].sort((a, b) => {
         const aEvolved = a.evolved ? 1 : 0;
@@ -114,29 +116,50 @@ const DeckDisplay = ({ deckData, onViewStats }) => {
                         {sortedDeck.map((card, index) => {
                             const role = getRoleLabel(card, index);
                             const roleColor = getRoleColor(role);
-                            const imgSrc = card.evolved
+                            const baseImgSrc = card.evolved
                                 ? card.imageUriEvolved
                                 : card.isHero
                                     ? card.imageUriHero
                                     : card.imageUri;
+                            
+                            const hasError = imgErrors[card.id + '_' + index];
+                            const imgSrc = hasError ? card.imageUri : baseImgSrc;
 
                             return (
                                 <motion.div
                                     key={card.id || index}
-                                    className="relative group aspect-[285/420] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer"
+                                    className={`relative group aspect-[285/420] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer ${card.isHero && hasError ? 'ring-1 ring-secondary/50' : ''}`}
                                     variants={item}
                                 >
                                     <img
                                         className="w-full h-full object-cover"
                                         src={imgSrc}
                                         alt={card.name}
-                                        onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=Card'; }}
+                                        onError={(e) => { 
+                                            if (!hasError) {
+                                                setImgErrors(prev => ({ ...prev, [card.id + '_' + index]: true }));
+                                            } else {
+                                                e.target.src = 'https://placehold.co/300x420?text=Error';
+                                            }
+                                        }}
                                     />
                                     {/* Gradient overlay */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
 
-                                    {/* Level badge */}
-                                    <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-secondary text-on-secondary px-1.5 py-0.5 rounded text-[8px] sm:text-[10px] font-black tracking-tighter">
+                                    {/* Form Badges - Top Right */}
+                                    {card.evolutionLevel === 2 && (
+                                        <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#FFC107] text-black px-2 py-0.5 rounded text-[8px] sm:text-[10px] font-black uppercase shadow-lg z-10">
+                                            Hero
+                                        </div>
+                                    )}
+                                    {card.evolutionLevel === 1 && (
+                                        <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-primary text-on-primary px-2 py-0.5 rounded text-[8px] sm:text-[10px] font-black uppercase shadow-lg z-10">
+                                            Evo
+                                        </div>
+                                    )}
+
+                                    {/* Level badge - Top Left */}
+                                    <div className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-surface-container-highest text-white px-1.5 py-0.5 rounded text-[8px] sm:text-[10px] font-black tracking-tighter z-10">
                                         LVL {card.level || 11}
                                     </div>
 

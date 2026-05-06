@@ -45,6 +45,9 @@ const RouteWatcher = () => {
       const tag = path.split('/').pop();
       title = `Player Stats: ${tag} | Clash Deckster`;
       description = `View real-time Clash Royale statistics, battle logs, and custom deck recommendations for player ${tag}.`;
+    } else if (path.startsWith('/player')) {
+      title = 'Search Player | Clash Deckster';
+      description = 'Search for a player and view their Clash Royale statistics.';
     } else if (path.startsWith('/clans')) {
       title = 'Search Clans | Clash Deckster';
       description = 'Find the best Clash Royale clans and analyze member performance.';
@@ -58,7 +61,7 @@ const RouteWatcher = () => {
     }
 
     document.title = title;
-    
+
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', description);

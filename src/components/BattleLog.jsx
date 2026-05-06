@@ -16,6 +16,7 @@ const formatBattleTime = (timeStr) => {
 
 const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
     const [expanded, setExpanded] = useState(false);
+    const [imgErrors, setImgErrors] = useState({});
 
     const team = battle.team?.[0];
     const opponent = battle.opponent?.[0];
@@ -64,20 +65,34 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                 {sortedCards.map((card, i) => {
                     const isEvo = card.evolutionLevel === 1;
                     const isHero = card.evolutionLevel === 2;
-                    const imgSrc = isEvo && card.iconUrls?.evolutionMedium
+                    const baseImgSrc = isEvo && card.iconUrls?.evolutionMedium
                         ? card.iconUrls.evolutionMedium
                         : (isHero && card.iconUrls?.heroMedium ? card.iconUrls.heroMedium : card.iconUrls?.medium);
+                    
+                    const cardUid = `${card.id}_${i}`;
+                    const hasError = imgErrors[cardUid];
+                    const imgSrc = hasError ? card.iconUrls?.medium : baseImgSrc;
 
                     return (
-                        <div key={card.id || i} className={`battle-deck-card ${isEvo ? 'ring-1 ring-primary' : ''} ${isHero && !isEvo ? 'ring-1 ring-secondary' : ''}`}>
+                        <div key={card.id || i} className={`battle-deck-card relative ${isEvo ? 'ring-1 ring-primary' : ''} ${isHero && !isEvo ? 'ring-1 ring-secondary' : ''}`}>
                             {imgSrc && (
-                                <img src={imgSrc} alt={card.name} />
+                                <img 
+                                    src={imgSrc} 
+                                    alt={card.name} 
+                                    onError={() => !hasError && setImgErrors(prev => ({ ...prev, [cardUid]: true }))}
+                                />
+                            )}
+                            {isHero && (
+                                <div className="absolute top-1 right-1 bg-[#FFC107] text-black text-[6px] font-black uppercase px-0.5 rounded shadow-lg z-10">Hero</div>
+                            )}
+                            {isEvo && (
+                                <div className="absolute top-1 right-1 bg-primary text-white text-[6px] font-black uppercase px-0.5 rounded shadow-lg z-10">Evo</div>
                             )}
                             <div className="battle-deck-card-overlay">
                                 <span className="battle-deck-card-name">{card.name}</span>
                             </div>
                             {card.level && (
-                                <span className="battle-deck-card-level">L{getNormalizedLevel(card)}</span>
+                                <span className="battle-deck-card-level" style={{ right: 'auto', left: '2px' }}>L{getNormalizedLevel(card)}</span>
                             )}
                         </div>
                     );
@@ -94,12 +109,30 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                 {sortedCards.map((card, i) => {
                     const isEvo = card.evolutionLevel === 1;
                     const isHero = card.evolutionLevel === 2;
-                    const imgSrc = isEvo && card.iconUrls?.evolutionMedium
+                    const baseImgSrc = isEvo && card.iconUrls?.evolutionMedium
                         ? card.iconUrls.evolutionMedium
                         : (isHero && card.iconUrls?.heroMedium ? card.iconUrls.heroMedium : card.iconUrls?.medium);
+                    
+                    const cardUid = `mini_${card.id}_${i}`;
+                    const hasError = imgErrors[cardUid];
+                    const imgSrc = hasError ? card.iconUrls?.medium : baseImgSrc;
+
                     return (
-                        <div key={card.id || i} className={`w-8 h-12 sm:w-10 sm:h-[60px] rounded-sm overflow-hidden bg-surface-container-highest ${isEvo ? 'ring-1 ring-primary' : ''} ${isHero && !isEvo ? 'ring-1 ring-secondary' : ''}`}>
-                            {imgSrc && <img src={imgSrc} alt={card.name} className="w-full h-full object-cover" />}
+                        <div key={card.id || i} className={`relative w-8 h-12 sm:w-10 sm:h-[60px] rounded-sm overflow-hidden bg-surface-container-highest ${isEvo ? 'ring-1 ring-primary' : ''} ${isHero && !isEvo ? 'ring-1 ring-secondary' : ''}`}>
+                            {imgSrc && (
+                                <img 
+                                    src={imgSrc} 
+                                    alt={card.name} 
+                                    className="w-full h-full object-cover" 
+                                    onError={() => !hasError && setImgErrors(prev => ({ ...prev, [cardUid]: true }))}
+                                />
+                            )}
+                            {isHero && (
+                                <div className="absolute top-0 right-0 bg-[#FFC107] text-black text-[4px] font-black uppercase px-0.5 rounded-bl z-10">H</div>
+                            )}
+                            {isEvo && (
+                                <div className="absolute top-0 right-0 bg-primary text-white text-[4px] font-black uppercase px-0.5 rounded-bl z-10">E</div>
+                            )}
                         </div>
                     );
                 })}

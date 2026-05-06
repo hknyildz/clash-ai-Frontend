@@ -78,6 +78,7 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
     const [allCards, setAllCards] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [imgErrors, setImgErrors] = useState({});
 
     const fetchStats = async () => {
         if (!playerTag || !playerTag.trim()) return;
@@ -212,7 +213,9 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
             name: cardName,
             level: badge.level,
             maxLevel: badge.maxLevel,
-            imageUrl: matchedCard?.imageUri || matchedCard?.imageUriEvolved || null,
+            imageUrl: matchedCard?.imageUriHero || matchedCard?.imageUriEvolved || matchedCard?.imageUri || null,
+            baseImageUrl: matchedCard?.imageUri || null,
+            isHero: matchedCard?.isHero || false,
             badgeIconUrl: badge.iconUrls?.large || null
         };
     });
@@ -299,7 +302,17 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                         </div>
                         <div className="fav-card-container">
                             {favCard.iconUrls?.medium && (
-                                <img className="fav-card-img" src={favCard.iconUrls.medium} alt={favCard.name} />
+                                <div className="relative">
+                                    <img 
+                                        className="fav-card-img" 
+                                        src={imgErrors['fav'] ? favCard.iconUrls.medium : (allCards.find(c => c.id === favCard.id)?.imageUriHero || favCard.iconUrls.medium)} 
+                                        alt={favCard.name}
+                                        onError={() => !imgErrors['fav'] && setImgErrors(prev => ({ ...prev, fav: true }))}
+                                    />
+                                    {allCards.find(c => c.id === favCard.id)?.isHero && imgErrors['fav'] && (
+                                        <div className="absolute top-1 left-1 bg-[#FFC107] text-black text-[8px] font-black uppercase px-1 rounded shadow-lg">Hero</div>
+                                    )}
+                                </div>
                             )}
                             <div className="fav-card-info">
                                 <p className="text-lg font-bold text-white font-headline">{favCard.name}</p>
@@ -382,31 +395,44 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                         <span className="text-[10px] text-outline uppercase tracking-widest ml-auto">By mastery level</span>
                     </div>
                     <div className="mastery-grid">
-                        {masteryCards.map((card, i) => (
-                            <motion.div
-                                key={card.name}
-                                className="mastery-card"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.5 + i * 0.05 }}
-                                style={{
-                                    borderColor: card.level >= 8 ? 'var(--color-secondary)' : card.level >= 5 ? 'var(--color-primary)' : undefined
-                                }}
-                            >
-                                {card.imageUrl ? (
-                                    <img src={card.imageUrl} alt={card.name} />
-                                ) : card.badgeIconUrl ? (
-                                    <img src={card.badgeIconUrl} alt={card.name} />
-                                ) : (
-                                    <div className="w-full h-full bg-surface-container-highest flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-outline">help</span>
+                        {masteryCards.map((card, i) => {
+                            const hasError = imgErrors[`mastery_${i}`];
+                            const imgSrc = hasError ? card.baseImageUrl : card.imageUrl;
+
+                            return (
+                                <motion.div
+                                    key={card.name}
+                                    className="mastery-card relative"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.5 + i * 0.05 }}
+                                    style={{
+                                        borderColor: card.level >= 8 ? 'var(--color-secondary)' : card.level >= 5 ? 'var(--color-primary)' : undefined
+                                    }}
+                                >
+                                    {imgSrc ? (
+                                        <img 
+                                            src={imgSrc} 
+                                            alt={card.name} 
+                                            onError={() => !hasError && setImgErrors(prev => ({ ...prev, [`mastery_${i}`]: true }))}
+                                        />
+                                    ) : card.badgeIconUrl ? (
+                                        <img src={card.badgeIconUrl} alt={card.name} />
+                                    ) : (
+                                        <div className="w-full h-full bg-surface-container-highest flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-outline">help</span>
+                                        </div>
+                                    )}
+                                    {card.isHero && hasError && (
+                                        <div className="absolute top-1 left-1 bg-[#FFC107] text-black text-[6px] font-black uppercase px-0.5 rounded shadow-lg z-10">Hero</div>
+                                    )}
+                                    <div className="mastery-card-overlay">
+                                        <span className="mastery-card-name">{card.name}</span>
+                                        {card.level && <span className="text-[10px] font-bold text-white/70">Level {card.level}</span>}
                                     </div>
-                                )}
-                                <div className="mastery-card-overlay">
-                                    <span className="mastery-card-name">{card.name}</span>
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </motion.div>
             )}
