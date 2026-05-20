@@ -8,19 +8,8 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel }) => {
 
     const [imgErrors, setImgErrors] = useState({});
 
-    // Sort: Evolved first, then Hero, then by elixir
-    const sortedDeck = [...deck].sort((a, b) => {
-        const aEvolved = a.evolved ? 1 : 0;
-        const bEvolved = b.evolved ? 1 : 0;
-        if (aEvolved !== bEvolved) return bEvolved - aEvolved;
-        const aHero = a.isHero ? 1 : 0;
-        const bHero = b.isHero ? 1 : 0;
-        if (aHero !== bHero) return bHero - aHero;
-        return (a.elixirCost || 0) - (b.elixirCost || 0);
-    });
-
     // Use backend deep link (includes &tt=) or fallback to generating one
-    const getDeckIds = () => sortedDeck.map(c => c.id).join(';');
+    const getDeckIds = () => deck.map(c => c.id).join(';');
     const generatedLink = backendDeepLink || `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${getDeckIds()}&l=Royals`;
 
     // Decide elixir speed label
@@ -111,7 +100,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel }) => {
                         initial="hidden"
                         animate="show"
                     >
-                        {sortedDeck.map((card, index) => {
+                        {deck.map((card, index) => {
                             const role = getRoleLabel(card, index);
                             const roleColor = getRoleColor(role);
                             const baseImgSrc = card.evolved
