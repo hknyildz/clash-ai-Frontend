@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import { fetchFreeDeck } from './services/api';
+import { fetchFreeDeckStream } from './services/api';
 import Navbar from './components/Navbar';
 import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
+import DeckCarousel from './components/DeckCarousel';
 import DeckBuilder from './components/DeckBuilder';
 import PlayerStats from './components/PlayerStats';
 import ClanPage from './components/ClanPage';
@@ -11,6 +12,7 @@ import ClanDetail from './components/ClanDetail';
 import HowItWorks from './components/HowItWorks';
 import PromoSection from './components/PromoSection';
 import FaqSection from './components/FaqSection';
+import ReleaseNotes from './components/ReleaseNotes';
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import AdBanner from './components/AdBanner';
@@ -24,9 +26,12 @@ function App() {
   const [deckData, setDeckData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [totalExpected, setTotalExpected] = useState(0);
+  const [streamDone, setStreamDone] = useState(false);
   const deckResultRef = useRef(null);
   const builderRef = useRef(null);
   const hasScrolledToBuilder = useRef(false);
+  const sseCleanupRef = useRef(null);
 
   // Derive active view from path for UI highlighting (e.g., Navbar)
   const getActiveTabFromPath = () => {
@@ -58,38 +63,79 @@ function App() {
     const saved = localStorage.getItem('deckData');
     if (saved) {
       try {
-        setDeckData(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        // Handle both old (single object) and new (array) format
+        setDeckData(Array.isArray(parsed) ? parsed : [parsed]);
       } catch (e) {
         console.error("Failed to parse saved deck data", e);
       }
     }
   }, []);
 
-  const handleGenerateDeck = async (playerTag) => {
+  // Cleanup SSE on unmount
+  useEffect(() => {
+    return () => {
+      sseCleanupRef.current?.();
+    };
+  }, []);
+
+  const handleGenerateDeck = (playerTag) => {
+    // Cleanup any previous SSE connection
+    sseCleanupRef.current?.();
+
     setLoading(true);
     setError(null);
     setDeckData(null);
+    setTotalExpected(0);
+    setStreamDone(false);
 
     // Scroll to loading indicator
     setTimeout(() => {
       deckResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 50);
 
-    try {
-      const data = await fetchFreeDeck(playerTag);
-      if (data && data.valid === false) {
-        throw new Error(data.tacticMessage || "Player not found. Please check the tag.");
+    let firstDeckReceived = false;
+
+    const cleanup = fetchFreeDeckStream(playerTag, {
+      onInit: (data) => {
+        setTotalExpected(data.totalDecks || 3);
+      },
+      onDeck: (deck) => {
+        if (deck && deck.valid !== false) {
+          setDeckData(prev => {
+            const updated = prev ? [...prev, deck] : [deck];
+            localStorage.setItem('deckData', JSON.stringify(updated));
+            return updated;
+          });
+
+          // Auto-scroll to deck result on first deck arrival
+          if (!firstDeckReceived) {
+            firstDeckReceived = true;
+            setTimeout(() => {
+              deckResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 150);
+          }
+        }
+      },
+      onDone: () => {
+        setStreamDone(true);
+        setLoading(false);
+      },
+      onError: (err) => {
+        console.error('SSE error:', err);
+        setLoading(false);
+        setStreamDone(true);
+        // Only show error if we didn't receive any decks
+        setDeckData(prev => {
+          if (!prev || prev.length === 0) {
+            setError("Failed to generate deck. Please check the player tag and try again.");
+          }
+          return prev;
+        });
       }
-      setDeckData(data);
-      setTimeout(() => {
-        deckResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } catch (err) {
-      console.error(err);
-      setError(err.message || "Failed to generate deck. Please check the player tag and try again.");
-    } finally {
-      setLoading(false);
-    }
+    });
+
+    sseCleanupRef.current = cleanup;
   };
 
   // Navigation Handlers
@@ -131,8 +177,8 @@ function App() {
                 </div>
               )}
 
-              {/* Loading */}
-              {loading && (
+              {/* Loading (no decks yet) */}
+              {loading && (!deckData || deckData.length === 0) && (
                 <div ref={deckResultRef} className="layout-container-lg mt-12 py-16 flex flex-col items-center justify-center text-center">
                   <div className="relative w-24 h-24 mb-8">
                     <div className="absolute inset-0 rounded-full border-4 border-surface-container-highest"></div>
@@ -151,9 +197,15 @@ function App() {
               )}
               {showAds && loading && <AdBanner type="interstitial" isLoading={loading} />}
 
-              {deckData && !loading && (
+              {/* Progressive deck display — renders as decks arrive */}
+              {deckData && deckData.length > 0 && (
                 <div ref={deckResultRef}>
-                  <DeckDisplay deckData={deckData} onViewStats={() => handleNavigateToPlayer(tag)} />
+                  <DeckCarousel
+                    decks={deckData}
+                    onViewStats={() => handleNavigateToPlayer(tag)}
+                    isStreaming={loading}
+                    totalExpected={totalExpected}
+                  />
                 </div>
               )}
 
@@ -199,6 +251,13 @@ function App() {
           {/* Clan Detail Tab */}
           <Route path="/clan/:clanTag" element={
             <ClanDetailWrapper onNavigateToPlayer={handleNavigateToPlayer} />
+          } />
+
+          {/* Release Notes / Blog */}
+          <Route path="/release-notes" element={
+            <div className="mt-6">
+              <ReleaseNotes />
+            </div>
           } />
         </Routes>
 
