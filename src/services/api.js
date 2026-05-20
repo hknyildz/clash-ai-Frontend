@@ -30,7 +30,8 @@ export const fetchFreeDeck = async (tag) => {
 export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) => {
     const cleanTag = tag.replace(/#/g, '');
     const formattedTag = `%23${cleanTag}`;
-    const url = `${API_BASE_URL}/freeDeck/${formattedTag}/stream`;
+    const baseUrl = API_BASE_URL.replace(/\/$/, '');
+    const url = `${baseUrl}/freeDeck/${formattedTag}/stream`;
 
     const eventSource = new EventSource(url);
 
