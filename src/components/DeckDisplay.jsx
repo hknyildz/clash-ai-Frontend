@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const DeckDisplay = ({ deckData, onViewStats }) => {
+const DeckDisplay = ({ deckData, onViewStats, deckLabel }) => {
     if (!deckData || !deckData.deck) return null;
 
     const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
@@ -59,21 +59,18 @@ const DeckDisplay = ({ deckData, onViewStats }) => {
     };
 
     return (
-        <div className="layout-container-lg py-8 mt-6">
+        <div className="layout-container-lg py-6 mt-2">
             {/* Header */}
-            <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="hidden sm:block">
-                    <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-secondary/20 text-secondary text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full border border-secondary/30">
-                            Legendary Blueprint
+                    {deckLabel && (
+                        <span className="inline-block bg-primary/15 text-primary text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1 rounded-full border border-primary/30 mb-3">
+                            {deckLabel}
                         </span>
-                    </div>
-                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-on-background font-headline">
+                    )}
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-on-background font-headline">
                         Your Forge <span className="text-primary italic">Results</span>
                     </h2>
-                    <p className="text-on-surface-variant mt-3 max-w-xl text-lg">
-                        {tacticMessage || 'A precision-engineered deck optimized for your card levels.'}
-                    </p>
                 </div>
                 <div className="flex gap-4">
                     {onViewStats && (
@@ -167,7 +164,6 @@ const DeckDisplay = ({ deckData, onViewStats }) => {
                                     {/* Card info */}
                                     <div className="absolute bottom-1.5 left-1.5 right-1.5 sm:bottom-3 sm:left-3 sm:right-3 flex justify-between items-end">
                                         <div className="min-w-0 flex-1">
-                                            <p className={`text-[7px] sm:text-[10px] ${roleColor} font-bold uppercase tracking-widest truncate`}>{role}</p>
                                             <p className="font-bold text-[9px] sm:text-sm text-white truncate leading-tight">{card.name}</p>
                                         </div>
                                         <div className="w-4 h-4 sm:w-6 sm:h-6 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container text-[8px] sm:text-[10px] font-black shrink-0 ml-1">

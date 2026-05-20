@@ -6,7 +6,8 @@ const faqs = [
     { question: "How often is the meta updated?", answer: "Because our AI evaluates the live card stats and synergies dynamically, the deck suggestions automatically adapt to the latest balance changes and meta shifts." },
     { question: "Can I use this tool for Clan Wars?", answer: "Absolutely! You can choose the 'Advanced Builder' tab to select specific playstyles and fill out your 4 distinct Clan War decks without repeating cards." },
     { question: "Do I need to share my password?", answer: "Never. We only use your public player tag to read your card collection via the official Supercell API. No login or password required." },
-    { question: "How does the AI pick my deck?", answer: "Our system uses Large Language Models fine-tuned for Clash Royale. It analyzes your card levels, finds the strongest synergies, and builds a custom deck that maximizes your competitive advantage." }
+    { question: "How does the AI pick my deck?", answer: "Our system uses Large Language Models fine-tuned for Clash Royale. It analyzes your card levels, finds the strongest synergies, and builds a custom deck that maximizes your competitive advantage." },
+    { question: "Why do I keep generating the same deck?", answer: "Meta data is updated daily at midnight (CET/GMT+2). Your deck is built by finding the best synergy between your current card levels and the most up-to-date meta. Until the meta shifts or your card levels change, the AI will continue to suggest the same optimal deck." }
 ];
 
 const FaqSection = () => {

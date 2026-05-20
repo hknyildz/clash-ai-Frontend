@@ -22,6 +22,64 @@ export const fetchFreeDeck = async (tag) => {
     }
 };
 
+/**
+ * SSE streaming deck generation.
+ * Calls onDeck(deckData) for each deck as it arrives, onDone() when all are complete.
+ * Returns a cleanup function to abort the connection.
+ */
+export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) => {
+    const cleanTag = tag.replace(/#/g, '');
+    const formattedTag = `%23${cleanTag}`;
+    const url = `${API_BASE_URL}/freeDeck/${formattedTag}/stream`;
+
+    const eventSource = new EventSource(url);
+
+    eventSource.addEventListener('init', (e) => {
+        try {
+            const data = JSON.parse(e.data);
+            onInit?.(data);
+        } catch (err) {
+            console.error('Failed to parse init event:', err);
+        }
+    });
+
+    eventSource.addEventListener('deck', (e) => {
+        try {
+            const deck = JSON.parse(e.data);
+            onDeck?.(deck);
+        } catch (err) {
+            console.error('Failed to parse deck event:', err);
+        }
+    });
+
+    eventSource.addEventListener('done', (e) => {
+        eventSource.close();
+        try {
+            const data = JSON.parse(e.data);
+            onDone?.(data);
+        } catch (err) {
+            onDone?.({});
+        }
+    });
+
+    eventSource.addEventListener('error', (e) => {
+        // SSE 'error' can be a reconnect attempt or a real error
+        if (eventSource.readyState === EventSource.CLOSED) {
+            onError?.(new Error('SSE connection closed'));
+        }
+    });
+
+    eventSource.onerror = (e) => {
+        eventSource.close();
+        onError?.(new Error('SSE connection failed'));
+    };
+
+    // Return cleanup function
+    return () => {
+        eventSource.close();
+    };
+};
+
 export const fetchAllCards = async () => {
     try {
         const response = await api.get('/cards');
@@ -87,6 +145,16 @@ export const searchClans = async ({ name, minMembers, minScore, limit = 10 } = {
         return response.data;
     } catch (error) {
         console.error("Error searching clans:", error);
+        throw error;
+    }
+};
+
+export const fetchTopPlayers = async (limit = 100) => {
+    try {
+        const response = await api.get(`/players/top?limit=${limit}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching top players:", error);
         throw error;
     }
 };

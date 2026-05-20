@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { fetchPlayerStats, fetchAllCards } from '../services/api';
 import BattleLog from './BattleLog';
+import TopPlayers from './TopPlayers';
 import './PlayerStats.css';
 
 // Parse "MasteryBabyDragon" → "Baby Dragon"
@@ -147,11 +148,7 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
         return (
             <div className="stats-container">
                 {renderSearchBar()}
-                <div className="stats-loading mt-12">
-                    <span className="material-symbols-outlined text-5xl text-outline mb-4">person_search</span>
-                    <h3 className="text-xl font-headline font-bold text-on-surface-variant mb-2">Enter a Player Tag</h3>
-                    <p className="text-sm text-outline">Search for a player to view their statistics.</p>
-                </div>
+                <TopPlayers onNavigateToPlayer={(tag) => navigate(`/player/${tag.replace(/#/g, '')}`)} />
             </div>
         );
     }
