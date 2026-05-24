@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { fetchFreeDeckStream } from './services/api';
+import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
@@ -17,6 +18,7 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import AdBanner from './components/AdBanner';
 import RouteWatcher from './components/RouteWatcher';
+import LoginModal from './components/LoginModal';
 import './index.css'
 
 function App() {
@@ -32,6 +34,9 @@ function App() {
   const builderRef = useRef(null);
   const hasScrolledToBuilder = useRef(false);
   const sseCleanupRef = useRef(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginMessage, setLoginMessage] = useState('');
+  const { isAuthenticated } = useAuth();
 
   // Derive active view from path for UI highlighting (e.g., Navbar)
   const getActiveTabFromPath = () => {
@@ -125,6 +130,12 @@ function App() {
         console.error('SSE error:', err);
         setLoading(false);
         setStreamDone(true);
+        // Check if this is a rate limit error (429)
+        if (err?.message?.includes('429') || err?.status === 429) {
+          setLoginMessage('You\'ve used your free deck generation. Sign in with Google to continue!');
+          setShowLoginModal(true);
+          return;
+        }
         // Only show error if we didn't receive any decks
         setDeckData(prev => {
           if (!prev || prev.length === 0) {
@@ -152,7 +163,18 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-on-background">
       <RouteWatcher />
-      <Navbar activeTab={activeTab} />
+      <Navbar 
+        activeTab={activeTab}
+        onLoginClick={() => {
+          setLoginMessage('');
+          setShowLoginModal(true);
+        }}
+      />
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        message={loginMessage}
+      />
 
       <main className="pt-20">
         {/* Hero Section with Input and Tabs */}
@@ -163,6 +185,11 @@ function App() {
           isLoading={loading}
           showButton={activeTab === 'quick'}
           activeTab={activeTab}
+          isAuthenticated={isAuthenticated}
+          onLoginRequired={() => {
+            setLoginMessage('Sign in with Google to use the Advanced Deck Builder.');
+            setShowLoginModal(true);
+          }}
         />
 
         <Routes>
