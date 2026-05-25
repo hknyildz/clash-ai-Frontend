@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import DeckFeedback from './DeckFeedback';
 
-const DeckDisplay = ({ deckData, onViewStats, deckLabel }) => {
+const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, onVoted }) => {
     if (!deckData || !deckData.deck) return null;
 
     const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
@@ -234,6 +235,14 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel }) => {
                     )}
                 </aside>
             </div>
+
+            {/* Feedback */}
+            <DeckFeedback
+                deckData={deckData}
+                playerTag={playerTag}
+                hasVoted={hasVoted}
+                onFeedbackSent={(vote) => onVoted?.(vote)}
+            />
         </div>
     );
 };
