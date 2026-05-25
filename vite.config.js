@@ -51,6 +51,16 @@ export default defineConfig({
         target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
+      },
+      '/auth': {
+        target: 'https://api.clashdeckster.com',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/feedback': {
+        target: 'https://api.clashdeckster.com',
+        changeOrigin: true,
+        secure: false,
       }
     }
   }

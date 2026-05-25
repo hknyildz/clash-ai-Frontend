@@ -2,10 +2,21 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DeckDisplay from './DeckDisplay';
 
-const DeckCarousel = ({ decks, onViewStats, isStreaming = false, totalExpected = 3 }) => {
+const DeckCarousel = ({ decks, onViewStats, isStreaming = false, totalExpected = 3, playerTag }) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [votedDecks, setVotedDecks] = useState(() => {
+        try {
+            const saved = localStorage.getItem('votedDecks');
+            return saved ? new Set(JSON.parse(saved)) : new Set();
+        } catch { return new Set(); }
+    });
     const touchStartX = useRef(null);
     const containerRef = useRef(null);
+
+    // Persist votedDecks to localStorage on change
+    useEffect(() => {
+        localStorage.setItem('votedDecks', JSON.stringify([...votedDecks]));
+    }, [votedDecks]);
 
     // Auto-switch to newest deck when streaming
     useEffect(() => {
@@ -14,11 +25,18 @@ const DeckCarousel = ({ decks, onViewStats, isStreaming = false, totalExpected =
         }
     }, [decks?.length, isStreaming]);
 
+    // Clear votes when new generation starts (streaming begins with 1 deck)
+    useEffect(() => {
+        if (isStreaming && decks?.length === 1) {
+            setVotedDecks(new Set());
+        }
+    }, [isStreaming]);
+
     if (!decks || decks.length === 0) return null;
 
     // Single deck — no carousel needed (but show streaming placeholder if more coming)
     if (decks.length === 1 && !isStreaming) {
-        return <DeckDisplay deckData={decks[0]} onViewStats={onViewStats} deckLabel={getDeckLabel(decks[0])} />;
+        return <DeckDisplay deckData={decks[0]} onViewStats={onViewStats} deckLabel={getDeckLabel(decks[0])} playerTag={playerTag} hasVoted={votedDecks.has(0)} onVoted={() => setVotedDecks(prev => new Set(prev).add(0))} />;
     }
 
     const validDecks = decks.filter(d => d && d.valid !== false);
@@ -152,6 +170,9 @@ const DeckCarousel = ({ decks, onViewStats, isStreaming = false, totalExpected =
                         deckData={currentDeck}
                         onViewStats={onViewStats}
                         deckLabel={getDeckLabel(currentDeck)}
+                        playerTag={playerTag}
+                        hasVoted={votedDecks.has(activeIndex)}
+                        onVoted={() => setVotedDecks(prev => new Set(prev).add(activeIndex))}
                     />
                 </motion.div>
             </AnimatePresence>
