@@ -232,6 +232,7 @@ function App() {
                     onViewStats={() => handleNavigateToPlayer(tag)}
                     isStreaming={loading}
                     totalExpected={totalExpected}
+                    playerTag={tag}
                   />
                 </div>
               )}
