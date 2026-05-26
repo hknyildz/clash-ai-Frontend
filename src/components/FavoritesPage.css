@@ -1,0 +1,50 @@
+.favorites-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.favorites-header {
+    text-align: left;
+    border-left: 4px solid var(--primary);
+    padding-left: 1.25rem;
+}
+
+.favorites-page-container .glass-panel {
+    background: rgba(18, 22, 35, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.30s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.favorites-page-container .glass-panel:hover {
+    background: rgba(18, 22, 35, 0.5);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Hide scrollbar on deck preview list */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Accent borders on active groups */
+.hover\:border-primary\/30:hover {
+    border-color: rgba(251, 171, 255, 0.3) !important;
+    box-shadow: 0 0 15px rgba(251, 171, 255, 0.05);
+}
+
+.hover\:border-secondary\/30:hover {
+    border-color: rgba(56, 189, 248, 0.3) !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
+}
+
+.hover\:border-tertiary\/30:hover {
+    border-color: rgba(244, 63, 94, 0.3) !important;
+    box-shadow: 0 0 15px rgba(244, 63, 94, 0.05);
+}

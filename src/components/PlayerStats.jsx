@@ -5,6 +5,7 @@ import { fetchPlayerStats, fetchAllCards } from '../services/api';
 import BattleLog from './BattleLog';
 import TopPlayers from './TopPlayers';
 import './PlayerStats.css';
+import { useAuth } from '../contexts/AuthContext';
 
 // Parse "MasteryBabyDragon" → "Baby Dragon"
 const parseMasteryName = (badgeName) => {
@@ -75,11 +76,25 @@ const StatCard = ({ label, value, sub, color = 'var(--color-primary)', glowColor
 const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer }) => {
     const navigate = useNavigate();
     const [localTag, setLocalTag] = useState(playerTag || '');
+    const { favorites, addFavorite, removeFavorite } = useAuth();
     const [statsData, setStatsData] = useState(null);
     const [allCards, setAllCards] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [imgErrors, setImgErrors] = useState({});
+
+    const isPlayerFavorited = statsData?.tag
+        ? favorites.some(f => f.type === 'PLAYER' && f.targetKey === statsData.tag)
+        : false;
+
+    const handlePlayerFavoriteToggle = () => {
+        if (!statsData?.tag) return;
+        if (isPlayerFavorited) {
+            removeFavorite('PLAYER', statsData.tag);
+        } else {
+            addFavorite('PLAYER', statsData.tag, statsData.name || 'Unknown Player', null);
+        }
+    };
 
     const fetchStats = async () => {
         if (!playerTag || !playerTag.trim()) return;
@@ -233,7 +248,19 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                     {statsData.name ? statsData.name.charAt(0).toUpperCase() : '?'}
                 </div>
                 <div className="player-info">
-                    <h2 className="font-headline text-white">{statsData.name || 'Unknown'}</h2>
+                    <div className="flex items-center gap-2">
+                        <h2 className="font-headline text-white">{statsData.name || 'Unknown'}</h2>
+                        <button
+                            onClick={handlePlayerFavoriteToggle}
+                            className={`px-1.5 pt-1.5 rounded-full transition-all active:scale-95 border ${isPlayerFavorited
+                                ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                                : 'bg-white/5 hover:bg-white/10 text-outline hover:text-rose-400 border border-white/10 hover:border-rose-500/30'
+                                }`}
+                            title={isPlayerFavorited ? "Remove Player from Saved" : "Save Player"}
+                        >
+                            <span className="material-symbols-outlined text-sm sm:text-base leading-none" style={{ fontVariationSettings: isPlayerFavorited ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+                        </button>
+                    </div>
                     <p className="player-tag-display">{statsData.tag}</p>
                     {statsData.clan && (
                         <p className="text-xs text-secondary font-bold mt-0.5">
@@ -300,9 +327,9 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                         <div className="fav-card-container">
                             {favCard.iconUrls?.medium && (
                                 <div className="relative">
-                                    <img 
-                                        className="fav-card-img" 
-                                        src={imgErrors['fav'] ? favCard.iconUrls.medium : (allCards.find(c => c.id === favCard.id)?.imageUriHero || favCard.iconUrls.medium)} 
+                                    <img
+                                        className="fav-card-img"
+                                        src={imgErrors['fav'] ? favCard.iconUrls.medium : (allCards.find(c => c.id === favCard.id)?.imageUriHero || favCard.iconUrls.medium)}
                                         alt={favCard.name}
                                         onError={() => !imgErrors['fav'] && setImgErrors(prev => ({ ...prev, fav: true }))}
                                     />
@@ -408,9 +435,9 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                                     }}
                                 >
                                     {imgSrc ? (
-                                        <img 
-                                            src={imgSrc} 
-                                            alt={card.name} 
+                                        <img
+                                            src={imgSrc}
+                                            alt={card.name}
                                             onError={() => !hasError && setImgErrors(prev => ({ ...prev, [`mastery_${i}`]: true }))}
                                         />
                                     ) : card.badgeIconUrl ? (

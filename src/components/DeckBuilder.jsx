@@ -5,12 +5,14 @@ import { completeDeck } from '../services/api';
 import DeckDisplay from './DeckDisplay';
 import './DeckBuilder.css';
 import { StrategyIcons } from './StrategyIcons';
+import { useAuth } from '../contexts/AuthContext';
 
 const PLAYSTYLES = [
     'Cycle', 'Beatdown', 'Control', 'Siege', 'Recall', 'Bait', 'Balanced'
 ];
 
 const DeckBuilder = ({ playerTag }) => {
+    const { isAuthenticated, openLogin } = useAuth();
     // Array of 8 slots, initially null
     const [deckSlots, setDeckSlots] = useState(Array(8).fill(null));
     const [selectedPlaystyle, setSelectedPlaystyle] = useState('Balanced');
@@ -48,6 +50,11 @@ const DeckBuilder = ({ playerTag }) => {
     };
 
     const handleGenerate = async () => {
+        if (!isAuthenticated) {
+            openLogin("Sign in with Google to complete your deck.");
+            return;
+        }
+
         if (!playerTag || !playerTag.trim()) {
             alert("Please enter a Player Tag first!");
             return;

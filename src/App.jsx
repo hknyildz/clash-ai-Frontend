@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { fetchFreeDeckStream } from './services/api';
+import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import InputSection from './components/InputSection';
 import DeckDisplay from './components/DeckDisplay';
@@ -17,6 +18,7 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import AdBanner from './components/AdBanner';
 import RouteWatcher from './components/RouteWatcher';
+import FavoritesPage from './components/FavoritesPage';
 import './index.css'
 
 function App() {
@@ -41,6 +43,7 @@ function App() {
     if (path.startsWith('/player')) return 'stats';
     if (path === '/clans') return 'clans';
     if (path.startsWith('/clan')) return 'clan-detail';
+    if (path.startsWith('/favorites')) return 'favorites';
     return 'quick';
   };
 
@@ -125,6 +128,12 @@ function App() {
         console.error('SSE error:', err);
         setLoading(false);
         setStreamDone(true);
+        // Check if this is a rate limit error (429)
+        if (err?.message?.includes('429') || err?.status === 429) {
+          setLoginMessage('You\'ve used your free deck generation. Sign in with Google to continue!');
+          setShowLoginModal(true);
+          return;
+        }
         // Only show error if we didn't receive any decks
         setDeckData(prev => {
           if (!prev || prev.length === 0) {
@@ -137,6 +146,8 @@ function App() {
 
     sseCleanupRef.current = cleanup;
   };
+
+  const { openLogin } = useAuth();
 
   // Navigation Handlers
   const handleNavigateToPlayer = (newTag) => {
@@ -152,7 +163,10 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-on-background">
       <RouteWatcher />
-      <Navbar activeTab={activeTab} />
+      <Navbar 
+        activeTab={activeTab}
+        onLoginClick={() => openLogin()}
+      />
 
       <main className="pt-20">
         {/* Hero Section with Input and Tabs */}
@@ -258,6 +272,13 @@ function App() {
           <Route path="/release-notes" element={
             <div className="mt-6">
               <ReleaseNotes />
+            </div>
+          } />
+
+          {/* Favorites Tab */}
+          <Route path="/favorites" element={
+            <div className="mt-6">
+              <FavoritesPage />
             </div>
           } />
         </Routes>

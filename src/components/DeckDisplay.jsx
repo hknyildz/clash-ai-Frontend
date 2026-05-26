@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import DeckFeedback from './DeckFeedback';
+import { useAuth } from '../contexts/AuthContext';
 
 const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, onVoted }) => {
+    const { favorites, addFavorite, removeFavorite } = useAuth();
     if (!deckData || !deckData.deck) return null;
 
     const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
@@ -12,6 +14,25 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
     // Use backend deep link (includes &tt=) or fallback to generating one
     const getDeckIds = () => deck.map(c => c.id).join(';');
     const generatedLink = backendDeepLink || `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${getDeckIds()}&l=Royals`;
+
+    const targetKey = getDeckIds();
+    const isFavorited = favorites.some(f => f.type === 'DECK' && f.targetKey === targetKey);
+
+    const handleFavoriteToggle = () => {
+        if (isFavorited) {
+            removeFavorite('DECK', targetKey);
+        } else {
+            const name = `${strategy || 'Custom'} Deck`;
+            const metadata = {
+                averageElixir: averageElixir,
+                cards: deck.map(c => ({
+                    name: c.name,
+                    icon: c.evolved ? c.imageUriEvolved : c.isHero ? c.imageUriHero : c.imageUri
+                }))
+            };
+            addFavorite('DECK', targetKey, name, JSON.stringify(metadata));
+        }
+    };
 
     // Decide elixir speed label
     const speedLabel = averageElixir <= 3.0 ? 'Very Fast' : averageElixir <= 3.5 ? 'Fast' : averageElixir <= 4.0 ? 'Medium' : 'Heavy';
@@ -72,6 +93,17 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                             <span>Player Stats</span>
                         </button>
                     )}
+                    <button
+                        onClick={handleFavoriteToggle}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all active:scale-95 border ${
+                            isFavorited
+                                ? 'bg-rose-500/15 text-rose-400 border-rose-500/40 hover:bg-rose-500/25'
+                                : 'bg-surface-container-high hover:bg-surface-container-highest text-on-surface border-outline-variant/30 hover:border-rose-500/40 hover:text-rose-400'
+                        }`}
+                    >
+                        <span className="material-symbols-outlined" style={{ fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+                        <span className="hidden sm:inline">{isFavorited ? 'Saved' : 'Save'}</span>
+                    </button>
                     <button
                         onClick={() => {
                             navigator.clipboard?.writeText(generatedLink);

@@ -9,6 +9,28 @@ const api = axios.create({
     },
 });
 
+// Automatically attach auth token to all requests
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+// Handle 401 responses (expired token)
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('auth_token');
+            // Dispatch custom event so AuthContext can react
+            window.dispatchEvent(new CustomEvent('auth:logout'));
+        }
+        return Promise.reject(error);
+    }
+);
+
 export const fetchFreeDeck = async (tag) => {
     // Ensure tag starts with %23 for URL
     const cleanTag = tag.replace(/#/g, '');
@@ -26,58 +48,96 @@ export const fetchFreeDeck = async (tag) => {
  * SSE streaming deck generation.
  * Calls onDeck(deckData) for each deck as it arrives, onDone() when all are complete.
  * Returns a cleanup function to abort the connection.
+ * 
+ * Uses a fetch preflight to catch 429/401 errors (since EventSource can't read HTTP status).
  */
 export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) => {
     const cleanTag = tag.replace(/#/g, '');
     const formattedTag = `%23${cleanTag}`;
     const baseUrl = API_BASE_URL.replace(/\/$/, '');
-    const url = `${baseUrl}/freeDeck/${formattedTag}/stream`;
+    
+    const token = localStorage.getItem('auth_token');
+    const tokenParam = token ? `?token=${encodeURIComponent(token)}` : '';
+    const url = `${baseUrl}/freeDeck/${formattedTag}/stream${tokenParam}`;
 
-    const eventSource = new EventSource(url);
+    let eventSource = null;
+    let aborted = false;
 
-    eventSource.addEventListener('init', (e) => {
-        try {
-            const data = JSON.parse(e.data);
-            onInit?.(data);
-        } catch (err) {
-            console.error('Failed to parse init event:', err);
+    // Preflight: check rate limit with a quick fetch before opening EventSource
+    fetch(url, {
+        method: 'GET',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    }).then(response => {
+        if (aborted) return;
+        
+        if (response.status === 429) {
+            const error = new Error('Rate limit exceeded');
+            error.status = 429;
+            onError?.(error);
+            return;
         }
-    });
-
-    eventSource.addEventListener('deck', (e) => {
-        try {
-            const deck = JSON.parse(e.data);
-            onDeck?.(deck);
-        } catch (err) {
-            console.error('Failed to parse deck event:', err);
+        if (response.status === 401) {
+            const error = new Error('Authentication required');
+            error.status = 401;
+            onError?.(error);
+            return;
         }
-    });
-
-    eventSource.addEventListener('done', (e) => {
-        eventSource.close();
-        try {
-            const data = JSON.parse(e.data);
-            onDone?.(data);
-        } catch (err) {
-            onDone?.({});
+        if (!response.ok) {
+            onError?.(new Error(`HTTP ${response.status}`));
+            return;
         }
-    });
 
-    eventSource.addEventListener('error', (e) => {
-        // SSE 'error' can be a reconnect attempt or a real error
-        if (eventSource.readyState === EventSource.CLOSED) {
-            onError?.(new Error('SSE connection closed'));
+        // Read the SSE stream manually from the fetch response
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        function processLine(line) {
+            if (line.startsWith('event:')) {
+                buffer = '';
+                const eventType = line.substring(6).trim();
+                buffer = eventType;
+            } else if (line.startsWith('data:')) {
+                const data = line.substring(5).trim();
+                try {
+                    const parsed = JSON.parse(data);
+                    if (buffer === 'init') onInit?.(parsed);
+                    else if (buffer === 'deck') onDeck?.(parsed);
+                    else if (buffer === 'done') onDone?.(parsed);
+                    else if (buffer === 'error') onError?.(new Error(parsed.message || 'Server error'));
+                } catch (err) {
+                    // Non-JSON data line, skip
+                }
+            }
         }
-    });
 
-    eventSource.onerror = (e) => {
-        eventSource.close();
-        onError?.(new Error('SSE connection failed'));
-    };
+        function pump() {
+            return reader.read().then(({ done, value }) => {
+                if (done || aborted) {
+                    if (!aborted) onDone?.({});
+                    return;
+                }
+                const text = decoder.decode(value, { stream: true });
+                const lines = text.split('\n');
+                for (const line of lines) {
+                    if (line.trim()) processLine(line.trim());
+                }
+                return pump();
+            });
+        }
+
+        pump().catch(err => {
+            if (!aborted) onError?.(err);
+        });
+
+    }).catch(err => {
+        if (!aborted) onError?.(err);
+    });
 
     // Return cleanup function
     return () => {
-        eventSource.close();
+        aborted = true;
+        eventSource?.close();
     };
 };
 
