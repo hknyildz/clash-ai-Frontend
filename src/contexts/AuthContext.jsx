@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
         }
         setFavoritesLoading(true);
         try {
-            const res = await axios.get(`${API_BASE_URL}/auth/favorites`, {
+            const res = await axios.get(`${API_BASE_URL}auth/favorites`, {
                 headers: { Authorization: `Bearer ${activeToken}` }
             });
             setFavorites(res.data || []);
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
     // On mount, verify stored token
     useEffect(() => {
         if (token) {
-            axios.get(`${API_BASE_URL}/auth/me`, {
+            axios.get(`${API_BASE_URL}auth/me`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then(res => {
@@ -73,7 +73,7 @@ export function AuthProvider({ children }) {
 
     const login = async (googleCredential) => {
         try {
-            const res = await axios.post(`${API_BASE_URL}/auth/google`, {
+            const res = await axios.post(`${API_BASE_URL}auth/google`, {
                 token: googleCredential
             });
             const { user: userData, token: authToken } = res.data;
@@ -103,7 +103,7 @@ export function AuthProvider({ children }) {
         }
 
         try {
-            const res = await axios.post(`${API_BASE_URL}/auth/favorites`, {
+            const res = await axios.post(`${API_BASE_URL}auth/favorites`, {
                 type,
                 targetKey,
                 targetName,
@@ -132,7 +132,7 @@ export function AuthProvider({ children }) {
         }
 
         try {
-            await axios.delete(`${API_BASE_URL}/auth/favorites`, {
+            await axios.delete(`${API_BASE_URL}auth/favorites`, {
                 headers: { Authorization: `Bearer ${token}` },
                 params: { type, targetKey }
             });
@@ -165,10 +165,10 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={value}>
             {children}
-            <LoginModal 
-                isOpen={loginModalOpen} 
-                onClose={closeLogin} 
-                message={loginMessage} 
+            <LoginModal
+                isOpen={loginModalOpen}
+                onClose={closeLogin}
+                message={loginMessage}
             />
         </AuthContext.Provider>
     );
