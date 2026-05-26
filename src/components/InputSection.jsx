@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTab, isAuthenticated, onLoginRequired }) => {
+const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTab }) => {
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -10,8 +10,8 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
         }
     };
 
-    // Don't show input section for clans/clan-detail/stats tabs
-    if (activeTab === 'clans' || activeTab === 'clan-detail' || activeTab === 'stats') return null;
+    // Don't show input section for clans/clan-detail/stats/favorites tabs
+    if (activeTab === 'clans' || activeTab === 'clan-detail' || activeTab === 'stats' || activeTab === 'favorites') return null;
 
     return (
         <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden px-6 pt-24 pb-16">
@@ -111,17 +111,8 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                                 ? 'bg-primary text-on-primary shadow-[0_0_20px_rgba(251,171,255,0.4)]'
                                 : 'text-on-surface-variant hover:text-primary'
                                 }`}
-                            onClick={() => {
-                                if (!isAuthenticated) {
-                                    onLoginRequired?.();
-                                } else {
-                                    navigate('/builder');
-                                }
-                            }}
+                            onClick={() => navigate('/builder')}
                         >
-                            {!isAuthenticated && (
-                                <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
-                            )}
                             <span className="hidden min-[400px]:inline">Advanced&nbsp;</span>Builder
                         </button>
                     </div>

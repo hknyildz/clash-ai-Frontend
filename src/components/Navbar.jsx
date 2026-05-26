@@ -2,9 +2,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useState, useRef, useEffect } from 'react';
 
-const Navbar = ({ activeTab, onLoginClick }) => {
+const Navbar = ({ activeTab }) => {
     const navigate = useNavigate();
-    const { user, isAuthenticated, logout } = useAuth();
+    const { user, isAuthenticated, logout, openLogin } = useAuth();
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -60,7 +60,7 @@ const Navbar = ({ activeTab, onLoginClick }) => {
                         <div className="relative ml-2" ref={dropdownRef}>
                             <button
                                 onClick={() => setShowDropdown(!showDropdown)}
-                                className="flex items-center gap-2 px-2 py-1.5 rounded-full hover:bg-surface-container-high transition-all duration-300"
+                                className="flex items-center gap-2 p-1 rounded-full hover:bg-surface-container-high transition-all duration-300 border border-transparent hover:border-primary/20"
                             >
                                 {user?.pictureUrl ? (
                                     <img
@@ -76,31 +76,30 @@ const Navbar = ({ activeTab, onLoginClick }) => {
                                         </span>
                                     </div>
                                 )}
-                                <span className="hidden sm:block text-xs text-on-surface-variant font-medium max-w-[100px] truncate">
-                                    {user?.name}
-                                </span>
                             </button>
 
                             {/* Dropdown */}
                             {showDropdown && (
-                                <div className="absolute right-0 top-12 bg-surface-container-high border border-outline-variant/30 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] animate-in fade-in slide-in-from-top-2">
-                                    <div className="px-4 py-3 border-b border-outline-variant/20">
-                                        <p className="text-sm font-semibold text-on-surface">{user?.name}</p>
-                                        <p className="text-xs text-on-surface-variant truncate">{user?.email}</p>
-                                    </div>
-                                    <div className="px-4 py-2 border-b border-outline-variant/20">
-                                        <p className="text-xs text-on-surface-variant">
-                                            Daily usage: <span className="text-primary font-bold">{user?.dailyGenerationsUsed || 0}</span>/{user?.dailyLimit || 20}
-                                        </p>
-                                    </div>
+                                <div className="absolute right-0 top-12 bg-surface-container-high border border-outline-variant/30 rounded-2xl shadow-2xl overflow-hidden w-48 animate-in fade-in slide-in-from-top-2 z-50 py-1">
+                                    <button
+                                        onClick={() => {
+                                            navigate('/favorites');
+                                            setShowDropdown(false);
+                                        }}
+                                        className="w-full px-4 py-3 text-left text-xs text-on-surface hover:bg-surface-container-highest transition-colors flex items-center gap-2 font-headline font-bold uppercase tracking-wider"
+                                    >
+                                        <span className="material-symbols-outlined text-base text-primary">favorite</span>
+                                        Favorites
+                                    </button>
                                     <button
                                         onClick={() => {
                                             logout();
                                             setShowDropdown(false);
+                                            navigate('/');
                                         }}
-                                        className="w-full px-4 py-3 text-left text-sm text-on-surface-variant hover:bg-surface-container hover:text-error transition-colors flex items-center gap-2"
+                                        className="w-full px-4 py-3 text-left text-xs text-on-surface-variant hover:bg-surface-container-highest hover:text-error transition-colors flex items-center gap-2 font-headline font-bold uppercase tracking-wider"
                                     >
-                                        <span className="material-symbols-outlined text-base">logout</span>
+                                        <span className="material-symbols-outlined text-base text-error">logout</span>
                                         Sign Out
                                     </button>
                                 </div>
@@ -108,7 +107,7 @@ const Navbar = ({ activeTab, onLoginClick }) => {
                         </div>
                     ) : (
                         <button
-                            onClick={onLoginClick}
+                            onClick={() => openLogin()}
                             className="ml-2 font-headline font-bold text-[10px] sm:text-xs uppercase tracking-wider px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-primary text-on-primary hover:bg-primary/80 transition-all duration-300 shadow-[0_0_12px_rgba(251,171,255,0.3)]"
                         >
                             <span className="material-symbols-outlined text-sm sm:text-base align-middle mr-0.5 sm:mr-1">login</span>

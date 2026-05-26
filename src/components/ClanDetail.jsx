@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fetchClanInfo } from '../services/api';
 import './ClanDetail.css';
+import { useAuth } from '../contexts/AuthContext';
 
 const formatLastSeen = (timeStr) => {
     if (!timeStr) return 'Unknown';
@@ -25,6 +26,20 @@ const ClanDetail = ({ clanTag, onBack, onNavigateToPlayer }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showAllMembers, setShowAllMembers] = useState(false);
+    const { favorites, addFavorite, removeFavorite } = useAuth();
+
+    const isClanFavorited = clan?.tag
+        ? favorites.some(f => f.type === 'CLAN' && f.targetKey === clan.tag)
+        : false;
+
+    const handleClanFavoriteToggle = () => {
+        if (!clan?.tag) return;
+        if (isClanFavorited) {
+            removeFavorite('CLAN', clan.tag);
+        } else {
+            addFavorite('CLAN', clan.tag, clan.name || 'Unknown Clan', null);
+        }
+    };
 
     useEffect(() => {
         if (!clanTag) return;
@@ -66,7 +81,7 @@ const ClanDetail = ({ clanTag, onBack, onNavigateToPlayer }) => {
 
     if (error) {
         return (
-            <div className="clan-detail">
+            <div className="clan-detail ">
                 <button className="clan-detail-back" onClick={onBack}>
                     <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>arrow_back</span>
                     Back to Clans
@@ -102,7 +117,19 @@ const ClanDetail = ({ clanTag, onBack, onNavigateToPlayer }) => {
                     <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>shield</span>
                 </div>
                 <div className="clan-detail-info">
-                    <h2>{clan.name}</h2>
+                    <div className="flex items-center gap-2">
+                        <h2>{clan.name}</h2>
+                        <button
+                            onClick={handleClanFavoriteToggle}
+                            className={`px-1.5 pt-1.5 rounded-full transition-all active:scale-95 border ${isClanFavorited
+                                ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                                : 'bg-white/5 hover:bg-white/10 text-outline hover:text-rose-400 border border-white/10 hover:border-rose-500/30'
+                                }`}
+                            title={isClanFavorited ? "Remove Clan from Saved" : "Save Clan"}
+                        >
+                            <span className="material-symbols-outlined text-sm sm:text-base leading-none" style={{ fontVariationSettings: isClanFavorited ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+                        </button>
+                    </div>
                     <p className="clan-detail-tag">{clan.tag}</p>
                     <span className={`clan-detail-type ${typeClass}`}>
                         {clan.type === 'inviteOnly' ? 'Invite Only' : clan.type}

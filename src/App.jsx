@@ -18,7 +18,7 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import AdBanner from './components/AdBanner';
 import RouteWatcher from './components/RouteWatcher';
-import LoginModal from './components/LoginModal';
+import FavoritesPage from './components/FavoritesPage';
 import './index.css'
 
 function App() {
@@ -34,9 +34,6 @@ function App() {
   const builderRef = useRef(null);
   const hasScrolledToBuilder = useRef(false);
   const sseCleanupRef = useRef(null);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginMessage, setLoginMessage] = useState('');
-  const { isAuthenticated } = useAuth();
 
   // Derive active view from path for UI highlighting (e.g., Navbar)
   const getActiveTabFromPath = () => {
@@ -46,6 +43,7 @@ function App() {
     if (path.startsWith('/player')) return 'stats';
     if (path === '/clans') return 'clans';
     if (path.startsWith('/clan')) return 'clan-detail';
+    if (path.startsWith('/favorites')) return 'favorites';
     return 'quick';
   };
 
@@ -149,6 +147,8 @@ function App() {
     sseCleanupRef.current = cleanup;
   };
 
+  const { openLogin } = useAuth();
+
   // Navigation Handlers
   const handleNavigateToPlayer = (newTag) => {
     let clean = newTag.toUpperCase().replace(/#/g, '');
@@ -165,15 +165,7 @@ function App() {
       <RouteWatcher />
       <Navbar 
         activeTab={activeTab}
-        onLoginClick={() => {
-          setLoginMessage('');
-          setShowLoginModal(true);
-        }}
-      />
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        message={loginMessage}
+        onLoginClick={() => openLogin()}
       />
 
       <main className="pt-20">
@@ -185,11 +177,6 @@ function App() {
           isLoading={loading}
           showButton={activeTab === 'quick'}
           activeTab={activeTab}
-          isAuthenticated={isAuthenticated}
-          onLoginRequired={() => {
-            setLoginMessage('Sign in with Google to use the Advanced Deck Builder.');
-            setShowLoginModal(true);
-          }}
         />
 
         <Routes>
@@ -285,6 +272,13 @@ function App() {
           <Route path="/release-notes" element={
             <div className="mt-6">
               <ReleaseNotes />
+            </div>
+          } />
+
+          {/* Favorites Tab */}
+          <Route path="/favorites" element={
+            <div className="mt-6">
+              <FavoritesPage />
             </div>
           } />
         </Routes>

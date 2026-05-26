@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchBattleLog } from '../services/api';
 import './BattleLog.css';
+import { useAuth } from '../contexts/AuthContext';
+import { getGameModeName } from '../utils/gameModes';
 
 const formatBattleTime = (timeStr) => {
     if (!timeStr) return '';
@@ -17,10 +19,42 @@ const formatBattleTime = (timeStr) => {
 const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
     const [expanded, setExpanded] = useState(false);
     const [imgErrors, setImgErrors] = useState({});
+    const { favorites, addFavorite, removeFavorite } = useAuth();
 
     const team = battle.team?.[0];
     const opponent = battle.opponent?.[0];
     if (!team || !opponent) return null;
+
+    const getDeckKey = (cards) => (cards || []).map(c => c.id).join(';');
+
+    const isDeckFavorited = (cards) => {
+        const key = getDeckKey(cards);
+        return favorites.some(f => f.type === 'DECK' && f.targetKey === key);
+    };
+
+    const handleToggleFavorite = (cards, e) => {
+        e.stopPropagation();
+        const key = getDeckKey(cards);
+        const isFav = isDeckFavorited(cards);
+        if (isFav) {
+            removeFavorite('DECK', key);
+        } else {
+            const avgElix = getAvgElixir(cards);
+            const name = `Battle Log Deck`;
+            const metadata = {
+                averageElixir: avgElix,
+                cards: (cards || []).map(c => {
+                    const isEvo = c.evolutionLevel === 1;
+                    const isHero = c.evolutionLevel === 2;
+                    const icon = isEvo && c.iconUrls?.evolutionMedium
+                        ? c.iconUrls.evolutionMedium
+                        : (isHero && c.iconUrls?.heroMedium ? c.iconUrls.heroMedium : c.iconUrls?.medium);
+                    return { name: c.name, icon };
+                })
+            };
+            addFavorite('DECK', key, name, JSON.stringify(metadata));
+        }
+    };
 
     const trophyChange = team.trophyChange || 0;
     const crownChange = team.crowns - opponent.crowns;
@@ -68,7 +102,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                     const baseImgSrc = isEvo && card.iconUrls?.evolutionMedium
                         ? card.iconUrls.evolutionMedium
                         : (isHero && card.iconUrls?.heroMedium ? card.iconUrls.heroMedium : card.iconUrls?.medium);
-                    
+
                     const cardUid = `${card.id}_${i}`;
                     const hasError = imgErrors[cardUid];
                     const imgSrc = hasError ? card.iconUrls?.medium : baseImgSrc;
@@ -76,9 +110,9 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                     return (
                         <div key={card.id || i} className={`battle-deck-card relative ${isEvo ? 'ring-1 ring-primary' : ''} ${isHero && !isEvo ? 'ring-1 ring-secondary' : ''}`}>
                             {imgSrc && (
-                                <img 
-                                    src={imgSrc} 
-                                    alt={card.name} 
+                                <img
+                                    src={imgSrc}
+                                    alt={card.name}
                                     onError={() => !hasError && setImgErrors(prev => ({ ...prev, [cardUid]: true }))}
                                 />
                             )}
@@ -112,7 +146,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                     const baseImgSrc = isEvo && card.iconUrls?.evolutionMedium
                         ? card.iconUrls.evolutionMedium
                         : (isHero && card.iconUrls?.heroMedium ? card.iconUrls.heroMedium : card.iconUrls?.medium);
-                    
+
                     const cardUid = `mini_${card.id}_${i}`;
                     const hasError = imgErrors[cardUid];
                     const imgSrc = hasError ? card.iconUrls?.medium : baseImgSrc;
@@ -120,10 +154,10 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                     return (
                         <div key={card.id || i} className={`relative w-8 h-12 sm:w-10 sm:h-[60px] rounded-sm overflow-hidden bg-surface-container-highest ${isEvo ? 'ring-1 ring-primary' : ''} ${isHero && !isEvo ? 'ring-1 ring-secondary' : ''}`}>
                             {imgSrc && (
-                                <img 
-                                    src={imgSrc} 
-                                    alt={card.name} 
-                                    className="w-full h-full object-cover" 
+                                <img
+                                    src={imgSrc}
+                                    alt={card.name}
+                                    className="w-full h-full object-cover"
                                     onError={() => !hasError && setImgErrors(prev => ({ ...prev, [cardUid]: true }))}
                                 />
                             )}
@@ -203,7 +237,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                         <span>👑 {opponent.crowns}</span>
                     </div>
                     <span className="battle-meta">
-                        {battle.gameMode?.name || 'Battle'}
+                        {getGameModeName(battle.gameMode)}
                     </span>
                     <span className={`material-symbols-outlined battle-expand-icon ${expanded ? 'rotated' : ''}`} style={{ fontSize: '1rem', color: 'var(--color-outline)' }}>
                         expand_more
@@ -237,13 +271,25 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                             {getAvgElixir(team.cards)}
                                         </span>
                                     </div>
-                                    <button
-                                        onClick={(e) => handleCopyDeck(team.cards, e)}
-                                        className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
-                                    >
-                                        <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
-                                        <span className="hidden sm:inline">Copy</span>
-                                    </button>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                        <button
+                                            onClick={(e) => handleToggleFavorite(team.cards, e)}
+                                            className={`px-1.5 pt-0.5 rounded transition-all active:scale-95 border ${isDeckFavorited(team.cards)
+                                                ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                                                : 'bg-white/5 hover:bg-white/10 text-outline hover:text-rose-400 border border-white/10 hover:border-rose-500/30'
+                                                }`}
+                                            title={isDeckFavorited(team.cards) ? "Remove from Saved" : "Save Deck"}
+                                        >
+                                            <span className="material-symbols-outlined" style={{ fontSize: '14px', fontVariationSettings: isDeckFavorited(team.cards) ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+                                        </button>
+                                        <button
+                                            onClick={(e) => handleCopyDeck(team.cards, e)}
+                                            className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
+                                        >
+                                            <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
+                                            <span className="hidden sm:inline">Copy</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 {renderDeck(team.cards)}
                                 <div className="battle-stats-row">
@@ -280,13 +326,25 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                             {getAvgElixir(opponent.cards)}
                                         </span>
                                     </div>
-                                    <button
-                                        onClick={(e) => handleCopyDeck(opponent.cards, e)}
-                                        className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
-                                    >
-                                        <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
-                                        <span className="hidden sm:inline">Copy</span>
-                                    </button>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                        <button
+                                            onClick={(e) => handleToggleFavorite(opponent.cards, e)}
+                                            className={`px-1.5 pt-0.5 rounded transition-all active:scale-95 border ${isDeckFavorited(opponent.cards)
+                                                ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                                                : 'bg-white/5 hover:bg-white/10 text-outline hover:text-rose-400 border border-white/10 hover:border-rose-500/30'
+                                                }`}
+                                            title={isDeckFavorited(opponent.cards) ? "Remove from Saved" : "Save Deck"}
+                                        >
+                                            <span className="material-symbols-outlined" style={{ fontSize: '14px', fontVariationSettings: isDeckFavorited(opponent.cards) ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+                                        </button>
+                                        <button
+                                            onClick={(e) => handleCopyDeck(opponent.cards, e)}
+                                            className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
+                                        >
+                                            <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
+                                            <span className="hidden sm:inline">Copy</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 {renderDeck(opponent.cards)}
                                 <div className="battle-stats-row">
@@ -318,7 +376,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                         <div className="battle-info-bar">
                             <div className="battle-info-item">
                                 <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>sports_esports</span>
-                                {battle.gameMode?.name || 'Battle'}
+                                {getGameModeName(battle.gameMode)}
                             </div>
                             <div className="battle-info-item">
                                 <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>stadium</span>
