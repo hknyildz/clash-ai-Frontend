@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchPlayerStats, fetchAllCards } from '../services/api';
 import BattleLog from './BattleLog';
 import TopPlayers from './TopPlayers';
+import CardUpgradeSection from './CardUpgradeSection';
 import './PlayerStats.css';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -405,6 +406,15 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                 )}
             </div>
 
+            {/* Card Progression — Current Deck */}
+            {statsData.currentDeck && statsData.currentDeck.length > 0 && (
+                <CardUpgradeSection
+                    currentDeck={statsData.currentDeck}
+                    cards={statsData.cards}
+                    allCards={allCards}
+                />
+            )}
+
             {/* Top Mastery Cards */}
             {masteryCards.length > 0 && (
                 <motion.div
@@ -452,7 +462,6 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                                     )}
                                     <div className="mastery-card-overlay">
                                         <span className="mastery-card-name">{card.name}</span>
-                                        {card.level && <span className="text-[10px] font-bold text-white/70">Level {card.level}</span>}
                                     </div>
                                 </motion.div>
                             );
