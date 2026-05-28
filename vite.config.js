@@ -8,12 +8,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/freeDeck': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/player': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         bypass: (req) => {
@@ -23,7 +23,7 @@ export default defineConfig({
         }
       },
       '/clan': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         bypass: (req) => {
@@ -33,7 +33,7 @@ export default defineConfig({
         }
       },
       '/clans': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         bypass: (req) => {
@@ -43,22 +43,22 @@ export default defineConfig({
         }
       },
       '/cards': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/decks': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/auth': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/feedback': {
-        target: 'https://api.clashdeckster.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       }

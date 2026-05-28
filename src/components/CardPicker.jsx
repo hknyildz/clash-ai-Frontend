@@ -22,15 +22,23 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
                     console.log("[CardPicker] Data received:", data.length, "cards");
                     let expandedCards = [];
                     data.forEach(c => {
+                        // Base normal card (always added unless it's a champion)
                         if (c.rarity?.toLowerCase() === 'champion') {
+                            // Champions are always hero form
                             expandedCards.push({ ...c, selectedForm: 'hero', uid: c.id + '_hero', isHero: true, evolutionLevel: 2 });
                         } else {
                             expandedCards.push({ ...c, selectedForm: 'normal', uid: c.id + '_normal', isHero: false, evolved: false, evolutionLevel: 0 });
-                            if (c.evolved) {
+
+                            // Check for evolved form: imageUriEvolved differs from base imageUri
+                            const hasEvoImage = c.imageUriEvolved && c.imageUriEvolved !== c.imageUri;
+                            if (hasEvoImage) {
                                 expandedCards.push({ ...c, selectedForm: 'evolved', uid: c.id + '_evolved', rarity: 'Evolved', isHero: false, evolved: true, evolutionLevel: 1 });
                             }
-                            if (c.isHero) {
-                                expandedCards.push({ ...c, selectedForm: 'hero', uid: c.id + '_hero', rarity: 'Champion', isHero: true, evolved: false, evolutionLevel: 2 });
+
+                            // Check for hero form: imageUriHero differs from base imageUri
+                            const hasHeroImage = c.imageUriHero && c.imageUriHero !== c.imageUri;
+                            if (hasHeroImage) {
+                                expandedCards.push({ ...c, selectedForm: 'hero', uid: c.id + '_hero', rarity: 'Hero', isHero: true, evolved: false, evolutionLevel: 2 });
                             }
                         }
                     });
@@ -47,7 +55,7 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
     const dynamicRarities = (() => {
         let filters = ['All', 'Common', 'Rare', 'Epic', 'Legendary'];
         if (activeSlotIndex === 0 || activeSlotIndex === 2) filters.push('Evolved');
-        if (activeSlotIndex === 1 || activeSlotIndex === 2) filters.push('Champion');
+        if (activeSlotIndex === 1 || activeSlotIndex === 2) filters.push('Hero');
         return filters;
     })();
 
@@ -85,7 +93,8 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
         if (selectedRarity !== 'All') {
             if (selectedRarity === 'Evolved') {
                 result = result.filter(c => c.selectedForm === 'evolved');
-            } else if (selectedRarity === 'Champion') {
+            } else if (selectedRarity === 'Hero') {
+                // Hero filter shows both hero-form cards and champions
                 result = result.filter(c => c.selectedForm === 'hero');
             } else {
                 result = result.filter(c => c.rarity && c.rarity.toLowerCase() === selectedRarity.toLowerCase() && c.selectedForm === 'normal');
@@ -134,7 +143,7 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
                             {dynamicRarities.map(r => (
                                 <button
                                     key={r}
-                                    className={`rarity-chip ${selectedRarity === r ? 'active' : ''} ${r === 'Evolved' ? 'border-primary/50 text-primary hover:bg-primary/10' : ''} ${r === 'Champion' ? 'border-secondary/50 text-secondary hover:bg-secondary/10' : ''}`}
+                                    className={`rarity-chip ${selectedRarity === r ? 'active' : ''} ${r === 'Evolved' ? 'border-primary/50 text-primary hover:bg-primary/10' : ''} ${r === 'Hero' ? 'border-secondary/50 text-secondary hover:bg-secondary/10' : ''}`}
                                     onClick={() => setSelectedRarity(r)}
                                 >
                                     {r}
