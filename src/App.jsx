@@ -19,6 +19,7 @@ import CookieBanner from './components/CookieBanner';
 import AdBanner from './components/AdBanner';
 import RouteWatcher from './components/RouteWatcher';
 import FavoritesPage from './components/FavoritesPage';
+import CardUpgradeCalculatorPage from './components/CardUpgradeCalculatorPage';
 import './index.css'
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
     if (path === '/clans') return 'clans';
     if (path.startsWith('/clan')) return 'clan-detail';
     if (path.startsWith('/favorites')) return 'favorites';
+    if (path === '/card-upgrade-calculator') return 'calculator';
     return 'quick';
   };
 
@@ -223,15 +225,10 @@ function App() {
                   />
                 </div>
               )}
-
-              {/* SEO Content Sections (show when no deck generated) */}
-              {!deckData && (
-                <>
-                  <HowItWorks />
-                  <FaqSection />
-                  <PromoSection />
-                </>
-              )}
+              {/* SEO Content Sections — always visible for indexing */}
+              <HowItWorks />
+              <FaqSection />
+              <PromoSection />
             </>
           } />
 
@@ -279,6 +276,13 @@ function App() {
           <Route path="/favorites" element={
             <div className="mt-6">
               <FavoritesPage />
+            </div>
+          } />
+
+          {/* Card Upgrade Calculator Tab */}
+          <Route path="/card-upgrade-calculator" element={
+            <div className="mt-6">
+              <CardUpgradeCalculatorPage />
             </div>
           } />
         </Routes>

@@ -10,8 +10,8 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
         }
     };
 
-    // Don't show input section for clans/clan-detail/stats/favorites tabs
-    if (activeTab === 'clans' || activeTab === 'clan-detail' || activeTab === 'stats' || activeTab === 'favorites') return null;
+    // Don't show input section for clans/clan-detail/stats/favorites/calculator tabs
+    if (activeTab === 'clans' || activeTab === 'clan-detail' || activeTab === 'stats' || activeTab === 'favorites' || activeTab === 'calculator') return null;
 
     return (
         <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden px-6 pt-24 pb-16">
