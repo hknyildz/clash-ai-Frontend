@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /favorites
 
 Sitemap: https://clashdeckster.com/sitemap.xml

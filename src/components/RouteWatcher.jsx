@@ -1,8 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const RouteWatcher = () => {
   const location = useLocation();
+  const [seo, setSeo] = useState({
+    title: 'Clash Deckster — AI Clash Royale Deck Generator & Builder (2026)',
+    description: 'Generate winning Clash Royale decks with AI. Analyzes your card levels, current meta, and playstyle to build optimized ladder decks. Free AI deck generator.',
+    canonical: 'https://clashdeckster.com'
+  });
 
   useEffect(() => {
     // 1. Google Analytics 4 - Page View
@@ -15,13 +21,11 @@ const RouteWatcher = () => {
     }
 
     // 2. AdSense / GPT Refresh
-    // If using Google Publisher Tag (GPT)
     if (window.googletag && window.googletag.apiReady) {
       window.googletag.cmd.push(() => {
         window.googletag.pubads().refresh();
       });
     } else {
-      // Fallback for adsbygoogle: Push an empty object or handle re-render in AdBanner
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (e) {
@@ -29,51 +33,67 @@ const RouteWatcher = () => {
       }
     }
 
-    // 3. Dynamic Meta Tags & SEO
-    updateMetaTags(location.pathname);
+    // 3. Update SEO metadata state
+    const path = location.pathname;
+    let title = 'Clash Deckster — AI Clash Royale Deck Generator & Builder (2026)';
+    let description = 'Generate winning Clash Royale decks with AI. Analyzes your card levels, current meta, and playstyle to build optimized ladder decks. Free AI deck generator.';
+
+    if (path.startsWith('/player/')) {
+      const tag = path.split('/').pop();
+      title = `Player Stats: ${tag} — Clash Royale Profile | Clash Deckster`;
+      description = `Real-time Clash Royale statistics for player ${tag}. View card levels, deck progression, trophy history, and upgrade calculator.`;
+    } else if (path.startsWith('/player')) {
+      title = 'Clash Royale Player Stats Lookup — Card Levels & Progression | Clash Deckster';
+      description = 'Search any Clash Royale player by tag. View card levels, trophies, battle history, and card upgrade progression stats.';
+    } else if (path.startsWith('/clans')) {
+      title = 'Clash Royale Clan Search — Find & Analyze Clans | Clash Deckster';
+      description = 'Search Clash Royale clans by name, trophy count, or member size. View clan war logs, member stats, and performance analytics.';
+    } else if (path.startsWith('/clan/')) {
+      const clanTag = path.split('/').pop();
+      title = `Clan Details: ${clanTag} — Members & War Stats | Clash Deckster`;
+      description = `Detailed Clash Royale clan analytics for clan ${clanTag}. Member trophy distribution, war participation, and activity stats.`;
+    } else if (path === '/builder') {
+      title = 'Advanced Deck Builder — Build Custom Clash Royale Decks | Clash Deckster';
+      description = 'Build custom Clash Royale decks with Evolved cards, Heroes, and Champions. Smart card picker with rarity filters and AI-powered suggestions.';
+    } else if (path === '/card-upgrade-calculator') {
+      title = 'Clash Royale Card Upgrade Calculator — Max Level Cost (Gold, Cards, Gems) | Clash Deckster';
+      description = 'Calculate exactly how much Gold, Cards, and Gems you need to max any Clash Royale card. Works for Common, Rare, Epic, Legendary, and Champion cards. Free calculator.';
+    } else if (path === '/release-notes') {
+      title = 'Release Notes & Updates | Clash Deckster';
+      description = 'Latest updates and feature releases for ClashDeckster AI deck generator.';
+    } else if (path === '/favorites') {
+      title = 'My Favorite Decks | Clash Deckster';
+      description = 'Your saved Clash Royale deck collection. Quick access to your best decks.';
+    }
+
+    setSeo({
+      title,
+      description,
+      canonical: `https://clashdeckster.com${path === '/' ? '' : path}`
+    });
 
     // 4. Scroll to Top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
   }, [location]);
 
-  const updateMetaTags = (path) => {
-    let title = 'Clash Deckster - Forge Your Ultimate Destiny';
-    let description = 'Analyze your Clash Royale playstyle and generate data-backed decks designed for total arena domination.';
-
-    if (path.startsWith('/player/')) {
-      const tag = path.split('/').pop();
-      title = `Player Stats: ${tag} | Clash Deckster`;
-      description = `View real-time Clash Royale statistics, battle logs, and custom deck recommendations for player ${tag}.`;
-    } else if (path.startsWith('/player')) {
-      title = 'Search Player | Clash Deckster';
-      description = 'Search for a player and view their Clash Royale statistics.';
-    } else if (path.startsWith('/clans')) {
-      title = 'Search Clans | Clash Deckster';
-      description = 'Find the best Clash Royale clans and analyze member performance.';
-    } else if (path.startsWith('/clan/')) {
-      const clanTag = path.split('/').pop();
-      title = `Clan Details: ${clanTag} | Clash Deckster`;
-      description = `Deep dive into clan ${clanTag} members, trophy counts, and activity logs.`;
-    } else if (path === '/builder') {
-      title = 'Advanced Deck Builder | Clash Deckster';
-      description = 'Build custom Clash Royale decks with advanced filters for Evolved and Hero cards.';
-    }
-
-    document.title = title;
-
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', description);
-    } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = description;
-      document.head.appendChild(meta);
-    }
-  };
-
-  return null;
+  return (
+    <Helmet>
+      <title>{seo.title}</title>
+      <meta name="description" content={seo.description} />
+      <link rel="canonical" href={seo.canonical} />
+      
+      {/* Open Graph / Facebook */}
+      <meta property="og:title" content={seo.title} />
+      <meta property="og:description" content={seo.description} />
+      <meta property="og:url" content={seo.canonical} />
+      
+      {/* Twitter */}
+      <meta name="twitter:title" content={seo.title} />
+      <meta name="twitter:description" content={seo.description} />
+      <meta name="twitter:url" content={seo.canonical} />
+    </Helmet>
+  );
 };
 
 export default RouteWatcher;
