@@ -412,6 +412,8 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                     currentDeck={statsData.currentDeck}
                     cards={statsData.cards}
                     allCards={allCards}
+                    playerName={statsData.name}
+                    playerTag={statsData.tag}
                 />
             )}
 

@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DeckFeedback from './DeckFeedback';
 import { useAuth } from '../contexts/AuthContext';
+import { fetchPlayerStats, fetchAllCards } from '../services/api';
+import { calculateProgression } from '../utils/upgradeCalculator';
+import { RARITY_CONFIG } from '../utils/upgradeData';
+import CardUpgradeModal from './CardUpgradeModal';
 
 const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, onVoted }) => {
     const { favorites, addFavorite, removeFavorite } = useAuth();
@@ -10,6 +14,86 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
     const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
 
     const [imgErrors, setImgErrors] = useState({});
+
+    // Upgrade calculator integration state
+    const [allCards, setAllCards] = useState(null);
+    const [playerCards, setPlayerCards] = useState(null);
+    const [playerName, setPlayerName] = useState('');
+    const [loadingStats, setLoadingStats] = useState(false);
+    const [selectedCardEntry, setSelectedCardEntry] = useState(null);
+
+    // Fetch all cards on mount
+    useEffect(() => {
+        const loadAllCards = async () => {
+            try {
+                const data = await fetchAllCards();
+                setAllCards(data);
+            } catch (err) {
+                console.error('[DeckDisplay] Failed to fetch all cards:', err);
+            }
+        };
+        loadAllCards();
+    }, []);
+
+    // Reset player collection cache if the tag changes
+    useEffect(() => {
+        setPlayerCards(null);
+        setPlayerName('');
+    }, [playerTag]);
+
+    const handleCardClick = async (clickedCard) => {
+        let currentCollection = playerCards;
+        let name = playerName;
+
+        // If playerTag is available but collection not loaded yet, fetch it on demand
+        if (playerTag && !currentCollection && !loadingStats) {
+            setLoadingStats(true);
+            try {
+                const data = await fetchPlayerStats(playerTag);
+                currentCollection = data.cards || [];
+                name = data.name || '';
+                setPlayerCards(currentCollection);
+                setPlayerName(name);
+            } catch (err) {
+                console.error('[DeckDisplay] Failed to fetch player stats on demand:', err);
+            } finally {
+                setLoadingStats(false);
+            }
+        }
+
+        // 1. Resolve card from allCards database to get rarity etc.
+        const baseCard = allCards?.find(c => c.id === clickedCard.id);
+        const enrichedCard = { ...baseCard, ...clickedCard };
+
+        // 2. Find the card in the player's collection
+        const playerCard = currentCollection?.find(c => c.id === clickedCard.id);
+
+        const rarity = (enrichedCard.rarity || 'common').toLowerCase();
+        const config = RARITY_CONFIG[rarity];
+
+        let absoluteLevel;
+        let count = 0;
+
+        if (playerCard) {
+            // Player owns this card: use their actual level and count
+            absoluteLevel = playerCard.level + (config ? config.relativeLevel : 0);
+            count = playerCard.count || 0;
+        } else {
+            // Player doesn't own this card or no player loaded
+            // Use card's level in the generated deck if available, otherwise rarity startLevel
+            absoluteLevel = clickedCard.level || (config ? config.startLevel : 11);
+            count = 0;
+        }
+
+        // Calculate progression
+        const progression = calculateProgression(rarity, absoluteLevel, count);
+
+        setSelectedCardEntry({
+            card: { ...enrichedCard, count },
+            absoluteLevel,
+            progression
+        });
+    };
 
     // Use backend deep link (includes &tt=) or fallback to generating one
     const getDeckIds = () => deck.map(c => c.id).join(';');
@@ -150,6 +234,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                                     key={card.id || index}
                                     className={`relative group aspect-[285/420] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer ${card.isHero && hasError ? 'ring-1 ring-secondary/50' : ''}`}
                                     variants={item}
+                                    onClick={() => handleCardClick(card)}
                                 >
                                     <img
                                         className="w-full h-full object-cover"
@@ -275,6 +360,28 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                 hasVoted={hasVoted}
                 onFeedbackSent={(vote) => onVoted?.(vote)}
             />
+
+            {/* Backdrop loading stats spinner */}
+            {loadingStats && (
+                <div className="fixed inset-0 bg-background/50 backdrop-blur-sm z-[1100] flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-3 bg-surface-container border border-outline-variant/30 px-6 py-4 rounded-2xl shadow-2xl">
+                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        <p className="text-xs font-headline font-bold uppercase tracking-wider text-on-surface">Loading player stats...</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Card progression details modal */}
+            {selectedCardEntry && (
+                <CardUpgradeModal
+                    cards={playerCards || []}
+                    allCards={allCards || []}
+                    initialSelectedCard={selectedCardEntry}
+                    onClose={() => setSelectedCardEntry(null)}
+                    playerTag={playerTag}
+                    playerName={playerName}
+                />
+            )}
         </div>
     );
 };

@@ -1,7 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { rankCardsByProgression, calculateUpgrade, calculateProgression } from '../utils/upgradeCalculator';
 import { RARITY_CONFIG, RARITY_DISPLAY } from '../utils/upgradeData';
+import './CardUpgradeSection.css';
 
 /**
  * CardUpgradeModal — Full card list popup with rarity filters + card detail view.
@@ -16,7 +18,8 @@ import { RARITY_CONFIG, RARITY_DISPLAY } from '../utils/upgradeData';
  *   initialSelectedCard — If set, opens directly into detail view
  *   onClose            — Callback to close the modal
  */
-const CardUpgradeModal = ({ cards, allCards, initialSelectedCard, onClose }) => {
+const CardUpgradeModal = ({ cards, allCards, initialSelectedCard, onClose, playerTag, playerName }) => {
+    const navigate = useNavigate();
     const [view, setView] = useState(initialSelectedCard ? 'detail' : 'list');
     const [selectedEntry, setSelectedEntry] = useState(initialSelectedCard || null);
     const [rarityFilter, setRarityFilter] = useState('all');
@@ -24,7 +27,47 @@ const CardUpgradeModal = ({ cards, allCards, initialSelectedCard, onClose }) => 
     const [targetLevel, setTargetLevel] = useState(null);
 
     // All cards ranked by progression (no limit)
-    const allRanked = useMemo(() => rankCardsByProgression(cards, 0), [cards]);
+    const allRanked = useMemo(() => {
+        if (cards && cards.length > 0) {
+            return rankCardsByProgression(cards, 0);
+        }
+        if (allCards && allCards.length > 0) {
+            // Build default entries for all cards at starting levels
+            return allCards.map(c => {
+                const rarity = c.rarity?.toLowerCase() || 'common';
+                const config = RARITY_CONFIG[rarity];
+                const startLevel = config ? config.startLevel : 1;
+                return {
+                    card: {
+                        ...c,
+                        level: startLevel - (config ? config.relativeLevel : 0),
+                        count: 0
+                    },
+                    absoluteLevel: startLevel,
+                    progression: {
+                        percentage: 0,
+                        levelsRemaining: config ? config.maxLevel - startLevel : 15,
+                        totalCardsToMax: config ? config.upgradeMaterials.reduce((sum, n) => sum + n, 0) : 0,
+                        ownedCards: 0
+                    }
+                };
+            });
+        }
+        return [];
+    }, [cards, allCards]);
+
+    const handleOpenInCalculator = () => {
+        navigate('/card-upgrade-calculator', {
+            state: {
+                cards,
+                allCards,
+                playerTag,
+                playerName,
+                selectedEntry
+            }
+        });
+        onClose();
+    };
 
     // Filtered list based on rarity + search
     const filteredCards = useMemo(() => {
@@ -106,11 +149,7 @@ const CardUpgradeModal = ({ cards, allCards, initialSelectedCard, onClose }) => 
     // Close on Escape key
     const handleKeyDown = (e) => {
         if (e.key === 'Escape') {
-            if (view === 'detail') {
-                backToList();
-            } else {
-                onClose();
-            }
+            onClose();
         }
     };
 
@@ -241,13 +280,16 @@ const CardUpgradeModal = ({ cards, allCards, initialSelectedCard, onClose }) => 
                 ) : (
                     /* ═══ DETAIL VIEW ═══ */
                     <div className="upgrade-detail-panel">
-                        {/* Back Button */}
-                        <button className="upgrade-detail-back" onClick={backToList}>
-                            <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>
-                                arrow_back
-                            </span>
-                            All Cards
-                        </button>
+                        {/* Redirect Button */}
+                        <div className="flex justify-end items-center mb-4">
+                            <button
+                                className="upgrade-view-all font-headline font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-full border border-primary/30 transition-all duration-300 flex items-center gap-1.5"
+                                onClick={handleOpenInCalculator}
+                            >
+                                <span className="material-symbols-outlined text-sm">calculate</span>
+                                Open in Full Calculator
+                            </button>
+                        </div>
 
                         {selectedEntry && detailData && (
                             <>

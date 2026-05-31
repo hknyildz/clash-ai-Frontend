@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { getCollectionSummary, calculateUpgrade, calculateProgression } from '../utils/upgradeCalculator';
 import { RARITY_CONFIG, RARITY_DISPLAY } from '../utils/upgradeData';
-import CardUpgradeModal from './CardUpgradeModal';
 import './CardUpgradeSection.css';
 
 /**
@@ -12,11 +12,11 @@ import './CardUpgradeSection.css';
  *   currentDeck — Array of CardDto objects from the player's current deck
  *   cards       — Full card collection (for count data + modal)
  *   allCards    — Enriched Card objects (from /cards endpoint, for images)
+ *   playerName  — Player profile name
+ *   playerTag   — Player tag string
  */
-const CardUpgradeSection = ({ currentDeck, cards, allCards }) => {
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedCard, setSelectedCard] = useState(null);
-
+const CardUpgradeSection = ({ currentDeck, cards, allCards, playerName, playerTag }) => {
+    const navigate = useNavigate();
     const summary = useMemo(() => getCollectionSummary(cards), [cards]);
 
     /**
@@ -62,13 +62,27 @@ const CardUpgradeSection = ({ currentDeck, cards, allCards }) => {
     };
 
     const handleCardClick = (entry) => {
-        setSelectedCard(entry);
-        setModalOpen(true);
+        navigate('/card-upgrade-calculator', {
+            state: {
+                cards,
+                allCards,
+                playerName,
+                playerTag,
+                selectedEntry: entry
+            }
+        });
     };
 
     const handleViewAll = () => {
-        setSelectedCard(null);
-        setModalOpen(true);
+        navigate('/card-upgrade-calculator', {
+            state: {
+                cards,
+                allCards,
+                playerName,
+                playerTag,
+                selectedEntry: null
+            }
+        });
     };
 
     return (
@@ -219,18 +233,6 @@ const CardUpgradeSection = ({ currentDeck, cards, allCards }) => {
                 </div>
             </motion.div>
 
-            {/* Modal: Full Card List + Detail View */}
-            {modalOpen && (
-                <CardUpgradeModal
-                    cards={cards}
-                    allCards={allCards}
-                    initialSelectedCard={selectedCard}
-                    onClose={() => {
-                        setModalOpen(false);
-                        setSelectedCard(null);
-                    }}
-                />
-            )}
         </>
     );
 };
