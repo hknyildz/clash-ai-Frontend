@@ -91,6 +91,7 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
+        let leftover = '';
 
         function processLine(line) {
             if (line.startsWith('event:')) {
@@ -114,13 +115,22 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
         function pump() {
             return reader.read().then(({ done, value }) => {
                 if (done || aborted) {
-                    if (!aborted) onDone?.({});
+                    if (!aborted) {
+                        const finalLine = leftover.trim();
+                        if (finalLine) processLine(finalLine);
+                        onDone?.({});
+                    }
                     return;
                 }
                 const text = decoder.decode(value, { stream: true });
-                const lines = text.split('\n');
+                const combined = leftover + text;
+                const lines = combined.split('\n');
+                
+                leftover = lines.pop() || '';
+
                 for (const line of lines) {
-                    if (line.trim()) processLine(line.trim());
+                    const trimmed = line.trim();
+                    if (trimmed) processLine(trimmed);
                 }
                 return pump();
             });

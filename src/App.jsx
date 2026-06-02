@@ -25,6 +25,7 @@ import './index.css'
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { openLogin, isAuthenticated } = useAuth();
   const [tag, setTag] = useState('');
   const [deckData, setDeckData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -132,8 +133,16 @@ function App() {
         setStreamDone(true);
         // Check if this is a rate limit error (429)
         if (err?.message?.includes('429') || err?.status === 429) {
-          setLoginMessage('You\'ve used your free deck generation. Sign in with Google to continue!');
-          setShowLoginModal(true);
+          if (isAuthenticated) {
+            setError("You've reached your daily deck generation limit. Please try again tomorrow!");
+          } else {
+            openLogin("You've used your free deck generation. Sign in with Google to continue!");
+          }
+          return;
+        }
+        // Check if this is an authentication error (401)
+        if (err?.status === 401) {
+          openLogin("Your session has expired. Please sign in again.");
           return;
         }
         // Only show error if we didn't receive any decks
@@ -148,8 +157,6 @@ function App() {
 
     sseCleanupRef.current = cleanup;
   };
-
-  const { openLogin } = useAuth();
 
   // Navigation Handlers
   const handleNavigateToPlayer = (newTag) => {
