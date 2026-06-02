@@ -13,6 +13,14 @@ const DeckCarousel = ({ decks, onViewStats, isStreaming = false, totalExpected =
     const touchStartX = useRef(null);
     const containerRef = useRef(null);
 
+    const validDecks = decks ? decks.filter(d => d && d.valid !== false) : [];
+
+    const goTo = (idx) => {
+        if (idx >= 0 && idx < validDecks.length) {
+            setActiveIndex(idx);
+        }
+    };
+
     // Persist votedDecks to localStorage on change
     useEffect(() => {
         localStorage.setItem('votedDecks', JSON.stringify([...votedDecks]));
@@ -20,33 +28,28 @@ const DeckCarousel = ({ decks, onViewStats, isStreaming = false, totalExpected =
 
     // Auto-switch to newest deck when streaming
     useEffect(() => {
-        if (isStreaming && decks && decks.length > 0) {
-            setActiveIndex(decks.length - 1);
+        if (isStreaming && validDecks.length > 0) {
+            setActiveIndex(validDecks.length - 1);
         }
-    }, [decks?.length, isStreaming]);
+    }, [validDecks.length, isStreaming]);
 
     // Clear votes when new generation starts (streaming begins with 1 deck)
     useEffect(() => {
-        if (isStreaming && decks?.length === 1) {
+        if (isStreaming && validDecks.length === 1) {
             setVotedDecks(new Set());
         }
-    }, [isStreaming]);
+    }, [isStreaming, validDecks.length]);
 
-    if (!decks || decks.length === 0) return null;
-
-    // Single deck — no carousel needed (but show streaming placeholder if more coming)
-    if (decks.length === 1 && !isStreaming) {
-        return <DeckDisplay deckData={decks[0]} onViewStats={onViewStats} deckLabel={getDeckLabel(decks[0])} playerTag={playerTag} hasVoted={votedDecks.has(0)} onVoted={() => setVotedDecks(prev => new Set(prev).add(0))} />;
-    }
-
-    const validDecks = decks.filter(d => d && d.valid !== false);
-    if (validDecks.length === 0) return null;
-
-    const goTo = (idx) => {
-        if (idx >= 0 && idx < validDecks.length) {
-            setActiveIndex(idx);
-        }
-    };
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKey = (e) => {
+            if (validDecks.length === 0) return;
+            if (e.key === 'ArrowLeft') goTo(activeIndex - 1);
+            if (e.key === 'ArrowRight') goTo(activeIndex + 1);
+        };
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [activeIndex, validDecks.length]);
 
     const handleTouchStart = (e) => {
         touchStartX.current = e.touches[0].clientX;
@@ -62,15 +65,13 @@ const DeckCarousel = ({ decks, onViewStats, isStreaming = false, totalExpected =
         touchStartX.current = null;
     };
 
-    // Keyboard navigation
-    useEffect(() => {
-        const handleKey = (e) => {
-            if (e.key === 'ArrowLeft') goTo(activeIndex - 1);
-            if (e.key === 'ArrowRight') goTo(activeIndex + 1);
-        };
-        window.addEventListener('keydown', handleKey);
-        return () => window.removeEventListener('keydown', handleKey);
-    }, [activeIndex, validDecks.length]);
+    if (!decks || decks.length === 0) return null;
+    if (validDecks.length === 0) return null;
+
+    // Single deck — no carousel needed (but show streaming placeholder if more coming)
+    if (validDecks.length === 1 && !isStreaming) {
+        return <DeckDisplay deckData={validDecks[0]} onViewStats={onViewStats} deckLabel={getDeckLabel(validDecks[0])} playerTag={playerTag} hasVoted={votedDecks.has(0)} onVoted={() => setVotedDecks(prev => new Set(prev).add(0))} />;
+    }
 
     const currentDeck = validDecks[Math.min(activeIndex, validDecks.length - 1)];
 
