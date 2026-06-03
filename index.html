@@ -3,12 +3,16 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/favicon.png" />
-  <link rel="shortcut icon" href="/favicon.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/webp" href="/favicon_128x128.webp" />
+  <link rel="apple-touch-icon" href="/favicon_128x128.webp" />
+  <link rel="shortcut icon" href="/favicon_128x128.webp" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" /></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" /></noscript>
   <meta name="description" content="Generate winning Clash Royale decks with AI. ClashDeckster analyzes your card levels and the current meta to build optimized decks for ladder, challenges, and clan wars." />
   <meta name="keywords" content="clash royale deck generator, AI deck builder, clash royale meta decks, card upgrade calculator, best clash royale decks 2026" />
   
@@ -17,14 +21,14 @@
   <meta property="og:url" content="https://clashdeckster.com/" />
   <meta property="og:title" content="ClashDeckster — AI Deck Generator for Clash Royale" />
   <meta property="og:description" content="AI-powered deck generator that builds optimized decks based on YOUR card levels. Stop losing to overleveled opponents." />
-  <meta property="og:image" content="https://clashdeckster.com/favicon.png" />
+  <meta property="og:image" content="https://clashdeckster.com/favicon_128x128.webp" />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://clashdeckster.com/" />
   <meta property="twitter:title" content="ClashDeckster — AI Deck Generator for Clash Royale" />
   <meta property="twitter:description" content="AI-powered deck generator that builds optimized decks based on YOUR card levels. Stop losing to overleveled opponents." />
-  <meta property="twitter:image" content="https://clashdeckster.com/favicon.png" />
+  <meta property="twitter:image" content="https://clashdeckster.com/favicon_128x128.webp" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -46,16 +50,23 @@
 
   <title>Clash Deckster - Clash Royale AI Deck Generator & Builder</title>
   <link rel="canonical" href="https://clashdeckster.com/" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2702577620974196"
-    crossorigin="anonymous"></script>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GOOGLE_ANALYTICS_ID%"></script>
+  <!-- Google Analytics Deferred Loading -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+    window.addEventListener('load', () => {
+      // 1. Google Analytics (gtag.js)
+      const gaId = "%VITE_GOOGLE_ANALYTICS_ID%";
+      if (gaId && gaId !== "%" + "VITE_GOOGLE_ANALYTICS_ID" + "%") {
+        const gaScript = document.createElement('script');
+        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+        gaScript.async = true;
+        document.head.appendChild(gaScript);
 
-    gtag('config', '%VITE_GOOGLE_ANALYTICS_ID%');
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function() { dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', gaId);
+      }
+    });
   </script>
 </head>
 

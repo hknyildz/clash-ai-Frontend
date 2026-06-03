@@ -60,13 +60,15 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
     const tokenParam = token ? `?token=${encodeURIComponent(token)}` : '';
     const url = `${baseUrl}/freeDeck/${formattedTag}/stream${tokenParam}`;
 
-    let eventSource = null;
+    const controller = new AbortController();
+    const signal = controller.signal;
     let aborted = false;
 
     // Preflight: check rate limit with a quick fetch before opening EventSource
     fetch(url, {
         method: 'GET',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        signal: signal,
     }).then(response => {
         if (aborted) return;
         
@@ -147,7 +149,7 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
     // Return cleanup function
     return () => {
         aborted = true;
-        eventSource?.close();
+        controller.abort();
     };
 };
 

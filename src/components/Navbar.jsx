@@ -28,7 +28,7 @@ const Navbar = ({ activeTab }) => {
                     className="flex items-center gap-3 cursor-pointer no-underline"
                     onClick={() => setIsOpen(false)}
                 >
-                    <img src="/favicon.png" alt="ClashDeckster Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-[0_0_8px_rgba(251,171,255,0.5)]" />
+                    <img src="/favicon_128x128.webp" alt="ClashDeckster Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-[0_0_8px_rgba(251,171,255,0.5)]" />
                     <div className="hidden sm:block text-xl md:text-2xl font-black text-primary tracking-tighter uppercase font-headline">
                         ClashDeckster
                     </div>
