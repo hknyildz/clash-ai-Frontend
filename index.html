@@ -52,19 +52,45 @@
   <link rel="canonical" href="https://clashdeckster.com/" />
   <!-- Google Analytics Deferred Loading -->
   <script>
+    // 1. Synchronously define gtag queue to prevent errors and capture early events
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() { dataLayer.push(arguments); };
+
+    // 2. Defer script loading until first user interaction or fallback timeout
     window.addEventListener('load', () => {
-      // 1. Google Analytics (gtag.js)
       const gaId = "%VITE_GOOGLE_ANALYTICS_ID%";
       if (gaId && gaId !== "%" + "VITE_GOOGLE_ANALYTICS_ID" + "%") {
-        const gaScript = document.createElement('script');
-        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-        gaScript.async = true;
-        document.head.appendChild(gaScript);
+        let loaded = false;
 
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = function() { dataLayer.push(arguments); };
-        window.gtag('js', new Date());
-        window.gtag('config', gaId);
+        const loadGA = () => {
+          if (loaded) return;
+          loaded = true;
+
+          // Remove interaction event listeners
+          window.removeEventListener('scroll', loadGA);
+          window.removeEventListener('mousemove', loadGA);
+          window.removeEventListener('touchstart', loadGA);
+          window.removeEventListener('keydown', loadGA);
+
+          // Append GTM script
+          const gaScript = document.createElement('script');
+          gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+          gaScript.async = true;
+          document.head.appendChild(gaScript);
+
+          // Configure GA
+          window.gtag('js', new Date());
+          window.gtag('config', gaId);
+        };
+
+        // Listen to interaction events
+        window.addEventListener('scroll', loadGA, { passive: true });
+        window.addEventListener('mousemove', loadGA, { passive: true });
+        window.addEventListener('touchstart', loadGA, { passive: true });
+        window.addEventListener('keydown', loadGA, { passive: true });
+
+        // Fallback load after 4 seconds to guarantee tracking if no interaction
+        setTimeout(loadGA, 4000);
       }
     });
   </script>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { fetchClanInfo } from '../services/api';
+import { generateClanSchema } from '../utils/schemaGenerator';
 import './ClanDetail.css';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -99,8 +101,17 @@ const ClanDetail = ({ clanTag, onBack, onNavigateToPlayer }) => {
 
     const typeClass = clan.type === 'open' ? 'open' : clan.type === 'inviteOnly' ? 'inviteOnly' : 'closed';
 
+    const clanSchema = generateClanSchema(clan);
+
     return (
         <div className="clan-detail">
+            {clanSchema && (
+                <Helmet>
+                    <script type="application/ld+json">
+                        {JSON.stringify(clanSchema)}
+                    </script>
+                </Helmet>
+            )}
             {/* Back Button */}
             <button className="clan-detail-back" onClick={onBack}>
                 <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>arrow_back</span>

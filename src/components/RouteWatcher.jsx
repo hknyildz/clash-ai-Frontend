@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { faqs } from './FaqSection';
+import { generateWebApplicationSchema, generateFAQSchema } from '../utils/schemaGenerator';
 
 const RouteWatcher = () => {
   const location = useLocation();
   const [seo, setSeo] = useState({
     title: 'Clash Deckster — AI Clash Royale Deck Generator & Builder (2026)',
     description: 'Generate winning Clash Royale decks with AI. Analyzes your card levels, current meta, and playstyle to build optimized ladder decks. Free AI deck generator.',
-    canonical: 'https://clashdeckster.com'
+    canonical: 'https://clashdeckster.com',
+    schemas: []
   });
 
   useEffect(() => {
@@ -37,11 +40,16 @@ const RouteWatcher = () => {
     const path = location.pathname;
     let title = 'Clash Deckster — AI Clash Royale Deck Generator & Builder (2026)';
     let description = 'Generate winning Clash Royale decks with AI. Analyzes your card levels, current meta, and playstyle to build optimized ladder decks. Free AI deck generator.';
+    let schemas = [];
+
+    // Always include WebApplication schema as baseline
+    schemas.push(generateWebApplicationSchema());
 
     if (path.startsWith('/player/')) {
       const tag = path.split('/').pop();
       title = `Player Stats: ${tag} — Clash Royale Profile | Clash Deckster`;
       description = `Real-time Clash Royale statistics for player ${tag}. View card levels, deck progression, trophy history, and upgrade calculator.`;
+      // ProfilePage schema is injected inside PlayerStats.jsx once data loads
     } else if (path.startsWith('/player')) {
       title = 'Clash Royale Player Stats Lookup — Card Levels & Progression | Clash Deckster';
       description = 'Search any Clash Royale player by tag. View card levels, trophies, battle history, and card upgrade progression stats.';
@@ -52,12 +60,19 @@ const RouteWatcher = () => {
       const clanTag = path.split('/').pop();
       title = `Clan Details: ${clanTag} — Members & War Stats | Clash Deckster`;
       description = `Detailed Clash Royale clan analytics for clan ${clanTag}. Member trophy distribution, war participation, and activity stats.`;
-    } else if (path === '/builder') {
-      title = 'Advanced Deck Builder — Build Custom Clash Royale Decks | Clash Deckster';
-      description = 'Build custom Clash Royale decks with Evolved cards, Heroes, and Champions. Smart card picker with rarity filters and AI-powered suggestions.';
+      // SportsTeam schema is injected inside ClanDetail.jsx once data loads
+    } else if (path === '/' || path === '/builder') {
+      if (path === '/builder') {
+        title = 'Advanced Deck Builder — Build Custom Clash Royale Decks | Clash Deckster';
+        description = 'Build custom Clash Royale decks with Evolved cards, Heroes, and Champions. Smart card picker with rarity filters and AI-powered suggestions.';
+      }
+      const builderFaqSchema = generateFAQSchema(faqs.builder);
+      if (builderFaqSchema) schemas.push(builderFaqSchema);
     } else if (path === '/card-upgrade-calculator') {
       title = 'Clash Royale Card Upgrade Calculator — Max Level Cost (Gold, Cards, Gems) | Clash Deckster';
       description = 'Calculate exactly how much Gold, Cards, and Gems you need to max any Clash Royale card. Works for Common, Rare, Epic, Legendary, and Champion cards. Free calculator.';
+      const calcFaqSchema = generateFAQSchema(faqs.calculator);
+      if (calcFaqSchema) schemas.push(calcFaqSchema);
     } else if (path === '/release-notes') {
       title = 'Release Notes & Updates | Clash Deckster';
       description = 'Latest updates and feature releases for ClashDeckster AI deck generator.';
@@ -69,7 +84,8 @@ const RouteWatcher = () => {
     setSeo({
       title,
       description,
-      canonical: `https://clashdeckster.com${path === '/' ? '' : path}`
+      canonical: `https://clashdeckster.com${path === '/' ? '' : path}`,
+      schemas
     });
 
     // 4. Scroll to Top
@@ -92,6 +108,13 @@ const RouteWatcher = () => {
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
       <meta name="twitter:url" content={seo.canonical} />
+
+      {/* Dynamic JSON-LD Structured Data */}
+      {seo.schemas && seo.schemas.map((schema, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+      ))}
     </Helmet>
   );
 };
