@@ -4,11 +4,6 @@ import { fetchFreeDeckStream } from './services/api';
 import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import InputSection from './components/InputSection';
-import DeckDisplay from './components/DeckDisplay';
-import DeckCarousel from './components/DeckCarousel';
-import HowItWorks from './components/HowItWorks';
-import PromoSection from './components/PromoSection';
-import FaqSection from './components/FaqSection';
 import ReleaseNotes from './components/ReleaseNotes';
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
@@ -22,6 +17,12 @@ const ClanPage = lazy(() => import('./components/ClanPage'));
 const ClanDetail = lazy(() => import('./components/ClanDetail'));
 const FavoritesPage = lazy(() => import('./components/FavoritesPage'));
 const CardUpgradeCalculatorPage = lazy(() => import('./components/CardUpgradeCalculatorPage'));
+
+// Lazy loaded landing page components (below-the-fold or conditional)
+const DeckCarousel = lazy(() => import('./components/DeckCarousel'));
+const HowItWorks = lazy(() => import('./components/HowItWorks'));
+const FaqSection = lazy(() => import('./components/FaqSection'));
+const PromoSection = lazy(() => import('./components/PromoSection'));
 
 import './index.css'
 
