@@ -236,6 +236,7 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
     });
 
     const profileSchema = generateProfileSchema(statsData);
+    const favCard = statsData.currentFavouriteCard;
 
     return (
         <div className="stats-container">

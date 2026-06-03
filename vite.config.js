@@ -3,17 +3,19 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
+// http://localhost:8080
+// https://api.clashdeckster.com
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
       '/freeDeck': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
       },
       '/player': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
         bypass: (req) => {
@@ -23,7 +25,7 @@ export default defineConfig({
         }
       },
       '/clan': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
         bypass: (req) => {
@@ -33,7 +35,7 @@ export default defineConfig({
         }
       },
       '/clans': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
         bypass: (req) => {
@@ -43,22 +45,22 @@ export default defineConfig({
         }
       },
       '/cards': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
       },
       '/decks': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
       },
       '/auth': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
       },
       '/feedback': {
-        target: 'http://localhost:8080',
+        target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,
       }
