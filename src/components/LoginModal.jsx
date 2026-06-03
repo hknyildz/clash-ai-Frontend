@@ -1,6 +1,8 @@
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'placeholder-client-id';
 
 const LoginModal = ({ isOpen, onClose, message }) => {
     const { login } = useAuth();
@@ -17,12 +19,13 @@ const LoginModal = ({ isOpen, onClose, message }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <motion.div
-                    className="fixed inset-0 z-[9999] flex items-center justify-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
+                <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                    <motion.div
+                        className="fixed inset-0 z-[9999] flex items-center justify-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
                     {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -97,6 +100,7 @@ const LoginModal = ({ isOpen, onClose, message }) => {
                         </div>
                     </motion.div>
                 </motion.div>
+                </GoogleOAuthProvider>
             )}
         </AnimatePresence>
     );
