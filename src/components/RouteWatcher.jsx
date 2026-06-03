@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { faqs } from './FaqSection';
+import { faqs } from '../data/faqs';
 import { generateWebApplicationSchema, generateFAQSchema } from '../utils/schemaGenerator';
 
 const RouteWatcher = () => {

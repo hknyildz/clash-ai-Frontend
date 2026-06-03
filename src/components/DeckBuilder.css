@@ -53,7 +53,7 @@
 .playstyle-chip.active {
     background: var(--color-primary);
     border-color: var(--color-primary);
-    color: white;
+    color: black;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
