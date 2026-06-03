@@ -262,10 +262,10 @@ const CardUpgradeCalculatorPage = () => {
                 <div className="calc-sidebar">
                     <div className="calc-sidebar-header">
                         <span className="material-symbols-outlined calc-header-icon">calculate</span>
-                        <h1>Upgrade Calculator</h1>
+                        <h1>Clash Royale Card Upgrade Calculator</h1>
                     </div>
                     <p className="calc-sidebar-desc">
-                        Calculate exact Gold, Cards, and Gems to level up your cards. Lookup your account to see custom requirements.
+                        Calculate the exact Gold, Cards, and Gems you need to max your Clash Royale cards. Enter your player tag to scan your profile and calculate custom upgrade requirements.
                     </p>
 
                     {/* Search Bar */}
@@ -314,7 +314,7 @@ const CardUpgradeCalculatorPage = () => {
                             className="calc-static-costs-toggle"
                             onClick={() => setRarityTableOpen(prev => !prev)}
                         >
-                            <h3>Base Rarity Table</h3>
+                            <h3>Clash Royale Upgrade Gold & Cards Cost Table</h3>
                             <span className={`material-symbols-outlined toggle-chevron ${rarityTableOpen ? 'open' : ''}`}>expand_more</span>
                         </button>
                         <div className={`calc-static-costs-body ${rarityTableOpen ? 'expanded' : ''}`}>

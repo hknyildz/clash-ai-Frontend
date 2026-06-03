@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { fetchPlayerStats, fetchAllCards } from '../services/api';
+import { generateProfileSchema } from '../utils/schemaGenerator';
 import BattleLog from './BattleLog';
 import TopPlayers from './TopPlayers';
 import CardUpgradeSection from './CardUpgradeSection';
@@ -233,10 +235,17 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
         };
     });
 
-    const favCard = statsData.currentFavouriteCard;
+    const profileSchema = generateProfileSchema(statsData);
 
     return (
         <div className="stats-container">
+            {profileSchema && (
+                <Helmet>
+                    <script type="application/ld+json">
+                        {JSON.stringify(profileSchema)}
+                    </script>
+                </Helmet>
+            )}
             {renderSearchBar()}
 
             {/* Player Header */}

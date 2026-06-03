@@ -2,4 +2,29 @@ User-agent: *
 Allow: /
 Disallow: /favorites
 
+# Explicitly allow generative AI crawlers for indexation & citations
+User-agent: GPTBot
+Allow: /
+Disallow: /favorites
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /favorites
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /favorites
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /favorites
+
+User-agent: Anthropic-ai
+Allow: /
+Disallow: /favorites
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /favorites
+
 Sitemap: https://clashdeckster.com/sitemap.xml

@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, lazy, Suspense } from 'react';
 import axios from 'axios';
-import LoginModal from '../components/LoginModal';
+
+const LazyLoginModal = lazy(() => import('../components/LoginModal'));
 
 const AuthContext = createContext(null);
 
@@ -165,11 +166,15 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={value}>
             {children}
-            <LoginModal 
-                isOpen={loginModalOpen} 
-                onClose={closeLogin} 
-                message={loginMessage} 
-            />
+            {loginModalOpen && (
+                <Suspense fallback={null}>
+                    <LazyLoginModal 
+                        isOpen={loginModalOpen} 
+                        onClose={closeLogin} 
+                        message={loginMessage} 
+                    />
+                </Suspense>
+            )}
         </AuthContext.Provider>
     );
 }
