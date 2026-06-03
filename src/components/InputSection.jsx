@@ -45,7 +45,7 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                             <span className="material-symbols-outlined text-outline ml-3 shrink-0">tag</span>
                             <div className="flex-1 flex items-center relative">
                                 <input
-                                    className="bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface w-full font-headline font-bold uppercase tracking-wider placeholder:text-outline/50 px-3 py-3 text-sm pr-10"
+                                    className="bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface w-full font-headline font-bold uppercase tracking-wider placeholder:text-outline/50 px-3 py-3 text-base md:text-sm pr-10"
                                     placeholder="J08CVRJ00"
                                     type="text"
                                     value={tag}

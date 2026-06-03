@@ -51,7 +51,7 @@ const DeckFeedback = ({ deckData, playerTag, onFeedbackSent, hasVoted }) => {
     const saveFeedback = async (voteType, reasons = [], commentText = '') => {
         try {
             const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-            const res = await fetch(`${API_BASE_URL}/feedback`, {
+            const res = await fetch(`${API_BASE_URL}feedback`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -76,7 +76,7 @@ const DeckFeedback = ({ deckData, playerTag, onFeedbackSent, hasVoted }) => {
     const updateFeedback = async (id, reasons, commentText) => {
         try {
             const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-            await fetch(`${API_BASE_URL}/feedback/${id}`, {
+            await fetch(`${API_BASE_URL}feedback/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

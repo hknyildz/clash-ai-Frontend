@@ -21,7 +21,7 @@ const GeneralFeedbackModal = ({ isOpen, onClose }) => {
         setSending(true);
         try {
             const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-            await fetch(`${API_BASE_URL}/feedback`, {
+            await fetch(`${API_BASE_URL}feedback`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

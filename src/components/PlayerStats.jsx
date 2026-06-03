@@ -145,7 +145,7 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
             <form onSubmit={handleSearch} className="relative flex items-center p-2 min-h-[64px] rounded-2xl bg-surface-container-lowest border border-outline-variant/30 focus-within:border-primary transition-all duration-300">
                 <span className="material-symbols-outlined text-outline ml-3 shrink-0">search</span>
                 <input
-                    className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface w-full font-headline font-bold uppercase tracking-wider placeholder:text-outline/50 px-3 py-3 text-sm"
+                    className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface w-full font-headline font-bold uppercase tracking-wider placeholder:text-outline/50 px-3 py-3 text-base md:text-sm"
                     placeholder="PLAYER TAG (e.g. J08CVRJ00)"
                     type="text"
                     value={localTag}

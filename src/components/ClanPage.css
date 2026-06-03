@@ -64,8 +64,14 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 0.875rem;
+    font-size: 1rem; /* Prevents mobile browser auto-zoom (min 16px) */
     padding: 0.75rem 0.5rem;
+}
+
+@media (min-width: 640px) {
+    .clan-search-input {
+        font-size: 0.875rem;
+    }
 }
 
 .clan-search-input::placeholder {
