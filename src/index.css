@@ -81,6 +81,10 @@
 
 /* ========== GLOBAL STYLES ========== */
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--color-background);
@@ -145,4 +149,21 @@ button {
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
+}
+
+@keyframes combo-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(255, 198, 64, 0.6));
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 10px rgba(255, 198, 64, 0.9));
+  }
+}
+
+.combo-badge {
+  animation: combo-pulse 2s ease-in-out infinite;
 }

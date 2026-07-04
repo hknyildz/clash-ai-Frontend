@@ -176,7 +176,7 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-on-background">
       <RouteWatcher />
-      <Navbar 
+      <Navbar
         activeTab={activeTab}
         onLoginClick={() => openLogin()}
       />
@@ -257,15 +257,15 @@ function App() {
 
             {/* Player Stats Tab */}
             <Route path="/player" element={
-              <PlayerStatsWrapper 
-                setTag={setTag} 
+              <PlayerStatsWrapper
+                setTag={setTag}
                 onNavigateToClan={handleNavigateToClan}
                 onNavigateToPlayer={handleNavigateToPlayer}
               />
             } />
             <Route path="/player/:playerTag" element={
-              <PlayerStatsWrapper 
-                setTag={setTag} 
+              <PlayerStatsWrapper
+                setTag={setTag}
                 onNavigateToClan={handleNavigateToClan}
                 onNavigateToPlayer={handleNavigateToPlayer}
               />
@@ -319,14 +319,14 @@ import { useParams } from 'react-router-dom';
 
 function PlayerStatsWrapper({ setTag, onNavigateToClan, onNavigateToPlayer }) {
   const { playerTag } = useParams();
-  
+
   useEffect(() => {
     if (playerTag) setTag(playerTag.toUpperCase());
   }, [playerTag, setTag]);
 
   return (
     <div className="mt-6">
-      <PlayerStats 
+      <PlayerStats
         playerTag={playerTag}
         setPlayerTag={setTag}
         isActive={true}
@@ -343,8 +343,8 @@ function ClanDetailWrapper({ onNavigateToPlayer }) {
 
   return (
     <div className="mt-6">
-      <ClanDetail 
-        clanTag={`#${clanTag}`} 
+      <ClanDetail
+        clanTag={`#${clanTag}`}
         onBack={() => navigate('/clans')}
         onNavigateToPlayer={onNavigateToPlayer}
       />
