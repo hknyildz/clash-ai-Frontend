@@ -6,6 +6,8 @@ import { fetchPlayerStats, fetchAllCards } from '../services/api';
 import { calculateProgression } from '../utils/upgradeCalculator';
 import { RARITY_CONFIG } from '../utils/upgradeData';
 import CardUpgradeModal from './CardUpgradeModal';
+import comboBadgePrimary from '../assets/agreementP.png';
+import comboBadgeSecondary from '../assets/agreementB.png';
 
 const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, onVoted }) => {
     const { favorites, addFavorite, removeFavorite } = useAuth();
@@ -179,11 +181,10 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                     )}
                     <button
                         onClick={handleFavoriteToggle}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all active:scale-95 border ${
-                            isFavorited
-                                ? 'bg-rose-500/15 text-rose-400 border-rose-500/40 hover:bg-rose-500/25'
-                                : 'bg-surface-container-high hover:bg-surface-container-highest text-on-surface border-outline-variant/30 hover:border-rose-500/40 hover:text-rose-400'
-                        }`}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all active:scale-95 border ${isFavorited
+                            ? 'bg-rose-500/15 text-rose-400 border-rose-500/40 hover:bg-rose-500/25'
+                            : 'bg-surface-container-high hover:bg-surface-container-highest text-on-surface border-outline-variant/30 hover:border-rose-500/40 hover:text-rose-400'
+                            }`}
                     >
                         <span className="material-symbols-outlined" style={{ fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
                         <span className="hidden sm:inline">{isFavorited ? 'Saved' : 'Save'}</span>
@@ -225,31 +226,34 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                                 : card.isHero
                                     ? card.imageUriHero
                                     : card.imageUri;
-                            
+
                             const hasError = imgErrors[card.id + '_' + index];
                             const imgSrc = hasError ? card.imageUri : baseImgSrc;
 
                             return (
                                 <motion.div
                                     key={card.id || index}
-                                    className={`relative group aspect-[285/420] rounded-lg overflow-hidden border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer ${card.isHero && hasError ? 'ring-1 ring-secondary/50' : ''}`}
+                                    className={`relative group aspect-[285/420] rounded-lg border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer ${card.isHero && hasError ? 'ring-1 ring-secondary/50' : ''}`}
                                     variants={item}
                                     onClick={() => handleCardClick(card)}
                                 >
-                                    <img
-                                        className="w-full h-full object-cover"
-                                        src={imgSrc}
-                                        alt={card.name}
-                                        onError={(e) => { 
-                                            if (!hasError) {
-                                                setImgErrors(prev => ({ ...prev, [card.id + '_' + index]: true }));
-                                            } else {
-                                                e.target.src = 'https://placehold.co/300x420?text=Error';
-                                            }
-                                        }}
-                                    />
-                                    {/* Gradient overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
+                                    {/* Image and overlay container with overflow hidden */}
+                                    <div className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none">
+                                        <img
+                                            className="w-full h-full object-cover pointer-events-auto"
+                                            src={imgSrc}
+                                            alt={card.name}
+                                            onError={(e) => {
+                                                if (!hasError) {
+                                                    setImgErrors(prev => ({ ...prev, [card.id + '_' + index]: true }));
+                                                } else {
+                                                    e.target.src = 'https://placehold.co/300x420?text=Error';
+                                                }
+                                            }}
+                                        />
+                                        {/* Gradient overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
+                                    </div>
 
                                     {/* Form Badges - Top Right */}
                                     {card.evolutionLevel === 2 && (
@@ -260,6 +264,15 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                                     {card.evolutionLevel === 1 && (
                                         <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-primary text-on-primary px-2 py-0.5 rounded text-[8px] sm:text-[10px] font-black uppercase shadow-lg z-10">
                                             Evo
+                                        </div>
+                                    )}
+
+                                    {/* Combo Partner Badge - Top Right (perfectly on the corner) */}
+                                    {card.comboGroup != null && (
+                                        <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 z-20 combo-badge"
+                                            title="Meta Combo Partner"
+                                        >
+                                            <img src={card.comboGroup === 1 ? comboBadgePrimary : comboBadgeSecondary} alt="Combo" className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-md" />
                                         </div>
                                     )}
 
