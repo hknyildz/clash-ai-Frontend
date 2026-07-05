@@ -169,7 +169,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                         Your Forge <span className="text-primary italic">Results</span>
                     </h2>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-row-reverse md:flex-row  gap-4">
                     {onViewStats && (
                         <button
                             onClick={onViewStats}
@@ -180,6 +180,13 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                         </button>
                     )}
                     <button
+                        onClick={() => window.open(generatedLink, '_blank')}
+                        className="flex items-center gap-2 bg-primary text-on-primary px-8 py-3 rounded-full font-bold shadow-[0_0_20px_rgba(251,171,255,0.4)] hover:shadow-[0_0_30px_rgba(251,171,255,0.6)] transition-all active:scale-95"
+                    >
+                        <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
+                        <span>Copy</span>
+                    </button>
+                    <button
                         onClick={handleFavoriteToggle}
                         className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all active:scale-95 border ${isFavorited
                             ? 'bg-rose-500/15 text-rose-400 border-rose-500/40 hover:bg-rose-500/25'
@@ -189,7 +196,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                         <span className="material-symbols-outlined" style={{ fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
                         <span className="hidden sm:inline">{isFavorited ? 'Saved' : 'Save'}</span>
                     </button>
-                    <button
+                    {/* <button
                         onClick={() => {
                             navigator.clipboard?.writeText(generatedLink);
                         }}
@@ -197,14 +204,8 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                     >
                         <span className="material-symbols-outlined group-hover:text-primary">share</span>
                         <span>Share</span>
-                    </button>
-                    <button
-                        onClick={() => window.open(generatedLink, '_blank')}
-                        className="flex items-center gap-2 bg-primary text-on-primary px-8 py-3 rounded-full font-bold shadow-[0_0_20px_rgba(251,171,255,0.4)] hover:shadow-[0_0_30px_rgba(251,171,255,0.6)] transition-all active:scale-95"
-                    >
-                        <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-                        <span>Copy</span>
-                    </button>
+                    </button> */}
+
                 </div>
             </header>
 
@@ -255,7 +256,8 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
                                     </div>
 
-                                    {/* Form Badges - Top Right */}
+                                    {/* Form Badges - Top Right (Temporarily disabled) */}
+                                    {/* 
                                     {card.evolutionLevel === 2 && (
                                         <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#FFC107] text-black px-2 py-0.5 rounded text-[8px] sm:text-[10px] font-black uppercase shadow-lg z-10">
                                             Hero
@@ -265,11 +267,12 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                                         <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-primary text-on-primary px-2 py-0.5 rounded text-[8px] sm:text-[10px] font-black uppercase shadow-lg z-10">
                                             Evo
                                         </div>
-                                    )}
+                                    )} 
+                                    */}
 
-                                    {/* Combo Partner Badge - Top Right (perfectly on the corner) */}
+                                    {/* Combo Partner Badge */}
                                     {card.comboGroup != null && (
-                                        <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 z-20 combo-badge"
+                                        <div className="absolute top-1 right-1 z-20 combo-badge"
                                             title="Meta Combo Partner"
                                         >
                                             <img src={card.comboGroup === 1 ? comboBadgePrimary : comboBadgeSecondary} alt="Combo" className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-md" />

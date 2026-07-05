@@ -38,33 +38,30 @@ const Navbar = ({ activeTab }) => {
                 <div className="hidden md:flex items-center gap-2 shrink-0">
                     <button
                         onClick={() => navigate('/player')}
-                        className={`font-headline font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 ${
-                            activeTab === 'stats'
-                                ? 'bg-primary/15 text-primary border border-primary/30'
-                                : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-high'
-                        }`}
+                        className={`font-headline font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'stats'
+                            ? 'bg-primary/15 text-primary border border-primary/30'
+                            : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-high'
+                            }`}
                     >
                         <span className="material-symbols-outlined text-base align-middle mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>query_stats</span>
-                        Player Stats
+                        Players
                     </button>
                     <button
                         onClick={() => navigate('/clans')}
-                        className={`font-headline font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 ${
-                            activeTab === 'clans' || activeTab === 'clan-detail'
-                                ? 'bg-primary/15 text-primary border border-primary/30'
-                                : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-high'
-                        }`}
+                        className={`font-headline font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'clans' || activeTab === 'clan-detail'
+                            ? 'bg-primary/15 text-primary border border-primary/30'
+                            : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-high'
+                            }`}
                     >
                         <span className="material-symbols-outlined text-base align-middle mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>shield</span>
                         Clans
                     </button>
                     <button
                         onClick={() => navigate('/card-upgrade-calculator')}
-                        className={`font-headline font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 ${
-                            activeTab === 'calculator'
-                                ? 'bg-primary/15 text-primary border border-primary/30'
-                                : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-high'
-                        }`}
+                        className={`font-headline font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 ${activeTab === 'calculator'
+                            ? 'bg-primary/15 text-primary border border-primary/30'
+                            : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-high'
+                            }`}
                     >
                         <span className="material-symbols-outlined text-base align-middle mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>calculate</span>
                         Calculator
@@ -164,25 +161,23 @@ const Navbar = ({ activeTab }) => {
                             navigate('/player');
                             setIsOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${
-                            activeTab === 'stats'
-                                ? 'bg-primary/15 text-primary'
-                                : 'text-on-surface hover:bg-surface-container-high'
-                        }`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${activeTab === 'stats'
+                            ? 'bg-primary/15 text-primary'
+                            : 'text-on-surface hover:bg-surface-container-high'
+                            }`}
                     >
                         <span className="material-symbols-outlined text-base">query_stats</span>
-                        Player Stats
+                        Players
                     </button>
                     <button
                         onClick={() => {
                             navigate('/clans');
                             setIsOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${
-                            activeTab === 'clans' || activeTab === 'clan-detail'
-                                ? 'bg-primary/15 text-primary'
-                                : 'text-on-surface hover:bg-surface-container-high'
-                        }`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${activeTab === 'clans' || activeTab === 'clan-detail'
+                            ? 'bg-primary/15 text-primary'
+                            : 'text-on-surface hover:bg-surface-container-high'
+                            }`}
                     >
                         <span className="material-symbols-outlined text-base">shield</span>
                         Clans
@@ -192,14 +187,13 @@ const Navbar = ({ activeTab }) => {
                             navigate('/card-upgrade-calculator');
                             setIsOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${
-                            activeTab === 'calculator'
-                                ? 'bg-primary/15 text-primary'
-                                : 'text-on-surface hover:bg-surface-container-high'
-                        }`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${activeTab === 'calculator'
+                            ? 'bg-primary/15 text-primary'
+                            : 'text-on-surface hover:bg-surface-container-high'
+                            }`}
                     >
                         <span className="material-symbols-outlined text-base">calculate</span>
-                        Card Calculator
+                        Card Upgrade Calculator
                     </button>
 
                     {isAuthenticated && (
@@ -208,11 +202,10 @@ const Navbar = ({ activeTab }) => {
                                 navigate('/favorites');
                                 setIsOpen(false);
                             }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${
-                                activeTab === 'favorites'
-                                    ? 'bg-primary/15 text-primary'
-                                    : 'text-on-surface hover:bg-surface-container-high'
-                            }`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-wider transition-colors text-left ${activeTab === 'favorites'
+                                ? 'bg-primary/15 text-primary'
+                                : 'text-on-surface hover:bg-surface-container-high'
+                                }`}
                         >
                             <span className="material-symbols-outlined text-base">favorite</span>
                             Favorites
