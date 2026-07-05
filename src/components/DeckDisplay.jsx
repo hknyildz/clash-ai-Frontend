@@ -213,7 +213,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                 {/* Deck Grid */}
                 <div className="lg:col-span-8">
                     <motion.div
-                        className="grid grid-cols-4 sm:grid-cols-4 gap-2 sm:gap-4"
+                        className="grid grid-cols-4 sm:grid-cols-4 gap-0.5 sm:gap-4"
                         variants={container}
                         initial="hidden"
                         animate="show"
@@ -233,12 +233,12 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                             return (
                                 <motion.div
                                     key={card.id || index}
-                                    className={`relative group aspect-[285/420] rounded-lg border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer ${card.isHero && hasError ? 'ring-1 ring-secondary/50' : ''}`}
+                                    className={`relative group aspect-[285/420] rounded-sm sm:rounded-lg border border-outline-variant/20 bg-surface-container-low hover:border-primary/60 transition-all duration-300 cursor-pointer ${card.isHero && hasError ? 'ring-1 ring-secondary/50' : ''}`}
                                     variants={item}
                                     onClick={() => handleCardClick(card)}
                                 >
                                     {/* Image and overlay container with overflow hidden */}
-                                    <div className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none">
+                                    <div className="absolute inset-0 rounded-sm sm:rounded-lg overflow-hidden pointer-events-none">
                                         <img
                                             className="w-full h-full object-cover pointer-events-auto"
                                             src={imgSrc}
@@ -292,7 +292,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                                     </div>
 
                                     {/* Hover border */}
-                                    <div className="absolute inset-0 border-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none"></div>
+                                    <div className="absolute inset-0 border-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity rounded sm:rounded-lg pointer-events-none"></div>
                                 </motion.div>
                             );
                         })}
