@@ -117,10 +117,10 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                 />
                             )}
                             {isHero && (
-                                <div className="absolute top-1 right-1 bg-[#FFC107] text-black text-[6px] font-black uppercase px-0.5 rounded shadow-lg z-10">Hero</div>
+                                <div className="hidden sm:block absolute top-1 right-1 bg-[#FFC107] text-black text-[6px] font-black uppercase px-0.5 rounded shadow-lg z-10">Hero</div>
                             )}
                             {isEvo && (
-                                <div className="absolute top-1 right-1 bg-primary text-white text-[6px] font-black uppercase px-0.5 rounded shadow-lg z-10">Evo</div>
+                                <div className="hidden sm:block absolute top-1 right-1 bg-primary text-white text-[6px] font-black uppercase px-0.5 rounded shadow-lg z-10">Evo</div>
                             )}
                             <div className="battle-deck-card-overlay">
                                 <span className="battle-deck-card-name">{card.name}</span>

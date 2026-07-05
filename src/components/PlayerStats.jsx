@@ -465,7 +465,7 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                             {[
                                 { key: 'current', label: 'Current Season', data: statsData.currentPathOfLegendSeasonResult },
                                 { key: 'last', label: 'Last Season', data: statsData.lastPathOfLegendSeasonResult },
-                                { key: 'best', label: 'Best Season', data: statsData.bestPathOfLegendSeasonResult }
+                                { key: 'best', label: 'All Time Best', data: statsData.bestPathOfLegendSeasonResult }
                             ].filter(s => s.data).map((season, i) => {
                                 const leagueNum = season.data.leagueNumber || 0;
                                 const leagueImg = LEAGUE_IMAGES[Math.min(leagueNum, 10)] || LEAGUE_IMAGES[0];
