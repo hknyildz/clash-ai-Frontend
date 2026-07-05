@@ -57,8 +57,8 @@
   max-width: 1152px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .layout-container-sm {
@@ -66,8 +66,8 @@
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .layout-container-lg {
@@ -75,8 +75,15 @@
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .layout-container, .layout-container-sm, .layout-container-lg {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 /* ========== GLOBAL STYLES ========== */
