@@ -8,6 +8,35 @@ import BattleLog from './BattleLog';
 import TopPlayers from './TopPlayers';
 import CardUpgradeSection from './CardUpgradeSection';
 import './PlayerStats.css';
+
+// League images for Path of Legends
+import league0 from '../assets/leagues/league0.png';
+import league1 from '../assets/leagues/league1.png';
+import league2 from '../assets/leagues/league2.png';
+import league3 from '../assets/leagues/league3.png';
+import league4 from '../assets/leagues/league4.png';
+import league5 from '../assets/leagues/league5.png';
+import league6 from '../assets/leagues/league6.png';
+import league7 from '../assets/leagues/league7.png';
+import league8 from '../assets/leagues/league8.png';
+import league9 from '../assets/leagues/league9.png';
+import league10 from '../assets/leagues/league10.png';
+
+const LEAGUE_IMAGES = [league0, league1, league2, league3, league4, league5, league6, league7, league8, league9, league10];
+
+const LEAGUE_NAMES = [
+    'Unranked',
+    'Challenger I',
+    'Challenger II',
+    'Challenger III',
+    'Master I',
+    'Master II',
+    'Master III',
+    'Champion',
+    'Grand Champion',
+    'Royal Champion',
+    'Ultimate Champion'
+];
 import { useAuth } from '../contexts/AuthContext';
 
 // Parse "MasteryBabyDragon" → "Baby Dragon"
@@ -415,6 +444,72 @@ const PlayerStats = ({ playerTag, isActive, onNavigateToClan, onNavigateToPlayer
                     </motion.div>
                 )}
             </div>
+
+            {/* Path of Legends */}
+            {([
+                statsData.currentPathOfLegendSeasonResult,
+                statsData.lastPathOfLegendSeasonResult,
+                statsData.bestPathOfLegendSeasonResult
+            ].some(season => season && season.trophies > 0)) && (
+                    <motion.div
+                        className="pol-section mt-6"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35 }}
+                    >
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="material-symbols-outlined text-secondary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>trophy</span>
+                            <h3 className="text-xs uppercase tracking-[0.2em] font-black text-tertiary">Path of Legends</h3>
+                        </div>
+                        <div className="pol-grid">
+                            {[
+                                { key: 'current', label: 'Current Season', data: statsData.currentPathOfLegendSeasonResult },
+                                { key: 'last', label: 'Last Season', data: statsData.lastPathOfLegendSeasonResult },
+                                { key: 'best', label: 'Best Season', data: statsData.bestPathOfLegendSeasonResult }
+                            ].filter(s => s.data).map((season, i) => {
+                                const leagueNum = season.data.leagueNumber || 0;
+                                const leagueImg = LEAGUE_IMAGES[Math.min(leagueNum, 10)] || LEAGUE_IMAGES[0];
+                                const leagueName = LEAGUE_NAMES[Math.min(leagueNum, 10)] || 'Unknown';
+                                const isBest = season.key === 'best';
+
+                                return (
+                                    <motion.div
+                                        key={season.key}
+                                        className={`pol-card ${isBest ? 'pol-card--best' : ''}`}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.4 + i * 0.1 }}
+                                    >
+
+                                        <div className="pol-card-header">
+                                            <span className="pol-card-label">{season.label}</span>
+                                        </div>
+                                        <div className="pol-card-body">
+                                            <div className="pol-league-badge">
+                                                <img src={leagueImg} alt={leagueName} />
+                                            </div>
+                                            <span className="pol-league-name">{leagueName}</span>
+                                            <div className="pol-stats-row">
+                                                <div className="pol-stat">
+                                                    <span className="material-symbols-outlined pol-stat-icon" style={{ fontVariationSettings: "'FILL' 1", color: 'var(--color-secondary)' }}>emoji_events</span>
+                                                    <span className="pol-stat-value">{(season.data.trophies || 0).toLocaleString()}</span>
+                                                    <span className="pol-stat-label">Trophies</span>
+                                                </div>
+                                                {season.data.rank && season.data.rank > 0 && (
+                                                    <div className="pol-stat">
+                                                        <span className="material-symbols-outlined pol-stat-icon" style={{ fontVariationSettings: "'FILL' 1", color: 'var(--color-tertiary)' }}>leaderboard</span>
+                                                        <span className="pol-stat-value">#{(season.data.rank).toLocaleString()}</span>
+                                                        <span className="pol-stat-label">Rank</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </motion.div>
+                )}
 
             {/* Card Progression — Current Deck */}
             {statsData.currentDeck && statsData.currentDeck.length > 0 && (

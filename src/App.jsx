@@ -231,7 +231,7 @@ function App() {
 
                 {/* Progressive deck display — renders as decks arrive */}
                 {deckData && deckData.length > 0 && (
-                  <div ref={deckResultRef}>
+                  <div ref={deckResultRef} className="scroll-mt-24">
                     <DeckCarousel
                       decks={deckData}
                       onViewStats={() => handleNavigateToPlayer(tag)}

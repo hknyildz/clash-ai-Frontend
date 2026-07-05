@@ -230,7 +230,8 @@ export const GAME_MODE_MAP = {
     "RampUpElixirSpawnEGolems_Tournament": "Nery's Elixir Extravaganza!",
     "RampUpElixirSpawnEGolems_Ladder": "Nery's Elixir Extravaganza!",
     "RampUpElixirSpawnEGolems_Friendly": "Nery's Elixir Extravaganza!",
-    "Ranked1v1_NewArena2": "Ranked 1v1"
+    "Ranked1v1_NewArena2": "Ranked 1v1",
+    "Ranked1v1_NewArena": "Ranked 1v1"
 };
 
 export const getGameModeName = (gameMode) => {
