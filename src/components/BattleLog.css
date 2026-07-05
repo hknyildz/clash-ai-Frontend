@@ -366,4 +366,9 @@
     .battle-deck-grid {
         gap: 0.125rem;
     }
+
+    .battle-deck-card-level {
+        font-size: 0.3125rem;
+        padding: 0px 2px;
+    }
 }
