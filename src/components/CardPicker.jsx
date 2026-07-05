@@ -66,6 +66,14 @@ const CardPicker = ({ isOpen, onClose, onSelectCard, existingDeckIds, activeSlot
         }
     }, [activeSlotIndex]);
 
+    // Reset search term and filters when modal closes
+    useEffect(() => {
+        if (!isOpen) {
+            setSearchTerm('');
+            setSelectedRarity('All');
+        }
+    }, [isOpen]);
+
     useEffect(() => {
         console.log("[CardPicker] Filtering for slot index:", activeSlotIndex);
         let result = cards;
