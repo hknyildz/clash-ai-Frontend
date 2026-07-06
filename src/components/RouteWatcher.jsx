@@ -73,6 +73,12 @@ const RouteWatcher = () => {
       description = 'Calculate exactly how much Gold, Cards, and Gems you need to max any Clash Royale card. Works for Common, Rare, Epic, Legendary, and Champion cards. Free calculator.';
       const calcFaqSchema = generateFAQSchema(faqs.calculator);
       if (calcFaqSchema) schemas.push(calcFaqSchema);
+    } else if (path.startsWith('/cards/')) {
+      title = 'Card Stats & Trends — Clash Royale Card Analysis | Clash Deckster';
+      description = 'Detailed Clash Royale card statistics: usage rate, win rate, 7-day trends, and the most popular meta decks featuring this card.';
+    } else if (path === '/cards') {
+      title = 'Clash Royale Card Stats — Meta Usage & Win Rates | Clash Deckster';
+      description = 'Explore every Clash Royale card ranked by meta usage and win rate. Filter by win conditions, spells, buildings, evolutions and heroes. Updated daily from top ladder data.';
     } else if (path === '/release-notes') {
       title = 'Release Notes & Updates | Clash Deckster';
       description = 'Latest updates and feature releases for ClashDeckster AI deck generator.';

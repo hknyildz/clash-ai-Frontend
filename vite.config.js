@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
-// http://localhost:8080
 // https://api.clashdeckster.com
+// http://localhost:8080
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
@@ -45,6 +45,17 @@ export default defineConfig({
         }
       },
       '/cards': {
+        target: 'https://api.clashdeckster.com',
+        changeOrigin: true,
+        secure: false,
+        // Bypass for SPA routes
+        bypass: (req) => {
+          if (req.headers.accept?.indexOf('html') !== -1) {
+            return '/index.html';
+          }
+        }
+      },
+      '/meta': {
         target: 'https://api.clashdeckster.com',
         changeOrigin: true,
         secure: false,

@@ -32,17 +32,20 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
         return favorites.some(f => f.type === 'DECK' && f.targetKey === key);
     };
 
-    const handleToggleFavorite = (cards, e) => {
+    const handleToggleFavorite = (player, e) => {
         e.stopPropagation();
+        const cards = player.cards;
         const key = getDeckKey(cards);
         const isFav = isDeckFavorited(cards);
         if (isFav) {
             removeFavorite('DECK', key);
         } else {
             const avgElix = getAvgElixir(cards);
-            const name = `Battle Log Deck`;
+            const name = `Battle Log: ${player.name}`;
+            const towerTroopId = player.supportCards && player.supportCards.length > 0 ? player.supportCards[0].id : null;
             const metadata = {
                 averageElixir: avgElix,
+                towerTroopId: towerTroopId,
                 cards: (cards || []).map(c => {
                     const isEvo = c.evolutionLevel === 1;
                     const isHero = c.evolutionLevel === 2;
@@ -63,10 +66,11 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
     const resultLabel = isWin ? 'Victory' : isDraw ? 'Draw' : 'Defeat';
     const resultClass = isWin ? 'win' : isDraw ? 'draw' : 'loss';
 
-    const handleCopyDeck = (cards, e) => {
+    const handleCopyDeck = (cards, e, towerTroopId) => {
         e.stopPropagation();
         const cardIds = cards.map(c => c.id).join(';');
-        const url = `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${cardIds}&l=Royals`;
+        const finalTt = towerTroopId || '159000000';
+        const url = `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${cardIds}&l=Royals&tt=${finalTt}`;
         window.open(url, '_blank');
     };
 
@@ -273,7 +277,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                     </div>
                                     <div className="flex items-center gap-1.5 shrink-0">
                                         <button
-                                            onClick={(e) => handleToggleFavorite(team.cards, e)}
+                                            onClick={(e) => handleToggleFavorite(team, e)}
                                             className={`px-1.5 pt-0.5 rounded transition-all active:scale-95 border ${isDeckFavorited(team.cards)
                                                 ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
                                                 : 'bg-white/5 hover:bg-white/10 text-outline hover:text-rose-400 border border-white/10 hover:border-rose-500/30'
@@ -283,7 +287,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                             <span className="material-symbols-outlined" style={{ fontSize: '14px', fontVariationSettings: isDeckFavorited(team.cards) ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
                                         </button>
                                         <button
-                                            onClick={(e) => handleCopyDeck(team.cards, e)}
+                                            onClick={(e) => handleCopyDeck(team.cards, e, team.supportCards?.[0]?.id)}
                                             className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
                                         >
                                             <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
@@ -328,7 +332,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                     </div>
                                     <div className="flex items-center gap-1.5 shrink-0">
                                         <button
-                                            onClick={(e) => handleToggleFavorite(opponent.cards, e)}
+                                            onClick={(e) => handleToggleFavorite(opponent, e)}
                                             className={`px-1.5 pt-0.5 rounded transition-all active:scale-95 border ${isDeckFavorited(opponent.cards)
                                                 ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
                                                 : 'bg-white/5 hover:bg-white/10 text-outline hover:text-rose-400 border border-white/10 hover:border-rose-500/30'
@@ -338,7 +342,7 @@ const BattleCard = ({ battle, playerTag, onNavigateToPlayer }) => {
                                             <span className="material-symbols-outlined" style={{ fontSize: '14px', fontVariationSettings: isDeckFavorited(opponent.cards) ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
                                         </button>
                                         <button
-                                            onClick={(e) => handleCopyDeck(opponent.cards, e)}
+                                            onClick={(e) => handleCopyDeck(opponent.cards, e, opponent.supportCards?.[0]?.id)}
                                             className="text-[10px] uppercase font-bold tracking-wider bg-primary/20 text-primary hover:bg-primary hover:text-on-primary px-2 py-1.5 sm:px-3 sm:py-1.5 rounded transition-colors flex items-center gap-1 border border-primary/30 hover:border-primary shrink-0"
                                         >
                                             <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>content_copy</span>
