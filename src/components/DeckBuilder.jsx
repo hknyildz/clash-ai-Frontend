@@ -116,61 +116,61 @@ const DeckBuilder = ({ playerTag }) => {
 
             {/* Builder Grid */}
             <div className="builder-grid">
-                        {deckSlots.map((card, index) => {
-                            // Determine empty slot styling
-                            let slotStyle = "border-outline-variant/30 bg-surface-container-high text-on-surface-variant";
-                            if (!card) {
-                                if (index === 0) slotStyle = "border-primary/40 bg-primary/10 text-primary";
-                                else if (index === 1) slotStyle = "border-secondary/40 bg-secondary/10 text-secondary";
-                                else if (index === 2) slotStyle = "border-secondary/40 bg-gradient-to-r from-primary/10 to-secondary/30 text-white";
-                                else slotStyle = "border-tertiary/40 bg-tertiary/10 text-tertiary";
-                            }
+                {deckSlots.map((card, index) => {
+                    // Determine empty slot styling
+                    let slotStyle = "border-outline-variant/30 bg-surface-container-high text-on-surface-variant";
+                    if (!card) {
+                        if (index === 0) slotStyle = "border-primary/40 bg-primary/10 text-primary";
+                        else if (index === 1) slotStyle = "border-secondary/40 bg-secondary/10 text-secondary";
+                        else if (index === 2) slotStyle = "border-secondary/40 bg-gradient-to-r from-primary/10 to-secondary/30 text-white";
+                        else slotStyle = "border-tertiary/40 bg-tertiary/10 text-tertiary";
+                    }
 
-                            const hasError = card ? imgErrors[index] : false;
-                            const baseImgSrc = card ? (card.selectedForm === 'evolved' ? (card.imageUriEvolved || card.imageUri) : (card.isHero ? card.imageUriHero : card.imageUri)) : null;
-                            const imgSrc = hasError ? card?.imageUri : baseImgSrc;
+                    const hasError = card ? imgErrors[index] : false;
+                    const baseImgSrc = card ? (card.selectedForm === 'evolved' ? (card.imageUriEvolved || card.imageUri) : (card.isHero ? card.imageUriHero : card.imageUri)) : null;
+                    const imgSrc = hasError ? card?.imageUri : baseImgSrc;
 
-                            return (
-                                <motion.div
-                                    key={index}
-                                    className={`builder-slot border-2 border-dashed rounded-xl cursor-pointer flex justify-center items-center relative overflow-hidden transition-all duration-300 hover:scale-105 ${!card ? slotStyle + ' hover:border-white/50' : 'border-transparent bg-surface-container'}`}
-                                    onClick={() => handleSlotClick(index)}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    {card ? (
-                                        <>
-                                            <img 
-                                                src={imgSrc} 
-                                                alt={card.name} 
-                                                className="slot-img" 
-                                                onError={() => {
-                                                    console.log("[DeckBuilder] Image failed to load for slot", index, ":", card.name);
-                                                    if (!hasError) setImgErrors(prev => ({ ...prev, [index]: true }));
-                                                }}
-                                            />
-                                            {/* Form Badges - Top Right */}
-                                            {card.evolutionLevel === 1 && (
-                                                <div className="absolute top-1 right-1 bg-primary text-[8px] font-black uppercase text-on-primary px-1 rounded shadow-lg z-10">Evo</div>
-                                            )}
-                                            {card.evolutionLevel === 2 && (
-                                                <div className="absolute top-1 right-1 bg-[#FFC107] text-black text-[8px] font-black uppercase px-1 rounded shadow-lg z-10">Hero</div>
-                                            )}
-                                            
-                                            {/* Remove Button - Top Left */}
-                                            <button className="remove-card-btn" style={{ right: 'auto', left: '4px' }} onClick={(e) => handleRemoveCard(e, index)}>&times;</button>
-                                            
-                                            <div className="slot-elixir">{card.elixirCost}</div>
-                                        </>
-                                    ) : (
-                                        <div className="empty-slot-content">
-                                            <span className="plus-icon">+</span>
-                                            <span className="slot-label">Add Card</span>
-                                        </div>
+                    return (
+                        <motion.div
+                            key={index}
+                            className={`builder-slot border-2 border-dashed rounded-xl cursor-pointer flex justify-center items-center relative overflow-hidden transition-all duration-300 hover:scale-105 ${!card ? slotStyle + ' hover:border-white/50' : 'border-transparent bg-surface-container'}`}
+                            onClick={() => handleSlotClick(index)}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            {card ? (
+                                <>
+                                    <img
+                                        src={imgSrc}
+                                        alt={card.name}
+                                        className="slot-img"
+                                        onError={() => {
+                                            console.log("[DeckBuilder] Image failed to load for slot", index, ":", card.name);
+                                            if (!hasError) setImgErrors(prev => ({ ...prev, [index]: true }));
+                                        }}
+                                    />
+                                    {/* Form Badges - Top Right */}
+                                    {card.evolutionLevel === 1 && (
+                                        <div className="absolute top-1 right-1 bg-primary text-[8px] font-black uppercase text-on-primary px-1 rounded shadow-lg z-10">Evo</div>
                                     )}
-                                </motion.div>
-                            );
-                        })}
+                                    {card.evolutionLevel === 2 && (
+                                        <div className="absolute top-1 right-1 bg-[#FFC107] text-black text-[8px] font-black uppercase px-1 rounded shadow-lg z-10">Hero</div>
+                                    )}
+
+                                    {/* Remove Button - Top Left */}
+                                    <button className="remove-card-btn" style={{ right: 'auto', left: '4px' }} onClick={(e) => handleRemoveCard(e, index)}>&times;</button>
+
+                                    <div className="slot-elixir">{card.elixirCost}</div>
+                                </>
+                            ) : (
+                                <div className="empty-slot-content">
+                                    <span className="plus-icon">+</span>
+                                    <span className="slot-label">Add Card</span>
+                                </div>
+                            )}
+                        </motion.div>
+                    );
+                })}
             </div>
 
             {/* Actions */}
@@ -206,7 +206,7 @@ const DeckBuilder = ({ playerTag }) => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <DeckDisplay deckData={generatedResult} />
+                    <DeckDisplay deckData={generatedResult} playerTag={playerTag} />
                 </motion.div>
             )}
 
