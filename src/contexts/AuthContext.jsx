@@ -5,7 +5,11 @@ const LazyLoginModal = lazy(() => import('../components/LoginModal'));
 
 const AuthContext = createContext(null);
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const getUrl = (path) => {
+    if (!API_BASE_URL) return `/${path}`;
+    return API_BASE_URL.endsWith('/') ? `${API_BASE_URL}${path}` : `${API_BASE_URL}/${path}`;
+};
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -38,7 +42,7 @@ export function AuthProvider({ children }) {
         }
         setFavoritesLoading(true);
         try {
-            const res = await axios.get(`${API_BASE_URL}auth/favorites`, {
+            const res = await axios.get(getUrl('auth/favorites'), {
                 headers: { Authorization: `Bearer ${activeToken}` }
             });
             setFavorites(res.data || []);
@@ -52,7 +56,7 @@ export function AuthProvider({ children }) {
     // On mount, verify stored token
     useEffect(() => {
         if (token) {
-            axios.get(`${API_BASE_URL}auth/me`, {
+            axios.get(getUrl('auth/me'), {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then(res => {
@@ -74,7 +78,7 @@ export function AuthProvider({ children }) {
 
     const login = async (googleCredential) => {
         try {
-            const res = await axios.post(`${API_BASE_URL}auth/google`, {
+            const res = await axios.post(getUrl('auth/google'), {
                 token: googleCredential
             });
             const { user: userData, token: authToken } = res.data;
@@ -104,7 +108,7 @@ export function AuthProvider({ children }) {
         }
 
         try {
-            const res = await axios.post(`${API_BASE_URL}auth/favorites`, {
+            const res = await axios.post(getUrl('auth/favorites'), {
                 type,
                 targetKey,
                 targetName,
@@ -133,7 +137,7 @@ export function AuthProvider({ children }) {
         }
 
         try {
-            await axios.delete(`${API_BASE_URL}auth/favorites`, {
+            await axios.delete(getUrl('auth/favorites'), {
                 headers: { Authorization: `Bearer ${token}` },
                 params: { type, targetKey }
             });

@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import DeckFeedback from './DeckFeedback';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchPlayerStats, fetchAllCards } from '../services/api';
 import { calculateProgression } from '../utils/upgradeCalculator';
 import { RARITY_CONFIG } from '../utils/upgradeData';
-import CardUpgradeModal from './CardUpgradeModal';
 import comboBadgePrimary from '../assets/agreementP.png';
 import comboBadgeSecondary from '../assets/agreementB.png';
 
 const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, onVoted }) => {
     const { favorites, addFavorite, removeFavorite } = useAuth();
+    const navigate = useNavigate();
     if (!deckData || !deckData.deck) return null;
 
     const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
@@ -43,63 +44,16 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
         setPlayerName('');
     }, [playerTag]);
 
-    const handleCardClick = async (clickedCard) => {
-        let currentCollection = playerCards;
-        let name = playerName;
-
-        // If playerTag is available but collection not loaded yet, fetch it on demand
-        if (playerTag && !currentCollection && !loadingStats) {
-            setLoadingStats(true);
-            try {
-                const data = await fetchPlayerStats(playerTag);
-                currentCollection = data.cards || [];
-                name = data.name || '';
-                setPlayerCards(currentCollection);
-                setPlayerName(name);
-            } catch (err) {
-                console.error('[DeckDisplay] Failed to fetch player stats on demand:', err);
-            } finally {
-                setLoadingStats(false);
-            }
-        }
-
-        // 1. Resolve card from allCards database to get rarity etc.
-        const baseCard = allCards?.find(c => c.id === clickedCard.id);
-        const enrichedCard = { ...baseCard, ...clickedCard };
-
-        // 2. Find the card in the player's collection
-        const playerCard = currentCollection?.find(c => c.id === clickedCard.id);
-
-        const rarity = (enrichedCard.rarity || 'common').toLowerCase();
-        const config = RARITY_CONFIG[rarity];
-
-        let absoluteLevel;
-        let count = 0;
-
-        if (playerCard) {
-            // Player owns this card: use their actual level and count
-            absoluteLevel = playerCard.level + (config ? config.relativeLevel : 0);
-            count = playerCard.count || 0;
-        } else {
-            // Player doesn't own this card or no player loaded
-            // Use card's level in the generated deck if available, otherwise rarity startLevel
-            absoluteLevel = clickedCard.level || (config ? config.startLevel : 11);
-            count = 0;
-        }
-
-        // Calculate progression
-        const progression = calculateProgression(rarity, absoluteLevel, count);
-
-        setSelectedCardEntry({
-            card: { ...enrichedCard, count },
-            absoluteLevel,
-            progression
-        });
+    const handleCardClick = (clickedCard) => {
+        let evo = 0;
+        if (clickedCard.evolved) evo = 1;
+        else if (clickedCard.isHero) evo = 2;
+        
+        navigate(`/cards/${clickedCard.id}?evo=${evo}`);
     };
-
-    // Use backend deep link (includes &tt=) or fallback to generating one
     const getDeckIds = () => deck.map(c => c.id).join(';');
-    const generatedLink = backendDeepLink || `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${getDeckIds()}&l=Royals`;
+    const finalTt = towerTroopId || '159000000';
+    const generatedLink = backendDeepLink || `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${getDeckIds()}&l=Royals&tt=${finalTt}`;
 
     const targetKey = getDeckIds();
     const isFavorited = favorites.some(f => f.type === 'DECK' && f.targetKey === targetKey);
@@ -111,6 +65,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
             const name = `${strategy || 'Custom'} Deck`;
             const metadata = {
                 averageElixir: averageElixir,
+                towerTroopId: towerTroopId,
                 cards: deck.map(c => ({
                     name: c.name,
                     icon: c.evolved ? c.imageUriEvolved : c.isHero ? c.imageUriHero : c.imageUri
@@ -387,17 +342,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                 </div>
             )}
 
-            {/* Card progression details modal */}
-            {selectedCardEntry && (
-                <CardUpgradeModal
-                    cards={playerCards || []}
-                    allCards={allCards || []}
-                    initialSelectedCard={selectedCardEntry}
-                    onClose={() => setSelectedCardEntry(null)}
-                    playerTag={playerTag}
-                    playerName={playerName}
-                />
-            )}
+
         </div>
     );
 };

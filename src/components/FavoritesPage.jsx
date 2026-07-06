@@ -13,7 +13,7 @@ const cleanDeckName = (name) => {
 const FavoritesPage = () => {
     const navigate = useNavigate();
     const { isAuthenticated, favorites, addFavorite, removeFavorite, openLogin } = useAuth();
-    
+
     // Redirect guests to home and trigger login modal
     useEffect(() => {
         if (!isAuthenticated) {
@@ -51,9 +51,10 @@ const FavoritesPage = () => {
     const savedClans = favorites.filter(f => f.type === 'CLAN');
     const savedDecks = favorites.filter(f => f.type === 'DECK');
 
-    const handleCopyDeckLink = (e, targetKey) => {
+    const handleCopyDeckLink = (e, targetKey, towerTroopId) => {
         e.stopPropagation();
-        const copyLink = `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${targetKey}&l=Royals`;
+        const finalTowerTroopId = towerTroopId || '159000000';
+        const copyLink = `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${targetKey}&l=Royals&tt=${finalTowerTroopId}`;
         window.open(copyLink, '_blank');
     };
 
@@ -75,7 +76,7 @@ const FavoritesPage = () => {
             <div className="space-y-6">
                 {/* 1. Saved Players Section */}
                 <div className="glass-panel rounded-2xl overflow-hidden border border-white/5 shadow-lg">
-                    <button 
+                    <button
                         onClick={() => toggleSection('players')}
                         className="w-full flex items-center justify-between p-4 sm:p-5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors text-left"
                     >
@@ -105,7 +106,7 @@ const FavoritesPage = () => {
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             {savedPlayers.map(p => (
-                                                <div 
+                                                <div
                                                     key={p.id}
                                                     onClick={() => navigate(`/player/${p.targetKey.replace(/#/g, '')}`)}
                                                     className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 hover:border-primary/30 transition-all cursor-pointer group"
@@ -118,7 +119,7 @@ const FavoritesPage = () => {
                                                             {p.targetKey}
                                                         </p>
                                                     </div>
-                                                    <button 
+                                                    <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             removeFavorite('PLAYER', p.targetKey);
@@ -140,7 +141,7 @@ const FavoritesPage = () => {
 
                 {/* 2. Saved Clans Section */}
                 <div className="glass-panel rounded-2xl overflow-hidden border border-white/5 shadow-lg">
-                    <button 
+                    <button
                         onClick={() => toggleSection('clans')}
                         className="w-full flex items-center justify-between p-4 sm:p-5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors text-left"
                     >
@@ -170,7 +171,7 @@ const FavoritesPage = () => {
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             {savedClans.map(c => (
-                                                <div 
+                                                <div
                                                     key={c.id}
                                                     onClick={() => navigate(`/clan/${c.targetKey.replace(/#/g, '')}`)}
                                                     className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 hover:border-secondary/30 transition-all cursor-pointer group"
@@ -183,7 +184,7 @@ const FavoritesPage = () => {
                                                             {c.targetKey}
                                                         </p>
                                                     </div>
-                                                    <button 
+                                                    <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             removeFavorite('CLAN', c.targetKey);
@@ -205,7 +206,7 @@ const FavoritesPage = () => {
 
                 {/* 3. Saved Decks Section */}
                 <div className="glass-panel rounded-2xl overflow-hidden border border-white/5 shadow-lg">
-                    <button 
+                    <button
                         onClick={() => toggleSection('decks')}
                         className="w-full flex items-center justify-between p-4 sm:p-5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors text-left"
                     >
@@ -237,11 +238,13 @@ const FavoritesPage = () => {
                                             {savedDecks.map(d => {
                                                 let cards = [];
                                                 let avgElixir = null;
+                                                let towerTroopId = null;
                                                 try {
                                                     if (d.metadataJson) {
                                                         const meta = JSON.parse(d.metadataJson);
                                                         cards = meta.cards || [];
                                                         avgElixir = meta.averageElixir;
+                                                        towerTroopId = meta.towerTroopId;
                                                     }
                                                 } catch (e) {
                                                     console.error("Error parsing deck metadata", e);
@@ -258,9 +261,9 @@ const FavoritesPage = () => {
                                                 const displayName = cleanDeckName(d.targetName);
 
                                                 return (
-                                                    <div 
+                                                    <div
                                                         key={d.id}
-                                                        className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-tertiary/30 transition-all flex flex-col gap-3 relative"
+                                                        className="p-4 rounded-md bg-white/[0.02] border border-white/5 hover:border-tertiary/30 transition-all flex flex-col gap-3 relative"
                                                     >
                                                         <div className="flex justify-between items-center w-full min-w-0 pr-20">
                                                             <div className="min-w-0 w-full">
@@ -315,9 +318,9 @@ const FavoritesPage = () => {
                                                         {cards.length > 0 && (
                                                             <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none">
                                                                 {cards.map((c, idx) => (
-                                                                    <div 
-                                                                        key={idx} 
-                                                                        className="w-8 h-[44px] rounded bg-surface-container-low overflow-hidden shrink-0 border border-outline-variant/10 shadow-sm"
+                                                                    <div
+                                                                        key={idx}
+                                                                        className="w-10 h-[56px] rounded bg-surface-container-low overflow-hidden shrink-0 border border-outline-variant/10 shadow-sm"
                                                                         title={c.name}
                                                                     >
                                                                         <img src={c.icon} alt={c.name} className="w-full h-full object-cover" />
@@ -340,7 +343,7 @@ const FavoritesPage = () => {
                                                         {/* Action Buttons */}
                                                         <div className="absolute top-4 right-4 flex items-center gap-1.5">
                                                             <button
-                                                                onClick={(e) => handleCopyDeckLink(e, d.targetKey)}
+                                                                onClick={(e) => handleCopyDeckLink(e, d.targetKey, towerTroopId)}
                                                                 className="p-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/40 transition-colors flex items-center justify-center cursor-pointer"
                                                                 title="Copy Deck Link"
                                                             >

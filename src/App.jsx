@@ -17,6 +17,8 @@ const ClanPage = lazy(() => import('./components/ClanPage'));
 const ClanDetail = lazy(() => import('./components/ClanDetail'));
 const FavoritesPage = lazy(() => import('./components/FavoritesPage'));
 const CardUpgradeCalculatorPage = lazy(() => import('./components/CardUpgradeCalculatorPage'));
+const Cards = lazy(() => import('./components/Cards'));
+const CardDetail = lazy(() => import('./components/CardDetail'));
 
 // Lazy loaded landing page components (below-the-fold or conditional)
 const DeckCarousel = lazy(() => import('./components/DeckCarousel'));
@@ -51,6 +53,8 @@ function App() {
     if (path.startsWith('/clan')) return 'clan-detail';
     if (path.startsWith('/favorites')) return 'favorites';
     if (path === '/card-upgrade-calculator') return 'calculator';
+    if (path === '/cards') return 'cards';
+    if (path.startsWith('/cards/')) return 'card-detail';
     return 'quick';
   };
 
@@ -301,6 +305,16 @@ function App() {
                 <CardUpgradeCalculatorPage />
               </div>
             } />
+
+            {/* Card Statistics Tab */}
+            <Route path="/cards" element={
+              <div className="mt-6">
+                <Cards />
+              </div>
+            } />
+            <Route path="/cards/:cardId" element={
+              <CardDetailWrapper />
+            } />
           </Routes>
         </Suspense>
 
@@ -348,6 +362,15 @@ function ClanDetailWrapper({ onNavigateToPlayer }) {
         onBack={() => navigate('/clans')}
         onNavigateToPlayer={onNavigateToPlayer}
       />
+    </div>
+  );
+}
+
+function CardDetailWrapper() {
+  const { cardId } = useParams();
+  return (
+    <div className="mt-6">
+      <CardDetail cardId={cardId} />
     </div>
   );
 }

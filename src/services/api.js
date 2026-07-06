@@ -163,6 +163,26 @@ export const fetchAllCards = async () => {
     }
 };
 
+export const getCardStats = async () => {
+    try {
+        const response = await api.get('/meta/cards');
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching card stats:", error);
+        throw error;
+    }
+};
+
+export const getCardDetail = async (cardId, evo = 0) => {
+    try {
+        const response = await api.get(`/meta/cards/${cardId}?evo=${evo}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching card detail:", error);
+        throw error;
+    }
+};
+
 export const completeDeck = async (tag, partialDeckIds, strategy) => {
     // tag is optional (used for collection filtering), partialDeckIds is list of IDs
     // No URL encoding needed for JSON body
