@@ -241,7 +241,7 @@ function DeckRow({ deck, navigate }) {
 
     const ids = (deck.cards || []).map((c) => c.id).filter(Boolean);
     const targetKey = ids.join(';');
-    const towerTroopId = (deck.supportCards?.[0]?.id) || '159000000';
+    const towerTroopId = deck.towerTroopId || '159000000';
     const copyLink = `https://link.clashroyale.com/en/?clashroyale://copyDeck?deck=${targetKey}&l=Royals&tt=${towerTroopId}`;
     const isFavorited = (favorites || []).some((f) => f.type === 'DECK' && f.targetKey === targetKey);
 
