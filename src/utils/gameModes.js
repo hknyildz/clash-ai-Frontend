@@ -231,7 +231,9 @@ export const GAME_MODE_MAP = {
     "RampUpElixirSpawnEGolems_Ladder": "Nery's Elixir Extravaganza!",
     "RampUpElixirSpawnEGolems_Friendly": "Nery's Elixir Extravaganza!",
     "Ranked1v1_NewArena2": "Ranked 1v1",
-    "Ranked1v1_NewArena": "Ranked 1v1"
+    "Ranked1v1_NewArena": "Ranked 1v1",
+    "Challenge_AllCards_EventDeck_NoSet": "All Cards Challenge",
+    "Crazy_Arena": "Chaos Mode"
 };
 
 export const getGameModeName = (gameMode) => {
