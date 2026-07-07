@@ -79,6 +79,9 @@ const RouteWatcher = () => {
     } else if (path === '/cards') {
       title = 'Clash Royale Card Stats — Meta Usage & Win Rates | Clash Deckster';
       description = 'Explore every Clash Royale card ranked by meta usage and win rate. Filter by win conditions, spells, buildings, evolutions and heroes. Updated daily from top ladder data.';
+    } else if (path === '/decks') {
+      title = 'Clash Royale Meta Decks — Top Ladder Decks & Win Rates | Clash Deckster';
+      description = 'Browse the most-played Clash Royale meta decks ranked by usage, with win rates and the top players who run them. Filter by archetype. Updated daily from top ladder data.';
     } else if (path === '/release-notes') {
       title = 'Release Notes & Updates | Clash Deckster';
       description = 'Latest updates and feature releases for ClashDeckster AI deck generator.';

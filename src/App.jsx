@@ -19,6 +19,7 @@ const FavoritesPage = lazy(() => import('./components/FavoritesPage'));
 const CardUpgradeCalculatorPage = lazy(() => import('./components/CardUpgradeCalculatorPage'));
 const Cards = lazy(() => import('./components/Cards'));
 const CardDetail = lazy(() => import('./components/CardDetail'));
+const Decks = lazy(() => import('./components/Decks'));
 
 // Lazy loaded landing page components (below-the-fold or conditional)
 const DeckCarousel = lazy(() => import('./components/DeckCarousel'));
@@ -55,6 +56,7 @@ function App() {
     if (path === '/card-upgrade-calculator') return 'calculator';
     if (path === '/cards') return 'cards';
     if (path.startsWith('/cards/')) return 'card-detail';
+    if (path === '/decks') return 'decks';
     return 'quick';
   };
 
@@ -314,6 +316,13 @@ function App() {
             } />
             <Route path="/cards/:cardId" element={
               <CardDetailWrapper />
+            } />
+
+            {/* Meta Decks Tab */}
+            <Route path="/decks" element={
+              <div className="mt-6">
+                <Decks />
+              </div>
             } />
           </Routes>
         </Suspense>

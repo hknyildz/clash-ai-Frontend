@@ -61,7 +61,7 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
     const cleanTag = tag.replace(/#/g, '');
     const formattedTag = `%23${cleanTag}`;
     const baseUrl = API_BASE_URL.replace(/\/$/, '');
-    
+
     const token = localStorage.getItem('auth_token');
     const tokenParam = token ? `?token=${encodeURIComponent(token)}` : '';
     const url = `${baseUrl}/freeDeck/${formattedTag}/stream${tokenParam}`;
@@ -77,7 +77,7 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
         signal: signal,
     }).then(response => {
         if (aborted) return;
-        
+
         if (response.status === 429) {
             const error = new Error('Rate limit exceeded');
             error.status = 429;
@@ -134,7 +134,7 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
                 const text = decoder.decode(value, { stream: true });
                 const combined = leftover + text;
                 const lines = combined.split('\n');
-                
+
                 leftover = lines.pop() || '';
 
                 for (const line of lines) {
@@ -190,13 +190,23 @@ export const getCardDetail = async (cardId, evo = 0) => {
     }
 };
 
+export const getMetaDecks = async (limit = 100) => {
+    try {
+        const response = await api.get(`/meta/decks?limit=${limit}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching meta decks:", error);
+        throw error;
+    }
+};
+
 export const completeDeck = async (tag, partialDeckIds, strategy) => {
     // tag is optional (used for collection filtering), partialDeckIds is list of IDs
     // No URL encoding needed for JSON body
     // Ensure player tag for JSON payload includes #
     const cleanTag = tag ? tag.replace(/#/g, '') : '';
     const formattedTag = cleanTag ? `#${cleanTag}` : null;
-    
+
     try {
         const response = await api.post('/decks/complete', {
             playerTag: formattedTag,

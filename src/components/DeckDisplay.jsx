@@ -14,7 +14,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
     const navigate = useNavigate();
     if (!deckData || !deckData.deck) return null;
 
-    const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl } = deckData;
+    const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl, metaWinRate, metaUsageCount, metaRank } = deckData;
 
     const [imgErrors, setImgErrors] = useState({});
 
@@ -294,6 +294,26 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                             </div>
                         </div>
                     </div>
+
+                    {/* Meta match — this exact deck exists in the meta */}
+                    {metaWinRate != null && (
+                        <div className="bg-gradient-to-br from-secondary/25 to-primary/10 p-1 rounded-lg">
+                            <div className="bg-surface-container-low p-4 rounded-[0.75rem] flex items-center gap-3">
+                                <span className="material-symbols-outlined text-secondary text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-black text-secondary uppercase tracking-[0.15em]">
+                                        This deck is in the meta{metaRank != null ? ` · #${metaRank}` : ''}
+                                    </p>
+                                    <p className="text-sm text-on-surface-variant mt-0.5">
+                                        Win rate <span className="font-black text-white">{metaWinRate.toFixed(1)}%</span>
+                                        {metaUsageCount != null && (
+                                            <span> · used by <span className="font-black text-white">{metaUsageCount.toLocaleString()}</span> top players</span>
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Pro Tip */}
                     <div className="bg-gradient-to-br from-primary/20 to-secondary/10 p-1 rounded-lg">
