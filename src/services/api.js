@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { applyImageOverrides } from '../utils/cardImageOverrides';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -18,9 +19,14 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Handle 401 responses (expired token)
+// Handle 401 responses (expired token) and apply image overrides
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        if (response.data) {
+            applyImageOverrides(response.data);
+        }
+        return response;
+    },
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('auth_token');
@@ -104,6 +110,7 @@ export const fetchFreeDeckStream = (tag, { onInit, onDeck, onDone, onError }) =>
                 const data = line.substring(5).trim();
                 try {
                     const parsed = JSON.parse(data);
+                    applyImageOverrides(parsed);
                     if (buffer === 'init') onInit?.(parsed);
                     else if (buffer === 'deck') onDeck?.(parsed);
                     else if (buffer === 'done') onDone?.(parsed);
