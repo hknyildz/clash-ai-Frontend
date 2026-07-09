@@ -35,8 +35,8 @@ function MetaDeckCard({ deck }) {
     };
 
     return (
-        <div className="glass-panel rounded-2xl border border-outline-variant/20 p-4">
-            <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+        <div className="glass-panel rounded-2xl border border-outline-variant/20 p-4 relative">
+            <div className="flex items-start sm:items-center justify-between flex-col sm:flex-row gap-2 sm:gap-4 mb-3 pr-20">
                 <div className="flex items-center gap-2 flex-wrap">
                     {deck.popularityRank != null && (
                         <span className="bg-surface-container-highest/90 text-primary text-[10px] font-black px-1.5 py-0.5 rounded tracking-tight">
@@ -50,9 +50,9 @@ function MetaDeckCard({ deck }) {
                         <span className="text-xs text-on-surface-variant">{deck.winConditions}</span>
                     )}
                 </div>
-                <div className="flex items-center gap-3 text-xs">
+                <div className="flex items-center gap-3 text-xs flex-wrap">
                     {deck.usageCount != null && (
-                        <span className="text-on-surface-variant hidden sm:inline">
+                        <span className="text-on-surface-variant">
                             <span className="text-white font-bold">{fmtInt(deck.usageCount)}</span> players
                         </span>
                     )}
@@ -66,27 +66,28 @@ function MetaDeckCard({ deck }) {
                             WR <span className="text-secondary font-bold">{fmtPct(deck.winRate)}</span>
                         </span>
                     )}
-                    <div className="flex items-center gap-1 ml-1">
-                        <button
-                            onClick={() => window.open(copyLink, '_blank')}
-                            title="Copy deck to Clash Royale"
-                            className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface hover:text-primary hover:bg-surface-container-highest border border-outline-variant/30 hover:border-primary/40 transition-all active:scale-95"
-                        >
-                            <span className="material-symbols-outlined text-base">content_copy</span>
-                        </button>
-                        <button
-                            onClick={handleFav}
-                            title={isFavorited ? 'Saved to favorites' : 'Save to favorites'}
-                            className={`w-8 h-8 flex items-center justify-center rounded-full border transition-all active:scale-95 ${
-                                isFavorited
-                                    ? 'bg-rose-500/15 text-rose-400 border-rose-500/40 hover:bg-rose-500/25'
-                                    : 'bg-surface-container-high text-on-surface border-outline-variant/30 hover:text-rose-400 hover:border-rose-500/40'
-                            }`}
-                        >
-                            <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
-                        </button>
-                    </div>
                 </div>
+            </div>
+
+            <div className="absolute top-4 sm:top-2.5 right-4 flex items-center gap-1.5">
+                <button
+                    onClick={() => window.open(copyLink, '_blank')}
+                    title="Copy deck to Clash Royale"
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface hover:text-primary hover:bg-surface-container-highest border border-outline-variant/30 hover:border-primary/40 transition-all active:scale-95"
+                >
+                    <span className="material-symbols-outlined text-base">content_copy</span>
+                </button>
+                <button
+                    onClick={handleFav}
+                    title={isFavorited ? 'Saved to favorites' : 'Save to favorites'}
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border transition-all active:scale-95 ${
+                        isFavorited
+                            ? 'bg-rose-500/15 text-rose-400 border-rose-500/40 hover:bg-rose-500/25'
+                            : 'bg-surface-container-high text-on-surface border-outline-variant/30 hover:text-rose-400 hover:border-rose-500/40'
+                    }`}
+                >
+                    <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+                </button>
             </div>
 
             {/* 8-card row */}
