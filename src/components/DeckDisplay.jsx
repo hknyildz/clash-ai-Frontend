@@ -14,7 +14,7 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
     const navigate = useNavigate();
     if (!deckData || !deckData.deck) return null;
 
-    const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl, metaWinRate, metaUsageCount, metaRank } = deckData;
+    const { deck, averageElixir, tacticMessage, strategy, deepLink: backendDeepLink, towerTroopId, towerTroopName, towerTroopImageUrl, metaWinRate, metaUsageCount, metaRank, metaTopPlayers } = deckData;
 
     const [imgErrors, setImgErrors] = useState({});
 
@@ -310,6 +310,20 @@ const DeckDisplay = ({ deckData, onViewStats, deckLabel, playerTag, hasVoted, on
                                             <span> · used by <span className="font-black text-white">{metaUsageCount.toLocaleString()}</span> top players</span>
                                         )}
                                     </p>
+                                    {metaTopPlayers?.length > 0 && (
+                                        <p className="text-xs text-on-surface-variant mt-1.5 flex items-center gap-1.5 flex-wrap">
+                                            <span>Played by:</span>
+                                            {metaTopPlayers.map((p, i) => (
+                                                <button
+                                                    key={`${p.tag}-${i}`}
+                                                    onClick={() => p.tag && navigate(`/player/${p.tag.replace(/#/g, '')}`)}
+                                                    className="font-bold text-tertiary hover:text-primary transition-colors"
+                                                >
+                                                    {p.name || p.tag}
+                                                </button>
+                                            ))}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>

@@ -200,9 +200,9 @@ export const getMetaDecks = async (limit = 100) => {
     }
 };
 
-export const completeDeck = async (tag, partialDeckIds, strategy) => {
-    // tag is optional (used for collection filtering), partialDeckIds is list of IDs
-    // No URL encoding needed for JSON body
+export const completeDeck = async (tag, partialDeck, strategy) => {
+    // tag is optional (used for collection filtering)
+    // partialDeck: [{ id, evolutionLevel }] — locked cards WITH the user's chosen form
     // Ensure player tag for JSON payload includes #
     const cleanTag = tag ? tag.replace(/#/g, '') : '';
     const formattedTag = cleanTag ? `#${cleanTag}` : null;
@@ -210,7 +210,7 @@ export const completeDeck = async (tag, partialDeckIds, strategy) => {
     try {
         const response = await api.post('/decks/complete', {
             playerTag: formattedTag,
-            partialDeck: partialDeckIds,
+            partialDeck: partialDeck,
             playStyle: strategy
         });
         return response.data;
