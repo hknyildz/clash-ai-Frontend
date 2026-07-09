@@ -1,4 +1,17 @@
 import { useNavigate } from 'react-router-dom';
+import electroDragonImg from '../assets/chr/left/electro_dragon_dl.png';
+import skeletonsImg from '../assets/chr/left/skeletons_dl.png';
+import balloonImg from '../assets/chr/right/balloon_dl.png';
+import dartGoblinImg from '../assets/chr/right/dart_goblin_dl.png';
+import batsImg from '../assets/chr/middle/bats_dl.png';
+
+// Discovery shortcuts — surfaced on the landing hero so mobile users find these
+// pages without opening the hamburger menu.
+const EXPLORE_LINKS = [
+    { path: '/decks', icon: 'dashboard', label: 'Meta Decks', sub: 'Top ladder decks' },
+    { path: '/cards', icon: 'style', label: 'Card Stats', sub: 'Usage & win rates' },
+    { path: '/player', icon: 'query_stats', label: 'Players', sub: 'Profile lookup' },
+];
 
 const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTab }) => {
     const navigate = useNavigate();
@@ -21,6 +34,43 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                 <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary/5 blur-[120px] rounded-full"></div>
             </div>
 
+            {/* Character layer — decorative, never blocks input */}
+            <div className="absolute inset-0 z-[1] pointer-events-none select-none" aria-hidden="true">
+                {/* Bats — faded backdrop behind the title, all screens */}
+                {/* <img
+                    src={batsImg}
+                    alt=""
+                    className="absolute left-1/2 -translate-x-1/2 top-10 sm:top-6 w-72 sm:w-[28rem] opacity-25"
+                    style={{ animation: 'float 6s ease-in-out infinite' }}
+                /> */}
+                {/* Desktop: Electro Dragon (left) + Balloon (right) */}
+                <img
+                    src={electroDragonImg}
+                    alt=""
+                    className="hidden md:block absolute -left-10 lg:left-0 top-1/3 w-56 lg:w-72 drop-shadow-[0_0_25px_rgba(251,171,255,0.25)]"
+                    style={{ animation: 'breathe 7s ease-in-out infinite' }}
+                />
+                <img
+                    src={balloonImg}
+                    alt=""
+                    className="hidden md:block absolute -right-6 lg:right-4 top-16 w-36 lg:w-48 drop-shadow-[0_0_25px_rgba(255,198,64,0.2)]"
+                    style={{ animation: 'float 5s ease-in-out infinite' }}
+                />
+                {/* Mobile: Skeletons (left) + Dart Goblin (right) peeking from the edges */}
+                <img
+                    src={skeletonsImg}
+                    alt=""
+                    className="md:hidden absolute -left-8 top-[30%] w-32 opacity-90 drop-shadow-[0_0_18px_rgba(251,171,255,0.25)]"
+                    style={{ animation: 'float 5s ease-in-out infinite' }}
+                />
+                <img
+                    src={dartGoblinImg}
+                    alt=""
+                    className="md:hidden absolute -right-12 top-[16%] w-40 opacity-90 drop-shadow-[0_0_18px_rgba(255,198,64,0.2)]"
+                    style={{ animation: 'float 6s ease-in-out infinite', animationDelay: '1s' }}
+                />
+            </div>
+
             <div className="layout-container flex flex-col items-center text-center relative z-10 gap-8">
                 {/* Mobile Branding */}
                 <div className="sm:hidden -mt-12 text-xl font-black text-primary tracking-tighter uppercase font-headline opacity-80">
@@ -37,6 +87,31 @@ const InputSection = ({ tag, setTag, onGenerate, isLoading, showButton, activeTa
                 <p className="hidden sm:block text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed px-4">
                     The Elixir Forge is open. Connect your account to analyze your playstyle and generate a data-backed deck designed for total arena domination.
                 </p>
+
+                {/* Explore shortcuts — page discovery without opening the navbar */}
+                <div className="w-full max-w-lg mx-auto px-2 grid grid-cols-3 gap-2 sm:gap-3">
+                    {EXPLORE_LINKS.map((link) => (
+                        <button
+                            key={link.path}
+                            type="button"
+                            onClick={() => navigate(link.path)}
+                            className="group glass-panel rounded-2xl border border-outline-variant/30 py-3 px-1 flex flex-col items-center gap-1 hover:border-primary/60 hover:-translate-y-0.5 transition-all duration-300"
+                        >
+                            <span
+                                className="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform duration-300"
+                                style={{ fontVariationSettings: "'FILL' 1" }}
+                            >
+                                {link.icon}
+                            </span>
+                            <span className="font-headline font-black text-[10px] sm:text-xs uppercase tracking-wider text-white leading-tight">
+                                {link.label}
+                            </span>
+                            <span className="hidden sm:block text-[9px] text-on-surface-variant leading-tight">
+                                {link.sub}
+                            </span>
+                        </button>
+                    ))}
+                </div>
 
                 {/* Tactical Input Field */}
                 <div className="w-full max-w-lg mx-auto px-4 flex flex-col items-center gap-4">
