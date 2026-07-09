@@ -63,11 +63,15 @@ const DeckBuilder = ({ playerTag }) => {
         setIsGenerating(true);
         setGeneratedResult(null);
         try {
-            // Filter out null slots to get partial IDs
-            const partialIds = deckSlots.filter(c => c !== null).map(c => c.id);
+            // Filter out null slots; carry the user's chosen FORM (0 normal / 1 evolved / 2 hero)
+            const partialDeck = deckSlots.filter(c => c !== null).map(c => ({
+                id: c.id,
+                evolutionLevel: c.selectedForm === 'evolved' ? 1
+                    : (c.selectedForm === 'hero' || c.isHero ? 2 : 0),
+            }));
 
             // Call API
-            const result = await completeDeck(playerTag, partialIds, selectedPlaystyle);
+            const result = await completeDeck(playerTag, partialDeck, selectedPlaystyle);
             if (result && result.valid === false) {
                 throw new Error(result.tacticMessage || "Player not found. Please check the tag.");
             }
